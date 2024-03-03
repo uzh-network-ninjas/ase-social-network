@@ -1,6 +1,8 @@
 ## Setup
 - You need to have docker installed with docker-compose
 - simply run `.start-service.sh` to setup everything
+- each microservice should have 'swagger' available under `/docs` (currently not working:/)
+- Kongo admin available at `http://localhost:8002/`
 
 ## what it does
 - it will create a docker network
