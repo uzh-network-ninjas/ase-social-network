@@ -25,9 +25,14 @@ def post_to_model(post):
 # CRUD operations for Post
 
 # TODO nowhere is a verification that the user actually exists??
+# Just for testing currently
+@app.get("/asd")
+def read_root():
+    return {"Hello": "World"}
 
 
-@app.post("/posts/", response_model=Post)
+
+@app.post("/", response_model=Post)
 async def create_post(post: Post):
 
     post_dict = post.model_dump(exclude_unset=True)
@@ -36,14 +41,14 @@ async def create_post(post: Post):
     post.id = str(result.inserted_id)
     return post
 
-@app.get("/posts/{post_id}", response_model=Post)
+@app.get("/{post_id}", response_model=Post)
 async def read_post(post_id: str):
     post = await collection.find_one({"_id": str_to_objectid(post_id)})
     if post:
         return post_to_model(post)
     raise HTTPException(status_code=404, detail="Post not found")
 
-@app.put("/posts/{post_id}", response_model=Post)
+@app.put("/{post_id}", response_model=Post)
 async def update_post(post_id: str, post: Post):
     updated_post = await collection.find_one_and_update(
         {"_id": str_to_objectid(post_id)}, {"$set": post.dict(exclude_unset=True)}
@@ -52,7 +57,7 @@ async def update_post(post_id: str, post: Post):
         return await read_post(post_id)
     raise HTTPException(status_code=404, detail="Post not found")
 
-@app.delete("/posts/{post_id}")
+@app.delete("/{post_id}")
 async def delete_post(post_id: str):
     deleted_post = await collection.find_one_and_delete({"_id": str_to_objectid(post_id)})
     if deleted_post:
@@ -60,7 +65,7 @@ async def delete_post(post_id: str):
     raise HTTPException(status_code=404, detail="Post not found")
 
 
-@app.put("/posts/{post_id}/comment", response_model=Post)
+@app.put("/{post_id}/comment", response_model=Post)
 async def add_comment_to_post(post_id: str, comment: Comment):
     await collection.update_one(
         {"_id": str_to_objectid(post_id)},
@@ -68,7 +73,7 @@ async def add_comment_to_post(post_id: str, comment: Comment):
     )
     return await read_post(post_id)
 
-@app.put("/posts/{post_id}/like", response_model=Post)
+@app.put("/{post_id}/like", response_model=Post)
 async def add_like_to_post(post_id: str):
     await collection.update_one(
         {"_id": str_to_objectid(post_id)},

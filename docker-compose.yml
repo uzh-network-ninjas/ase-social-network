@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  ms-user:
+    build: ms-user
+    environment:
+      - PORT=5000
+    ports:
+      - "9000:5000" # Expose port 8000 on the host, maps to port 5000 inside the container
+    volumes:
+      - ./ms-user/app:/code/app # Map the host app directory to the container - direct reloads TODO create a seperate dev compose? when setup done
+    networks:
+      - ms-net
+
+  ms-post:
+    build: ms-post
+    environment:
+      - PORT=5001
+      - MONGO_URL=mongodb://ms-post-db:27017/ms_post_db
+    ports:
+      - "9001:5001"
+    volumes:
+      - ./ms-post/app:/code/app
+    depends_on:
+      - ms-post-db
+    
+    networks:
+      - ms-net
+
+  ms-post-db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=ms_post_db
+    volumes:
+      - ms-post-db-volume:/data/db
+    networks:
+      - ms-net
+
+volumes:
+  ms-post-db-volume:
+
+networks:
+  ms-net:
