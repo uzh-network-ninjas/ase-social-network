@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  ms-user:
+    build: ms-user
+    environment:
+      - PORT=5000
+    ports:
+      - "8000:5000" # Expose port 8000 on the host, maps to port 5000 inside the container
+    volumes:
+      - ./ms-user/app:/code/app # Map the host app directory to the container - direct reloads TODO create a seperate dev compose? when setup done
