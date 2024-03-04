@@ -1,10 +1,11 @@
 ## Setup
 - You need to have docker installed with docker-compose
-- simply run `.start-service.sh` to setup everything
-- each microservice should have 'swagger' available under `/docs` (currently not working:/)
+- simply run `.init.sh` to setup everything (works in Cygwin for example)
+- otherwise run and `docker-compose -f docker-compose.yml -f docker-compose.kong.yml up` to start local development
+- each microservice should have 'swagger' available under `/docs` endpoint (one must access direct the endpoint of each microservice)
 - Kongo admin available at `http://localhost:8002/`
 
-## what it does
+## what does `.init.sh` do?
 - it will create a docker network
 - it will launch `docker-compose.yml` file, with all microservices
 - it will launch `docker-compose.kong.yml` file, with kong gateway
@@ -12,9 +13,13 @@
 # How to create new microservice?
 - create new folder in the main repo
 - create `Dockerfile` in newly created repo
-- add the service to `docker-compose.yml` file with all dependencies, lie DB etc
-- add the service to `/kong/initialize-kong.sh` file, to register the service automatically into kong
+- add the service to `docker-compose.yml` file with all dependencies, like DB etc
+- add the service to the `kong/config/kong.yml` file (name and routes needed)
 
 ## current Setup
 - Python development can be done freely in folder, because it runs with volume connected and --refresh flag
 - Kongo must be added manually or just whole setup must be done
+
+
+## TODO 
+- create development docker compose

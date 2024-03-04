@@ -28,7 +28,7 @@ def post_to_model(post):
 # Just for testing currently
 @app.get("/asd")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "World1"}
 
 
 
