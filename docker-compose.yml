@@ -39,6 +39,13 @@ services:
       - ms-post-db-volume:/data/db
     networks:
       - ms-net
+      
+  ms-frontend:
+    build: ms-frontend
+    ports:
+      - "8080:8080"
+    networks:
+      - ms-net
 
   
   # 

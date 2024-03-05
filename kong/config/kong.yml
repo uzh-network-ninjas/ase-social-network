@@ -92,3 +92,14 @@ services:
 #   tags:
 #   - extra_limits
 #   - my_tag
+- name: frontend-service
+  url: http://ms-frontend:8080
+  # Entities can store tags as metadata
+  tags:
+  # - example
+  # Entities that have a foreign-key relationship can be nested:
+  routes:
+  - name: frontend-route
+    paths:
+    - /
+
