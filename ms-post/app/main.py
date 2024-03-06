@@ -4,7 +4,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 from typing import List
 import os
-import jwt
 
 from app.models.Post import Post
 from app.models.Comment import Comment
@@ -28,22 +27,9 @@ def post_to_model(post):
 
 # TODO nowhere is a verification that the user actually exists??
 # Just for testing currently
-@app.get("/asd")
+@app.get("/helloworld")
 async def read_root(request: Request):
-    # print the whole request
-    # print header of request
-    # decode bearer token and display payload
-    bearer = request.headers.get("Authorization")
-    token = bearer.split(" ")[1]
-    payload = jwt.decode(token, options={"verify_signature": False})
-    print(payload)
-        # decode token
-        # print payload
-    # decode bearer 
-        
-    headers = {k: v for k, v in request.headers.items()}
-    request_dict = {k: v for k, v in request.query_params.items()}
-    return {"Hello": "World1", "request": headers}
+    return {"Hello": "World"}
 
 
 

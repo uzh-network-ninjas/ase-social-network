@@ -45,6 +45,14 @@ plugins:
     key_claim_name: kid
     claims_to_verify:
     - exp
+- name: jwt
+  service: user-service
+  enabled: true
+  config:
+    key_claim_name: kid
+    claims_to_verify:
+    - exp
+
 
 consumers:
 - username: login_server_issuer

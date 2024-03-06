@@ -22,9 +22,11 @@ class UserRegistration(BaseModel):
     password: str
 
 # Security
-SECRET_KEY = os.getenv("SECRET_KEY", "your_default_secret_key")
+# SECRET_KEY = os.getenv("SECRET_KEY", "your_default_secret_key")
+SECRET_KEY = "H8WBDhQlcfjoFmIiYymmkRm1y0A2c5WU"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 300
+KID = "ooNKWeo0vijweijrKn234123J93c0qkD"
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -50,7 +52,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM, headers={"kid": KID})
     return encoded_jwt
 
 # This is a mock database of users
@@ -84,6 +86,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
+
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)

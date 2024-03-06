@@ -13,9 +13,10 @@ services:
     ports:
       - "9000:5000" # Expose port 8000 on the host, maps to port 5000 inside the container
     volumes:
-      - ./ms-user/app:/code/app # Map the host app directory to the container - direct reloads TODO create a seperate dev compose? when setup done
+      - ./ms-authenticate/app:/code/app # Map the host app directory to the container - direct reloads TODO create a seperate dev compose? when setup done
     networks:
       - ms-net
+      
   ms-user:
     build: ms-user
     environment:
