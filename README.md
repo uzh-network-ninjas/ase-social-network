@@ -23,3 +23,12 @@
 
 ## TODO 
 - create development docker compose
+- create a function that extracts user UUID from a token - and reuse this function in all microservices
+
+
+## User registration flow
+- Register as a user with password
+- then Issue a token via /token - Accepts username and password in FormData (can be changed)
+- this issues a JSON Web Token (JWT) that can be used to authenticate requests to the protected endpoints
+
+

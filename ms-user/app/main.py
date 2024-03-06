@@ -1,102 +1,16 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from passlib.context import CryptContext
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
+from passlib.context import CryptContext
+import os
 
-# This is a mock database of users
-users_db = {
-    "adam": {
-        "username": "adam",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2a$12$5hucHCsV02gQAOF3FQMIPO/cGuRaxKuUe1SwypgWZgXs5/6fpcrA2", #adam
-        "disabled": False,
-    }
-}
-
-class User(BaseModel):
-    username: str
-    email: str = None
-    full_name: str = None
-    disabled: bool = None
-
-class UserInDB(User):
-    hashed_password: str
-
-class UserRegistration(BaseModel):
-    username: str
-    email: str
-    password: str
-
+# FastAPI app
 app = FastAPI()
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-SECRET_KEY = "H8WBDhQlcfjoFmIiYymmkRm1y0A2c5WU"
-ALGORITHM = "HS256"
-KID = "ooNKWeo0vijweijrKn234123J93c0qkD"
-ACCESS_TOKEN_EXPIRE_MINUTES = 300
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
-
-def authenticate_user(db, username: str, password: str):
-    print("authenticating user")
-    print(username)
-
-    user = get_user(db, username)
-    if not user:
-        print("User not found")
-        return False
-    if not verify_password(password, user.hashed_password):
-        print("Password incorrect")
-        return False
-    return user
-
-def create_access_token(data: dict, expires_delta: timedelta = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    # add header to jwt with kid
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM, headers={"kid": KID})
-    return encoded_jwt
-
-@app.post("/token")
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(users_db, form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
-
-@app.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(user: UserRegistration):
-    if user.username in users_db:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    hashed_password = pwd_context.hash(user.password)
-    users_db[user.username] = {"username": user.username, "email": user.email, "hashed_password": hashed_password}
-    # Optionally, send an email verification here
-    return {"message": "User registered successfully."}
+# User Crud - EDIT, DELETE, GET (no create we create only via register, all other values like images are via update only)
 
 @app.get("/helloworld")
-# return helloworld
 def read_root():
     return {"Hello": "World"}
