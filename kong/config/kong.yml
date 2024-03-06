@@ -9,7 +9,7 @@
 # _format_version is mandatory,
 # it specifies the minimum version of Kong that supports the format
 
-_format_version: "3.0"
+_format_version: "2.1"
 
 # _transform is optional, defaulting to true.
 # It specifies whether schema transformations should be applied when importing this file
@@ -39,17 +39,27 @@ _ignore:
 # Each Kong entity (core entity or custom entity introduced by a plugin)
 # can be listed in the top-level as an array of objects:
 
-services:
-- name: post-service
-  url: http://ms-post:5001
-  # Entities can store tags as metadata
-  tags:
-  # - example
-  # Entities that have a foreign-key relationship can be nested:
-  routes:
-  - name: post-route
-    paths:
-    - /posts
+# services:
+# - name: post-service
+#   url: http://ms-post:5001
+#   routes:
+#   - name: post-route
+#     paths:
+#     - /posts
+
+# - name: user-service
+#   url: http://ms-user:5000
+#   routes:
+#   - name: user-route
+#     paths:
+#     - /users
+
+
+  # plugins:
+  #   - name: jwt
+  #     config:
+  #       claims_to_verify:
+  #         - exp
   # plugins:
   # - name: key-auth
 # - name: another-service
@@ -92,14 +102,61 @@ services:
 #   tags:
 #   - extra_limits
 #   - my_tag
+# - name: frontend-service
+#   url: http://ms-frontend:8080
+#   tags:
+#   routes:
+#   - name: frontend-route
+#     paths:
+#     - /
+# plugins:
+# - name: jwt
+#   service: ms-service
+#   enabled: true
+#   config:
+#     key_claim_name: kid
+#     claims_to_verify:
+#     - exp
+
+
+# consumers:
+# - username: your-consumer
+#   jwt_secrets:
+#     - key: "your_key"
+#       secret: "your_secret_key"
+
+# _format_version: "2.1"
+
+services:
+- name: post-service
+  url: http://ms-post:5001
+  routes:
+  - name: post-route
+    paths:
+    - /posts
+- name: user-service
+  url: http://ms-user:5000
+  routes:
+  - name: user-route
+    paths:
+    - /users
 - name: frontend-service
   url: http://ms-frontend:8080
-  # Entities can store tags as metadata
   tags:
-  # - example
-  # Entities that have a foreign-key relationship can be nested:
   routes:
   - name: frontend-route
     paths:
     - /
-
+plugins:
+- name: jwt
+  service: post-service
+  enabled: true
+  config:
+    key_claim_name: kid
+    claims_to_verify:
+    - exp
+consumers:
+- username: login_server_issuer
+  jwt_secrets:
+    - key: "ooNKWeo0vijweijrKn234123J93c0qkD"
+      secret: "H8WBDhQlcfjoFmIiYymmkRm1y0A2c5WU"
