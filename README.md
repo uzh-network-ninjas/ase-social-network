@@ -23,3 +23,15 @@
 
 ## TODO 
 - create development docker compose
+- create a function that extracts user UUID from a token - and reuse this function in all microservices
+
+
+## User registration flow
+- Register as a user with password via 
+- then Issue a token via /token - Accepts username and password in FormData (can be changed) - (`http://localhost:8000/authenticator/token`)
+- this issues a JSON Web Token (JWT) that can be used to authenticate requests to the protected endpoints
+
+
+## helpful information during development
+- if you add pip packages, you must build container with `--no-cache` flag, because otherwise will not install new packages
+- if you change kong settings in kong.yml, you must SSH into kong container and run `kong reload` to apply changes

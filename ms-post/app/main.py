@@ -7,6 +7,7 @@ import os
 
 from app.models.Post import Post
 from app.models.Comment import Comment
+from fastapi import Request
 
 app = FastAPI()
 
@@ -26,9 +27,9 @@ def post_to_model(post):
 
 # TODO nowhere is a verification that the user actually exists??
 # Just for testing currently
-@app.get("/asd")
-def read_root():
-    return {"Hello": "World1"}
+@app.get("/helloworld")
+async def read_root(request: Request):
+    return {"Hello": "World"}
 
 
 
