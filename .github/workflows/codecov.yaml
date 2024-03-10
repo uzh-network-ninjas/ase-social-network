@@ -17,19 +17,14 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Run Tests and Generate Coverage Reports
-      run: bash ./run_tests.sh
-        # Your script to run tests and generate coverage reports
-        # Ensure your script adjusts paths as necessary for GitHub Actions environment
-        # ./run_tests.sh
-    
-    # name display all files under ./reports
-    - name: List all files in reports
-      run: ls -R ./reports
-
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        files: /reports/coverage_*.xml
-        token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
+   - name: Install Codecov CLI
+        run: |
+          python -m pip install --upgrade pip
+          pip install codecov
+  
+    - name: Run Tests and Upload Coverage for Modified Services
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        GITHUB_RUN_ID: ${{ github.run_id }}
+      run: |
+        bash ./.github/uploadCodeReport.sh '*'
