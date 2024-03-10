@@ -29,7 +29,7 @@ for service in "${services[@]}"; do
     # Check if the coverage report exists, then upload it
     if [ -f "${REPORTS_DIR}/coverage_${service}.xml" ]; then
         # Use the CODECOV_TOKEN and GITHUB_RUN_ID environment variables directly
-        codecov --verbose upload-process --fail-on-error -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
+        codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
     else
         echo "No coverage report found for $service."
     fi
