@@ -22,6 +22,10 @@ jobs:
         # Your script to run tests and generate coverage reports
         # Ensure your script adjusts paths as necessary for GitHub Actions environment
         # ./run_tests.sh
+    
+    # name display all files under ./reports
+    - name: List all files in reports
+      run: ls -R ./reports
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4
