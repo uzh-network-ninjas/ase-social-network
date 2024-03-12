@@ -5,15 +5,17 @@ services:
   # Microservices
   # 
 
-  #  todo needs same database access as users
   ms-authenticate:
     build: ms-authenticate
     environment:
       - PORT=5000
+      - MONGO_URL=mongodb://ms-user-db:27017/ms_user_db
     ports:
       - "9000:5000" # Expose port 8000 on the host, maps to port 5000 inside the container
     volumes:
       - ./ms-authenticate/app:/code/app # Map the host app directory to the container - direct reloads TODO create a seperate dev compose? when setup done
+    depends_on:
+      - ms-user-db
     networks:
       - ms-net
       
@@ -21,10 +23,13 @@ services:
     build: ms-user
     environment:
       - PORT=5002
+      - MONGO_URL=mongodb://ms-user-db:27017/ms_user_db
     ports:
       - "9002:5002" # Expose port 8000 on the host, maps to port 5000 inside the container
     volumes:
       - ./ms-user/app:/code/app # Map the host app directory to the container - direct reloads TODO create a seperate dev compose? when setup done
+    depends_on:
+      - ms-user-db
     networks:
       - ms-net
 
@@ -39,7 +44,15 @@ services:
       - ./ms-post/app:/code/app
     depends_on:
       - ms-post-db
-    
+    networks:
+      - ms-net
+
+  ms-user-db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=ms_user_db
+    volumes:
+      - ms-user-db-volume:/data/db
     networks:
       - ms-net
 

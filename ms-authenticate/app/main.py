@@ -1,5 +1,8 @@
+import pprint
+
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
@@ -105,3 +108,31 @@ async def register(user: UserRegistration):
 @app.get("/helloworld")
 def read_root():
     return {"Hello": "World"}
+
+
+
+
+
+### EXAMPLE CODE TO WORK WITH DB
+client = AsyncIOMotorClient(os.getenv("MONGO_URL", "mongodb://localhost:27017"))
+db = client.ms_user_db
+collection = db.user_collection
+
+@app.post("/testuser")
+async def insert_user():
+    user = {"name": "test"}
+    result = await collection.insert_one(user)
+    pprint.pprint(result)
+    return {"result": "INSERTED"}
+
+@app.get("/testuser/{username}")
+async def find_user(username: str):
+    user = await collection.find_one({"name": username})
+    pprint.pprint(user)
+    return {"result": "RETURNED"}
+
+@app.get("/testuser")
+async def find_all_user():
+    users = collection.find()
+    pprint.pprint(users)
+    return {"result": "RETURNED ALL"}
