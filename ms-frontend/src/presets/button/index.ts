@@ -33,8 +33,9 @@ export default {
       },
 
       {
-        'px-4': props.label != null && !props.text,
-        'px-2': props.label != null && (props.text || props.link),
+        'px-0': props.link,
+        'px-4': props.label != null && !props.text && !props.link,
+        'px-2': props.label != null && props.text,
         'px-1.5': instance.$slots.icon !== undefined && props.label == null
       },
 

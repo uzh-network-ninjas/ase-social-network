@@ -1,3 +1,17 @@
 {
-  "hello": "Hallo Welt"
+  "create_account": "Konto erstellen",
+  "email": "Email",
+  "username": "Benutzername",
+  "password": "Passwort",
+  "confirm_password": "Passwort Bestätigen",
+  "sign_up": "Registrieren",
+  "sign_in": "Anmelden",
+  "tos": "Allgemeinen Geschäftsbedingungen",
+  "agree_term": "I stimme den {0} zu.",
+  "already_have_account": "Sie haben bereits ein Konto?",
+  "sign_in_here": "Hier anmelden",
+  "valid_email_error": "Bitte geben Sie eine gültige Email Adresse ein.",
+  "email_taken_error": "Ein Konto mit dieser Email Adresse existiert bereits.",
+  "username_taken_error": "Dieser Benutzername ist bereits vergeben",
+  "confirm_password_mismatch": "Die Passwörter stimmen nicht überein."
 }
