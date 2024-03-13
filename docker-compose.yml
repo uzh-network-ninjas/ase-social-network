@@ -78,6 +78,7 @@ services:
   # 
 
 volumes:
+  ms-user-db-volume:
   ms-post-db-volume:
 
 networks:
