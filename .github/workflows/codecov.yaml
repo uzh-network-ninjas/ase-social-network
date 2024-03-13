@@ -28,3 +28,8 @@ jobs:
         GITHUB_RUN_ID: ${{ github.run_id }}
       run: |
         bash ./.github/uploadCodeReport.sh '*'
+
+    # somewhere determine what to run flag following as true: 
+      # - integration-tests - run with pushes for main only
+      # Or explititaly marked as --integration-tests=true in commit message
+      # - unit tests - run each time given folder gets changed (determine which were changed, do not tun for eveyrthing)

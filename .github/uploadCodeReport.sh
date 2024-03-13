@@ -24,7 +24,7 @@ for service in "${services[@]}"; do
     echo "Processing $service..."
 
     # Run tests for the service
-    bash ./run_tests.sh "$service" --with-coverage
+    bash $script_dir/../run_tests.sh --with-coverage "$service" 
 
     # Check if the coverage report exists, then upload it
     if [ -f "${REPORTS_DIR}/coverage_${service}.xml" ]; then
@@ -35,3 +35,10 @@ for service in "${services[@]}"; do
         echo "No coverage report found for $service."
     fi
 done
+
+
+
+# Workflow theoretical
+# - Determine which services were changed - for tese run unittests
+    # - If they do, upload the coverage report
+# - Run overall integration tests (do they have coverage?)
