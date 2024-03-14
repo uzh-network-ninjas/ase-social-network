@@ -10,7 +10,7 @@ build_docker_image() {
 # Function to determine the correct volume path format based on the OS and run Docker container
 run_docker_container_python() {
     local service_name=$1
-    local reports_dir=$2
+    local reports_dir=$2 #reports dir is already a full path! no need to do something with PWD
     local volume_path=""
 
     # Ensure the reports directory exists
@@ -20,7 +20,7 @@ run_docker_container_python() {
     echo "reports_dir: $reports_dir"
 
     if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* ]]; then
-        volume_path="$(pwd)/${reports_dir}:/reports"
+        volume_path="${reports_dir}:/reports"
     elif [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "win32"* ]]; then
         # Attempt to generate a Windows-style path (e.g., C:\path\to\reports)
         win_path=$(cd "$reports_dir" && pwd -W 2>/dev/null)
@@ -33,7 +33,7 @@ run_docker_container_python() {
             volume_path="${volume_path/C:\\/C:/}" # Simplify leading drive letter path
         fi
     else
-        volume_path="$(pwd)/${reports_dir}:/reports"
+        volume_path="/${reports_dir}:/reports"
     fi
 
     echo "volume path: ${volume_path}"
