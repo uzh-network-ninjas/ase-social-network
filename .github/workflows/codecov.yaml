@@ -24,43 +24,43 @@ jobs:
         python -m pip install --upgrade pip
         pip install codecov
     
-    - name: Determine Changed Services
-      id: changed_services
-      run: |
-        # Determine the type of event triggering the workflow
-        EVENT_NAME="${{ github.event_name }}"
-        BASE_BRANCH=""
+    # - name: Determine Changed Services
+    #   id: changed_services
+    #   run: |
+    #     # Determine the type of event triggering the workflow
+    #     EVENT_NAME="${{ github.event_name }}"
+    #     BASE_BRANCH=""
         
-        # Fetching more history for accuracy in comparisons
-        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+    #     # Fetching more history for accuracy in comparisons
+    #     git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
         
-        # Handling for pull requests
-        if [[ "$EVENT_NAME" == "pull_request" ]]; then
-            # GitHub Actions check out the PR merge commit by default for pull_request events.
-            # Compare the current PR branch commit with the base branch it's intending to merge into.
-            BASE_BRANCH="${{ github.event.pull_request.base.ref }}"
-            # Ensure we have the latest commits for accurate diffing
-            git fetch --depth=1 origin $BASE_BRANCH
-            COMMIT_RANGE="origin/$BASE_BRANCH...HEAD"
-        elif [[ "$EVENT_NAME" == "push" ]]; then
-            # For pushes, compare the current commit with its immediate predecessor.
-            # This captures changes in the most recent commit(s) pushed to any branch.
-            # HEAD^ is the parent of the current commit HEAD, indicating the commit before the push.
-            COMMIT_RANGE="HEAD^...HEAD"
-        fi
+    #     # Handling for pull requests
+    #     if [[ "$EVENT_NAME" == "pull_request" ]]; then
+    #         # GitHub Actions check out the PR merge commit by default for pull_request events.
+    #         # Compare the current PR branch commit with the base branch it's intending to merge into.
+    #         BASE_BRANCH="${{ github.event.pull_request.base.ref }}"
+    #         # Ensure we have the latest commits for accurate diffing
+    #         git fetch --depth=1 origin $BASE_BRANCH
+    #         COMMIT_RANGE="origin/$BASE_BRANCH...HEAD"
+    #     elif [[ "$EVENT_NAME" == "push" ]]; then
+    #         # For pushes, compare the current commit with its immediate predecessor.
+    #         # This captures changes in the most recent commit(s) pushed to any branch.
+    #         # HEAD^ is the parent of the current commit HEAD, indicating the commit before the push.
+    #         COMMIT_RANGE="HEAD^...HEAD"
+    #     fi
         
-        # Now, identify changed files using the determined commit range
-        changed_files=$(git diff --name-only $COMMIT_RANGE)
+    #     # Now, identify changed files using the determined commit range
+    #     changed_files=$(git diff --name-only $COMMIT_RANGE)
         
-        # Extract unique root directories that have changed
-        changed_services=$(echo "$changed_files" | cut -d'/' -f1 | uniq)
+    #     # Extract unique root directories that have changed
+    #     changed_services=$(echo "$changed_files" | cut -d'/' -f1 | uniq)
         
-        # Output the changed services for further steps
-        echo "::set-output name=services::$changed_services"
+    #     # Output the changed services for further steps
+    #     echo "::set-output name=services::$changed_services"
     
     - name: Run Tests and Upload Coverage for Modified Services
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         GITHUB_RUN_ID: ${{ github.run_id }}
       run: |
-        bash ./.github/uploadCodeReport_unitTests.sh ${{ steps.changed_services.outputs.services }}
+        bash ./.github/uploadCodeReport_unitTests.sh '*'
