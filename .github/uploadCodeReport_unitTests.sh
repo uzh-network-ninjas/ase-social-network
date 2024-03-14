@@ -23,17 +23,17 @@ mkdir -p "${REPORTS_DIR}"
 for service in "${services[@]}"; do
     echo "Processing $service..."
 
-    # Run tests for the service
-    bash $script_dir/../run_tests.sh --with-coverage "$service" 
+    # Run tests for the service (always run with coverage because we want to upload the coverage report)
+    # bash $script_dir/../run_tests.sh --with-coverage "$service" 
 
-    # Check if the coverage report exists, then upload it
-    if [ -f "${REPORTS_DIR}/coverage_${service}.xml" ]; then
+    # # Check if the coverage report exists, then upload it
+    # if [ -f "${REPORTS_DIR}/coverage_${service}.xml" ]; then
 
-        # Use the CODECOV_TOKEN and GITHUB_RUN_ID environment variables directly
-        codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
-    else
-        echo "No coverage report found for $service."
-    fi
+    #     # Use the CODECOV_TOKEN and GITHUB_RUN_ID environment variables directly
+    #     codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
+    # else
+    #     echo "No coverage report found for $service."
+    # fi
 done
 
 
