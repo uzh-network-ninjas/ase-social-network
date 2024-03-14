@@ -25,7 +25,7 @@ for service in "${services[@]}"; do
     echo "Processing $service..."
 
     # Run tests for the service (always run with coverage because we want to upload the coverage report)
-    bash $script_dir/../run_tests.sh --with-coverage "$service" 
+    bash $script_dir/../run_tests.sh --with-coverage --unit-tests "$service" 
 
     # # Check if the coverage report exists, then upload it
     if [ -f "${REPORTS_DIR}/coverage_${service}.xml" ]; then
