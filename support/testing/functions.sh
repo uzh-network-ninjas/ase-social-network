@@ -16,9 +16,6 @@ run_docker_container_python() {
     # Ensure the reports directory exists
     mkdir -p "${reports_dir}"
 
-    echo "Running tests for $service_name..."
-    echo "reports_dir: $reports_dir"
-
     if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* ]]; then
         volume_path="${reports_dir}:/reports"
     elif [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "win32"* ]]; then
