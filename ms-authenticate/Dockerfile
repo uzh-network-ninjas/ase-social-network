@@ -10,4 +10,4 @@ ENV PORT 8080
 
 # Use shell form to use the PORT environment variable
 # TODO --reload is for development only
-CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT --reload
+CMD uvicorn app.AuthenticateController:app --host 0.0.0.0 --port $PORT --reload
