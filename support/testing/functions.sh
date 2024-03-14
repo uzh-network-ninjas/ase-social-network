@@ -13,6 +13,9 @@ run_docker_container_python() {
     local reports_dir=$2
     local volume_path=""
 
+    # Ensure the reports directory exists
+    mkdir -p "${reports_dir}"
+
     if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* ]]; then
         volume_path="$(pwd)/${reports_dir}:/reports"
     elif [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "win32"* ]]; then
@@ -29,9 +32,6 @@ run_docker_container_python() {
     else
         volume_path="$(pwd)/${reports_dir}:/reports"
     fi
-
-    # Ensure the reports directory exists
-    mkdir -p "${reports_dir}"
 
     # Run Docker container
     docker run --rm -v "${volume_path}" "${service_name}_test" pytest --cov="app" --cov-report=xml:/reports/coverage_"${service_name}".xml
