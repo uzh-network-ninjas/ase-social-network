@@ -11,7 +11,7 @@ source $script_dir/../support/testable_services.conf
 
 # if input is * then services = all services
 if [ "$1" == "*" ]; then
-    services=("${all_services[@]}")
+    services=("${services[@]}")
 else
     services=("$@")
 fi
