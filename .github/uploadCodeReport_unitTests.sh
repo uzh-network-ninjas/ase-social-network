@@ -16,6 +16,7 @@ else
     services=("$@")
 fi
 
+echo "running" 
 # Ensure the reports directory exists
 mkdir -p "${REPORTS_DIR}"
 
