@@ -1,4 +1,4 @@
-name: Build, Test, and Upload Coverage to Codecov
+name: Build, Test, and Upload Unit tests Coverage to Codecov
 
 on:
   push:
