@@ -1,7 +1,9 @@
 import os
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
-from app.models.UserIn import UserIn
+from app.models.UserRegisterIn import UserRegisterIn
+from app.models.UserLoginIn import UserLoginIn
+from app.models.UserOut import UserOut
 
 
 class AuthenticateRepository:
@@ -10,7 +12,7 @@ class AuthenticateRepository:
         db = client.ms_user_db
         self.collection = db.user_collection
 
-    async def find_user(self, user: UserIn):
+    async def find_user(self, user: UserLoginIn):
         if await self.collection.find_one({
             '$or': [
                 {'username': user.username},
@@ -30,17 +32,17 @@ class AuthenticateRepository:
             return True
         return False
 
-    async def add_user(self, user: UserIn):
+    async def add_user(self, user: UserRegisterIn):
         user_dict = user.model_dump()
         result = await self.collection.insert_one(user_dict)
-        user.id = str(result.inserted_id)
-        return user
+        user_dict['id'] = str(result.inserted_id)
+        return UserOut(**user_dict)
 
-    async def get_user(self, user: UserIn):
+    async def get_user(self, user: UserLoginIn):
         result = await self.collection.find_one({
             '$or': [
                 {'username': user.username},
                 {'email': user.email}
             ]
         })
-        return UserIn(**result)
+        return UserLoginIn(**result)

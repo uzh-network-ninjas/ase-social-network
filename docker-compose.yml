@@ -51,6 +51,8 @@ services:
     image: mongo
     environment:
       - MONGO_INITDB_DATABASE=ms_user_db
+    ports:
+      - "10000:27017"
     volumes:
       - ms-user-db-volume:/data/db
     networks:
