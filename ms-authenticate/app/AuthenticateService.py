@@ -1,8 +1,10 @@
-from AuthenticateRepository import AuthenticateRepository
+from app.AuthenticateRepository import AuthenticateRepository
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from models.UserIn import UserIn
+from app.models.UserIn import UserIn
+from datetime import timedelta, datetime
+import jwt
 
 
 class AuthenticateService:
@@ -17,43 +19,31 @@ class AuthenticateService:
             'oauth2_scheme': OAuth2PasswordBearer(tokenUrl="token")
         }
 
-    def register_user(self, user: UserIn):
-        if await self.auth_repo.user_exists(user.id):
-            raise HTTPException(status_code=400, detail="Username already registered")
+    def generate_token(self, user):
+        access_token_expires = timedelta(minutes=self.auth_encryption['ACCESS_TOKEN_EXPIRE_MINUTES'])
+        to_encode = {'sub': user.username}.copy()
+        expire = datetime.now() + (access_token_expires or timedelta(minutes=15))
+        to_encode.update({"exp": expire})
+        return jwt.encode(
+            to_encode,
+            self.auth_encryption['SECRET_KEY'],
+            algorithm=self.auth_encryption['ALGORITHM'],
+            headers={"kid": self.auth_encryption['KID']}
+        )
 
+    async def register_user(self, user: UserIn):
+        if await self.auth_repo.find_user_by_name(user.username):
+            raise HTTPException(status_code=409, detail="Username already exists")
+        if await self.auth_repo.find_user_by_email(user.email):
+            raise HTTPException(status_code=409, detail="Email already in use")
         hashed_password = self.auth_encryption['pwd_context'].hash(user.password)
         user.password = hashed_password
         return self.auth_repo.add_user(user)
 
-    def login_user(self, user: UserIn):
-        if not await self.auth_repo.user_exists(user.id):
+    async def login_user(self, user: UserIn):
+        if not await self.auth_repo.find_user(user):
             raise HTTPException(status_code=404, detail="User not found")
-        hashed_user = await self.auth_repo.get_user(user.id)
+        hashed_user = await self.auth_repo.get_user(user)
         if not self.auth_encryption['pwd_context'].verify(user.password, hashed_user.password):
-            raise HTTPException(status_code=401, detail="Invalid password")
-        return user
-
-    def delete_user(self, user: UserIn):
-        if not await self.auth_repo.user_exists(user.id):
-            raise HTTPException(status_code=404, detail="User not found")
-        self.auth_repo.delete_user(user.id)
-        return {"status": "User deleted!"}
-
-    # def verify_password(self, plain_password, hashed_password):
-    #     return pwd_context.verify(plain_password, hashed_password)
-    #
-    # def get_user(self, db, username: str):
-    #     return db.get(username)
-    #
-    # def authenticate_user(self, db, username: str, password: str):
-    #     user = get_user(db, username)
-    #     if not user or not verify_password(password, user["hashed_password"]):
-    #         return False
-    #     return UserInDB(**user)
-    #
-    # def create_access_token(self, data: dict, expires_delta: timedelta = None):
-    #     to_encode = data.copy()
-    #     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
-    #     to_encode.update({"exp": expire})
-    #     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM, headers={"kid": KID})
-    #     return encoded_jwt
+            raise HTTPException(status_code=404, detail="Invalid password")
+        return self.generate_token(user)

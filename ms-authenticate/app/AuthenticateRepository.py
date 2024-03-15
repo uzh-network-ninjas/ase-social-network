@@ -1,9 +1,7 @@
 import os
-
 from bson import ObjectId
-from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
-from models.UserIn import UserIn
+from app.models.UserIn import UserIn
 
 
 class AuthenticateRepository:
@@ -12,9 +10,23 @@ class AuthenticateRepository:
         db = client.ms_user_db
         self.collection = db.user_collection
 
-    async def user_exists(self, user_id: str):
-        result = await self.collection.find_one({"_id": ObjectId(user_id)})
-        if result:
+    async def find_user(self, user: UserIn):
+        if await self.collection.find_one({
+            '$or': [
+                {'username': user.username},
+                {'email': user.email}
+            ]
+        }):
+            return True
+        return False
+
+    async def find_user_by_name(self, username: str):
+        if await self.collection.find_one({"username": username}):
+            return True
+        return False
+
+    async def find_user_by_email(self, email: str):
+        if await self.collection.find_one({"email": email}):
             return True
         return False
 
@@ -24,10 +36,11 @@ class AuthenticateRepository:
         user.id = str(result.inserted_id)
         return user
 
-    async def get_user(self, user_id: str):
-        result = await self.collection.find_one({"_id": ObjectId(user_id)})
-        result["id"] = str(result["_id"])
+    async def get_user(self, user: UserIn):
+        result = await self.collection.find_one({
+            '$or': [
+                {'username': user.username},
+                {'email': user.email}
+            ]
+        })
         return UserIn(**result)
-
-    async def delete_user(self, user_id: str):
-        _ = await self.collection.find_one_and_delete({"_id": ObjectId(user_id)})
