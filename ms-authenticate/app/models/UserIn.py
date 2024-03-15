@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 
-class User(BaseModel):
+class UserIn(BaseModel):
     id: Optional[str] = None
     username: str
     email: str

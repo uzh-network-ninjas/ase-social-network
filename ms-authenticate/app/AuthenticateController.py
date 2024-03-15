@@ -3,23 +3,21 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from AuthenticateService import AuthenticateService
-from models import User
+from models.UserIn import UserIn
+from models.UserOut import UserOut
 
 app = FastAPI()
 auth_service = AuthenticateService()
 
 
-@app.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(user: User):
-    result = await auth_service.register_user(user)
-    # TODO: atm returning user w/ hashed password
-    return {'registered user': result}
+@app.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserOut)
+async def register(user: UserIn):
+    return await auth_service.register_user(user)
 
 
-@app.post("/login", status_code=status.HTTP_200_OK)
-async def login(user: User):
-    result = await auth_service.login_user(user)
-    return {'logged in user': result}
+@app.post("/login", status_code=status.HTTP_200_OK, response_model=UserOut)
+async def login(user: UserIn):
+    return await auth_service.login_user(user)
 
 
 # @app.post("/token")

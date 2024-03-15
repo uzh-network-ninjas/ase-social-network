@@ -3,7 +3,7 @@ import os
 from bson import ObjectId
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
-from models.User import User
+from models.UserIn import UserIn
 
 
 class AuthenticateRepository:
@@ -18,7 +18,7 @@ class AuthenticateRepository:
             return True
         return False
 
-    async def add_user(self, user: User):
+    async def add_user(self, user: UserIn):
         user_dict = user.model_dump()
         result = await self.collection.insert_one(user_dict)
         user.id = str(result.inserted_id)
@@ -27,7 +27,7 @@ class AuthenticateRepository:
     async def get_user(self, user_id: str):
         result = await self.collection.find_one({"_id": ObjectId(user_id)})
         result["id"] = str(result["_id"])
-        return User(**result)
+        return UserIn(**result)
 
     async def delete_user(self, user_id: str):
         _ = await self.collection.find_one_and_delete({"_id": ObjectId(user_id)})

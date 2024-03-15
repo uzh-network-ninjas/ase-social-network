@@ -2,7 +2,7 @@ from AuthenticateRepository import AuthenticateRepository
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from models.User import User
+from models.UserIn import UserIn
 
 
 class AuthenticateService:
@@ -17,16 +17,15 @@ class AuthenticateService:
             'oauth2_scheme': OAuth2PasswordBearer(tokenUrl="token")
         }
 
-    def register_user(self, user: User):
+    def register_user(self, user: UserIn):
         if await self.auth_repo.user_exists(user.id):
             raise HTTPException(status_code=400, detail="Username already registered")
 
         hashed_password = self.auth_encryption['pwd_context'].hash(user.password)
-        # TODO: convert into HashedUser
         user.password = hashed_password
         return self.auth_repo.add_user(user)
 
-    def login_user(self, user: User):
+    def login_user(self, user: UserIn):
         if not await self.auth_repo.user_exists(user.id):
             raise HTTPException(status_code=404, detail="User not found")
         hashed_user = await self.auth_repo.get_user(user.id)
@@ -34,14 +33,11 @@ class AuthenticateService:
             raise HTTPException(status_code=401, detail="Invalid password")
         return user
 
-    def delete_user(self, user: User):
+    def delete_user(self, user: UserIn):
         if not await self.auth_repo.user_exists(user.id):
             raise HTTPException(status_code=404, detail="User not found")
         self.auth_repo.delete_user(user.id)
         return {"status": "User deleted!"}
-
-
-
 
     # def verify_password(self, plain_password, hashed_password):
     #     return pwd_context.verify(plain_password, hashed_password)
