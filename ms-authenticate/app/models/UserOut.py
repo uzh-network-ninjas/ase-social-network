@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class UserOut(BaseModel):
-    id: Optional[str] = None
+    id: str
     username: str
     email: str
     created_at: datetime = datetime.now()
