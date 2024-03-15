@@ -1,5 +1,4 @@
 import os
-from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.models.UserRegisterIn import UserRegisterIn
 from app.models.UserLoginIn import UserLoginIn
