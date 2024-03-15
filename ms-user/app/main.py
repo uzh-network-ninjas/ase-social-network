@@ -7,7 +7,6 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 import os
 
-
 client = AsyncIOMotorClient(os.getenv("MONGO_URL", "mongodb://localhost:27017"))
 db = client.ms_user_db
 collection = db.user_collection
