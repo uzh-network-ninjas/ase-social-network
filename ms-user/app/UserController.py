@@ -1,20 +1,36 @@
-from fastapi import FastAPI
+import jwt
 
-from app.models.User import User
-from app.UserRepository import UserRepository
+from fastapi import FastAPI, Request
+from app.models.User import UserOut, UserUpdate
+from app.UserService import UserService
 
 app = FastAPI()
-ur = UserRepository()
+us = UserService()
 
-@app.patch("/")
-async def read_root():
-    user = User(username="jerome", email="jerome@chad.com", password="giga")
-    result = await ur.add_user(user)
+@app.patch("/", response_model=UserOut)
+async def update_user(request: Request, updated_user: UserUpdate):
+    bearer = request.headers.get("Authorization")
+    token = bearer.split(" ")[1]
+    payload = jwt.decode(token, options={"verify_signature": False})
+    user_id = payload["sub"]
+    return await us.update_user_by_id(user_id, updated_user)
 
-    return {"newly created user": result}
-
-@app.get("/{user_id}")
+@app.get("/{user_id}", response_model=UserOut)
 async def get_user(user_id: str):
-    result = await ur.get_user(user_id)
+    return await us.get_user_by_id(user_id)
 
-    return {"retrieved user": result}
+@app.get("/", response_model=UserOut)
+async def search_user(username: str):
+    return await us.get_user_by_username(username)
+
+@app.delete("/")
+async def delete_user(request: Request):
+    bearer = request.headers.get("Authorization")
+    token = bearer.split(" ")[1]
+    payload = jwt.decode(token, options={"verify_signature": False})
+    user_id = payload["sub"]
+    return await us.delete_user_by_id(user_id)
+
+@app.get("/users/{user_id}/following", response_model=None)
+async def get_following_users():
+    raise NotImplementedError

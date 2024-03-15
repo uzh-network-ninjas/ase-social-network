@@ -1,9 +1,8 @@
 import os
 
 from bson import ObjectId
-from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
-from app.models.User import User
+from app.models.User import UserOut, UserUpdate
 
 class UserRepository:
     def __init__(self):
@@ -11,21 +10,18 @@ class UserRepository:
         db = client.ms_user_db
         self.collection = db.user_collection
 
-    async def add_user(self, user: User):
-        user_dict = user.model_dump()
-        result = await self.collection.insert_one(user_dict)
-        user.id = str(result.inserted_id)
-        return user
+    async def user_exists(self, user_id: str):
+        return bool(await self.collection.find_one({"_id": ObjectId(user_id)}))
 
-    async def get_user(self, user_id: str):
-        result = await self.collection.find_one({"_id": ObjectId(user_id)})
-        if not result:
-            raise HTTPException(status_code=404, detail="User not found!")
-        result["id"] = str(result["_id"])
-        return User(**result)
+    async def update_user(self, user_id: str, updated_user: UserUpdate):
+        updated_userdata = updated_user.model_dump(exclude_unset=True)
+        return await self.collection.update_one({"_id": ObjectId(user_id)}, {"$set": updated_userdata})
 
-    async def delete_user(self, user_id: str):
-        deleted_user = await self.collection.find_one_and_delete({"_id": ObjectId(user_id)})
-        if not deleted_user:
-            raise HTTPException(status_code=404, detail="User not found!")
-        return {"status": "User deleted!"}
+    async def find_by_id(self, user_id: str):
+        return await self.collection.find_one({"_id": ObjectId(user_id)})
+
+    async def find_by_username(self, username: str):
+        return await self.collection.find_one({"username": username})
+
+    async def delete_user_by_id(self, user_id: str):
+        return await self.collection.find_one_and_delete({"_id": ObjectId(user_id)})
