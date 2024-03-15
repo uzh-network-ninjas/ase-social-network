@@ -4,6 +4,7 @@ from typing import List, Optional
 class UserOut(BaseModel):
     id: str
     username: str
+    email: str
     preferences: Optional[List[str]] = []
 
 class UserUpdate(BaseModel):

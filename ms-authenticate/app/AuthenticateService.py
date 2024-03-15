@@ -22,7 +22,7 @@ class AuthenticateService:
 
     def generate_token(self, user):
         access_token_expires = timedelta(minutes=self.auth_encryption['ACCESS_TOKEN_EXPIRE_MINUTES'])
-        to_encode = {'sub': user.username}.copy()
+        to_encode = {'sub': user.id, 'username': user.username}
         expire = datetime.now() + (access_token_expires or timedelta(minutes=15))
         to_encode.update({"exp": expire})
         return jwt.encode(
@@ -47,4 +47,4 @@ class AuthenticateService:
         hashed_user = await self.auth_repo.get_user(user)
         if not self.auth_encryption['pwd_context'].verify(user.password, hashed_user.password):
             raise HTTPException(status_code=404, detail="Invalid password")
-        return self.generate_token(user)
+        return self.generate_token(hashed_user)

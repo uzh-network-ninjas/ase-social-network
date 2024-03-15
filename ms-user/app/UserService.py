@@ -24,8 +24,7 @@ class UserService:
         result = await self.ur.update_user(user_id, updated_user)
         if not result:
             raise HTTPException(status_code=404, detail="User not found!")
-        updated_user["id"] = user_id
-        return UserOut(**updated_user)
+        return updated_user
 
     async def delete_user_by_id(self, user_id):
         result = await self.ur.delete_user_by_id(user_id)

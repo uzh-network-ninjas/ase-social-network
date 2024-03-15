@@ -44,4 +44,6 @@ class AuthenticateRepository:
                 {'email': user.email}
             ]
         })
-        return UserLoginIn(**result)
+        found_user = UserLoginIn(**result)
+        found_user.id = str(result["_id"])
+        return found_user
