@@ -30,10 +30,6 @@ const confirmPasswordMismatch = ref<boolean>(false)
 
 const emailError = computed(() => emailInvalid.value || emailTaken.value)
 const usernameError = computed(() => usernameTaken.value)
-const passwordError = computed(() => {
-  // TODO: If we do no password validation remove this
-  return false
-})
 const confirmPasswordError = computed(() => confirmPasswordMismatch.value)
 
 const topNavActions: MenuOption[] = [
@@ -75,7 +71,17 @@ const validateConfirmPassword = function () {
 }
 
 const signUp = function () {
-  authStore.signUp(email.value, username.value, password.value)
+  emailTaken.value = false
+  usernameTaken.value = false
+  authStore.signUp(email.value, username.value, password.value).catch((error) => {
+    if (error.response?.status === 409) {
+      if (error.response?.data?.detail == 'Username already exists') {
+        usernameTaken.value = true
+      } else if (error.response?.data?.detail == 'Email already in use') {
+        emailTaken.value = true
+      }
+    }
+  })
 }
 </script>
 
@@ -83,7 +89,7 @@ const signUp = function () {
   <header class="sticky top-0 z-40">
     <Navbar :actions="topNavActions" iconPos="right" />
   </header>
-  <main>
+  <main class="md:pl-16">
     <div class="mx-4 flex h-full items-center justify-center pt-8 md:justify-start">
       <div class="flex flex-col gap-8">
         <h1
@@ -144,7 +150,6 @@ const signUp = function () {
                   id="password"
                   :type="showPassword ? 'text' : 'password'"
                   v-model="password"
-                  :invalid="passwordError"
                   @blur="validatePassword"
                 />
                 <InputIcon
@@ -157,9 +162,6 @@ const signUp = function () {
               </IconField>
               <label for="password">{{ $t('password') }}</label>
             </FloatLabel>
-            <small v-if="passwordError" class="absolute -bottom-4 pl-4 text-xs text-error">{{
-              'TODO: REMOVE IF THERE ARE NO ERROR MESSAGES'
-            }}</small>
           </div>
 
           <div class="relative">
@@ -225,5 +227,11 @@ const signUp = function () {
       </div>
     </div>
   </main>
-  <DecoStrip class="fixed bottom-0 right-1/4 top-0 z-50 max-md:invisible md:visible" />
+  <DecoStrip class="fixed bottom-0 right-1/4 top-0 z-50 max-lg:invisible lg:visible" />
 </template>
+
+<style scoped>
+main {
+  height: calc(100vh - 48px);
+}
+</style>
