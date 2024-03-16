@@ -2,24 +2,40 @@
 import InputText from 'primevue/inputtext'
 import InputIcon from 'primevue/inputicon'
 import IconField from 'primevue/iconfield'
-import MagnifyingGlassIcon from '@/icons/MagnifyingGlassIcon.vue'
 import FloatLabel from 'primevue/floatlabel'
 import Button from 'primevue/button'
 import { ref } from 'vue'
 import Checkbox from 'primevue/checkbox'
+import Navbar, { type MenuOption } from '@/components/TopNav.vue'
+import BaseIcon from '@/icons/BaseIcon.vue'
+
+const topNavActions: MenuOption[] = [
+  {
+    labelKey: 'sign_up',
+    to: '/sign-up'
+  },
+  {
+    labelKey: 'sign_in',
+    icon: 'arrow-left-end-on-rectangle',
+    to: '/sign-in'
+  }
+]
 
 const value = ref<string>('')
 const boolValue = ref<boolean>(true)
 const boolValue2 = ref<boolean>(false)
 </script>
 <template>
+  <header class="sticky top-0 z-40">
+    <Navbar :actions="topNavActions" iconPos="right" />
+  </header>
   <main class="m-8">
     <FloatLabel>
       <IconField iconPosition="right">
-        <InputIcon>
-          <MagnifyingGlassIcon></MagnifyingGlassIcon>
-        </InputIcon>
         <InputText v-model="value"></InputText>
+        <InputIcon>
+          <BaseIcon icon="magnifying-glass" />
+        </InputIcon>
       </IconField>
       <label for="username">Username</label>
     </FloatLabel>
@@ -34,39 +50,39 @@ const boolValue2 = ref<boolean>(false)
       <Button outlined rounded disabled>Hello</Button>
       <Button rounded label="Hello" iconPos="right">
         <template #icon>
-          <MagnifyingGlassIcon />
+          <BaseIcon icon="magnifying-glass" />
         </template>
       </Button>
       <Button outlined rounded label="Hello">
         <template #icon>
-          <MagnifyingGlassIcon />
+          <BaseIcon icon="magnifying-glass" />
         </template>
       </Button>
       <Button text rounded label="Hello">
         <template #icon>
-          <MagnifyingGlassIcon />
+          <BaseIcon icon="magnifying-glass" />
         </template>
       </Button>
       <Button rounded>
         <template #icon>
-          <MagnifyingGlassIcon />
+          <BaseIcon icon="magnifying-glass" />
         </template>
       </Button>
       <Button outlined rounded>
         <template #icon>
-          <MagnifyingGlassIcon />
+          <BaseIcon icon="magnifying-glass" />
         </template>
       </Button>
       <Button text rounded>
         <template #icon>
-          <MagnifyingGlassIcon />
+          <BaseIcon icon="magnifying-glass" />
         </template>
       </Button>
       <Button label="Link" link disabled />
       <Button label="Link" link />
       <Button label="Link" link>
         <template #icon>
-          <MagnifyingGlassIcon />
+          <BaseIcon icon="magnifying-glass" />
         </template>
       </Button>
       <Checkbox v-model="boolValue" binary />

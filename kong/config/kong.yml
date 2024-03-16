@@ -30,7 +30,7 @@ services:
     - /users
 
 - name: frontend-service
-  url: http://ms-frontend:8080
+  url: http://ms-frontend:5173
   tags:
   routes:
   - name: frontend-route

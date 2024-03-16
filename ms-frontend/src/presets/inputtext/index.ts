@@ -13,13 +13,15 @@ export default {
       'py-3',
       'border',
       'rounded-lg',
-      'border-medium-emphasis',
       'text-base',
       'outline-none',
 
       { 'focus-visible:border-primary': !props.invalid && !context.disabled },
 
-      { 'border-error': props.invalid && !context.disabled },
+      {
+        'border-medium-emphasis': !props.invalid,
+        'border-error': props.invalid && !context.disabled
+      },
       { 'border-disabled': context.disabled },
 
       { 'text-disabled': context.disabled },
@@ -27,7 +29,8 @@ export default {
 
       // State for Wrappers
       { 'wrapper-info-filled': context.filled },
-      { 'wrapper-info-disabled': context.disabled }
+      { 'wrapper-info-disabled': context.disabled },
+      { 'wrapper-info-invalid': props.invalid }
     ]
   })
 }

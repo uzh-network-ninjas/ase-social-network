@@ -70,9 +70,15 @@ services:
       - ms-net
       
   ms-frontend:
-    build: ms-frontend
+    build: 
+      context: ms-frontend
+      dockerfile: LocalDockerfile
     ports:
-      - "8080:8080"
+      - "5173:5173"
+    volumes:
+      - ./ms-frontend/src:/app/src
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - ms-net
 
