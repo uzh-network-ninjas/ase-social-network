@@ -42,7 +42,6 @@ const signIn = function () {
         .then(() => {
             // Navigate to the homepage upon successful login
             router.push({ name: 'home' })
-            console.log("Login Succeed");
         })
         .catch((error) => {
             if (error.response?.status === 404) {

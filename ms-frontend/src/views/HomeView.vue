@@ -8,35 +8,49 @@ import { ref } from 'vue'
 import Checkbox from 'primevue/checkbox'
 import Navbar, { type MenuOption } from '@/components/TopNav.vue'
 import BaseIcon from '@/icons/BaseIcon.vue'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router';
+
+const authStore = useAuthStore()
+
+const signedIn = authStore.signedIn
+console.log('signed in?: ', signedIn);
+const name = signedIn ? authStore.name : ''
+console.log('username: ', name);
 
 const topNavActions: MenuOption[] = [
-  {
+
+  !signedIn && {
     labelKey: 'sign_up',
     to: '/sign-up'
   },
   {
-    labelKey: 'sign_in',
-    icon: 'arrow-left-end-on-rectangle',
+    labelKey: signedIn ? 'sign_out' : 'sign_in',
+    icon: signedIn ? 'log-out' : 'arrow-left-end-on-rectangle',
     to: '/sign-in'
   }
-]
+].filter(Boolean)
 
 const value = ref<string>('')
 const boolValue = ref<boolean>(true)
 const boolValue2 = ref<boolean>(false)
 
-import { useRouter } from 'vue-router';
-
 const router = useRouter();
-
 
 </script>
 
 <template>
+
   <header class="sticky top-0 z-40">
     <Navbar :actions="topNavActions" iconPos="right" />
   </header>
+
   <main class="m-8">
+
+    <div v-if="signedIn"
+      class="text-center text-2xl font-light uppercase tracking-widest text-secondary md:text-start md:text-5xl">
+      Hello, {{ name }}!
+    </div>
 
     <FloatLabel>
       <InputText id="username" v-model="value" />

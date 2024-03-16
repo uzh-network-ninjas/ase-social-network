@@ -6,6 +6,7 @@
   "confirm_password": "Confirm Password",
   "sign_up": "Sign Up",
   "sign_in": "Sign In",
+  "sign_out": "Sign Out",
   "tos": "terms and conditions",
   "agree_term": "I agree to the {0}.",
   "already_have_account": "Already have an account?",
