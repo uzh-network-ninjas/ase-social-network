@@ -29,9 +29,6 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const redirectToLogInPage = () => {
-  router.push('/login');
-};
 
 </script>
 
@@ -40,8 +37,6 @@ const redirectToLogInPage = () => {
     <Navbar :actions="topNavActions" iconPos="right" />
   </header>
   <main class="m-8">
-
-    <button @click="redirectToLogInPage">Go to Log In page</button>
 
     <FloatLabel>
       <InputText id="username" v-model="value" />

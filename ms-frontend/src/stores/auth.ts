@@ -21,5 +21,13 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
-  return { user, signUp }
+  const signIn = async function (username: string, password: string) {
+    return authService.signIn(username, password).then((response: User) => {
+      user.value = response
+      localStorage.setItem('user', JSON.stringify(user.value))
+      router.push({ name: 'home' })
+    })
+  }
+
+  return { user, signUp, signIn }
 })

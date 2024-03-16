@@ -9,5 +9,13 @@ export const authService = {
       password: password
     })
     return new User(response.data)
+  },
+
+  async signIn(username: string, password: string): Promise<User> {
+    const response = await apiClient.post('/authenticator/token', {
+      username: username,
+      password: password
+    })
+    return new User(response.data)
   }
 }
