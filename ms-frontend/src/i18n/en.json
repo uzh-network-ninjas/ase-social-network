@@ -16,5 +16,6 @@
   "username_taken_error": "This username has already been taken.",
   "confirm_password_mismatch": "Passwords do not match.",
   "forgot_password": "Forgot your password?",
-  "no_account_yet": "Don't have an account yet?"
+  "no_account_yet": "Don't have an account yet?",
+  "invalid_username_or_password": "Invalid username or password."
 }

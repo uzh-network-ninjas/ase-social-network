@@ -45,7 +45,7 @@ const signIn = function () {
             console.log("Login Succeed");
         })
         .catch((error) => {
-            if (error.response?.status === 401) {
+            if (error.response?.status === 404) {
                 // Handle authentication failure (e.g., invalid username or password)
                 usernameError.value = true
                 passwordError.value = true
@@ -103,17 +103,28 @@ const signIn = function () {
                         </small>
                     </div>
 
+                    <div class="flex items-center">
+                        <router-link class="outlined-none" to="/sign-in" tabindex="-1">
+                            <Button class="mx-2" :label="$t('forgot_password')" link rounded />
+                        </router-link>
+                    </div>
+
                     <div class="w-full md:w-fit">
                         <Button class="w-full" :label="$t('sign_in')" rounded :disabled="!signInEnabled"
                             @click="signIn" />
                     </div>
+
+                    <div class="flex items-center">
+                        <span class="text-medium-emphasis">{{ $t('no_account_yet') }}</span>
+                        <router-link class="outlined-none" to="/sign-up" tabindex="-1">
+                            <Button class="mx-2" :label="$t('sign_up_here')" link rounded />
+                        </router-link>
+                    </div>
+
+
                 </div>
 
-                <div class="flex items-center">
-                    <router-link class="outlined-none" to="/sign-in" tabindex="-1">
-                        <Button class="mx-2" :label="$t('forgot_password')" link rounded />
-                    </router-link>
-                </div>
+
             </div>
         </div>
     </main>
