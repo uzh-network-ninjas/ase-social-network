@@ -24,23 +24,42 @@ const topNavActions: MenuOption[] = [
 const value = ref<string>('')
 const boolValue = ref<boolean>(true)
 const boolValue2 = ref<boolean>(false)
+
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const redirectToLogInPage = () => {
+  router.push('/login');
+};
+
 </script>
+
 <template>
   <header class="sticky top-0 z-40">
     <Navbar :actions="topNavActions" iconPos="right" />
   </header>
   <main class="m-8">
+
+    <button @click="redirectToLogInPage">Go to Log In page</button>
+
+    <FloatLabel>
+      <InputText id="username" v-model="value" />
+      <label for="username">Username</label>
+    </FloatLabel>
+
     <FloatLabel>
       <IconField iconPosition="right">
         <InputText v-model="value"></InputText>
         <InputIcon>
-          <BaseIcon icon="magnifying-glass" />
+
         </InputIcon>
       </IconField>
-      <label for="username">Username</label>
+      <label for="password">Password</label>
     </FloatLabel>
+
     <div class="my-1 flex w-fit flex-col gap-2">
-      <Button>Button</Button>
+      <Button>Sign In</Button>
       <Button outlined>Hello</Button>
       <Button text>Hello</Button>
       <Button rounded>Button</Button>
