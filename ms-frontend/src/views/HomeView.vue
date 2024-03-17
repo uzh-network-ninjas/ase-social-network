@@ -7,48 +7,56 @@ import Button from 'primevue/button'
 import { ref } from 'vue'
 import Checkbox from 'primevue/checkbox'
 import Navbar, { type MenuOption } from '@/components/TopNav.vue'
-import BaseIcon from '@/icons/BaseIcon.vue'
+import BaseIcon, { type IconType } from '@/icons/BaseIcon.vue'
 import { useAuthStore } from '@/stores/auth'
-import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore()
 
 const signedIn = authStore.signedIn
-console.log('signed in?: ', signedIn);
-const name = signedIn ? authStore.name : ''
-console.log('username: ', name);
+console.log('signed in?: ', signedIn)
+const name = authStore.user?.username ?? ''
+console.log('username: ', name)
 
 const topNavActions: MenuOption[] = [
-
-  !signedIn && {
-    labelKey: 'sign_up',
-    to: '/sign-up'
-  },
-  {
-    labelKey: signedIn ? 'sign_out' : 'sign_in',
-    icon: signedIn ? 'log-out' : 'arrow-left-end-on-rectangle',
-    to: '/sign-in'
-  }
-].filter(Boolean)
+  ...(signedIn
+    ? [
+        {
+          labelKey: 'sign_out',
+          icon: 'arrow-left-end-on-rectangle' as IconType,
+          before: () => {
+            authStore.signOut()
+          },
+          to: { name: 'sign-in' }
+        }
+      ]
+    : [
+        {
+          labelKey: 'sign_up',
+          to: { name: 'sign-up' }
+        },
+        {
+          labelKey: 'sign_in',
+          icon: 'arrow-left-start-on-rectangle' as IconType,
+          to: { name: 'sign-in' }
+        }
+      ])
+]
 
 const value = ref<string>('')
 const boolValue = ref<boolean>(true)
 const boolValue2 = ref<boolean>(false)
-
-const router = useRouter();
-
 </script>
 
 <template>
-
   <header class="sticky top-0 z-40">
     <Navbar :actions="topNavActions" iconPos="right" />
   </header>
 
   <main class="m-8">
-
-    <div v-if="signedIn"
-      class="text-center text-2xl font-light uppercase tracking-widest text-secondary md:text-start md:text-5xl">
+    <div
+      v-if="signedIn"
+      class="text-center text-2xl font-light uppercase tracking-widest text-secondary md:text-start md:text-5xl"
+    >
       Hello, {{ name }}!
     </div>
 
@@ -60,9 +68,7 @@ const router = useRouter();
     <FloatLabel>
       <IconField iconPosition="right">
         <InputText v-model="value"></InputText>
-        <InputIcon>
-
-        </InputIcon>
+        <InputIcon> </InputIcon>
       </IconField>
       <label for="password">Password</label>
     </FloatLabel>
