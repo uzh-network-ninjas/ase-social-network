@@ -5,6 +5,7 @@ import EyeSlashIcon from '@/icons/EyeSlashIcon.vue'
 import MagnifyingGlassIcon from '@/icons/MagnifyingGlassIcon.vue'
 import SparklesIcon from '@/icons/SparklesIcon.vue'
 import ArrowLeftEndOnRectangle from '@/icons/ArrowLeftEndOnRectangle.vue'
+import ArrowLeftStartOnRectangle from '@/icons/ArrowLeftStartOnRectangle.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -13,6 +14,7 @@ export type IconType =
   | 'magnifying-glass'
   | 'sparkles'
   | 'arrow-left-end-on-rectangle'
+  | 'arrow-left-start-on-rectangle'
   | undefined
 
 withDefaults(
@@ -37,6 +39,5 @@ defineOptions({
   <MagnifyingGlassIcon v-else-if="icon == 'magnifying-glass'" v-bind="$attrs" />
   <SparklesIcon v-else-if="icon == 'sparkles'" v-bind="$attrs" />
   <ArrowLeftEndOnRectangle v-else-if="icon == 'arrow-left-end-on-rectangle'" v-bind="$attrs" />
+  <ArrowLeftStartOnRectangle v-else-if="icon == 'arrow-left-start-on-rectangle'" v-bind="$attrs" />
 </template>
-
-<style scoped></style>
