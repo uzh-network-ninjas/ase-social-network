@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import BaseIcon, { type IconType } from '@/icons/BaseIcon.vue'
 import Button from 'primevue/button'
+import router from '@/router'
+import type { RouteLocationRaw } from 'vue-router'
 
 export interface MenuOption {
   labelKey: string
   icon?: IconType
   iconPos?: 'left' | 'right' | 'top' | 'bottom'
-  to: string
+  before?: () => void
+  to: RouteLocationRaw
 }
 
 withDefaults(
@@ -38,13 +41,22 @@ withDefaults(
         :key="`${action.labelKey}:${action.to}`"
         class="flex items-center gap-2 text-primary"
       >
-        <router-link class="outline-none" :to="action.to" tabindex="-1">
-          <Button text rounded :label="$t(action.labelKey)" :iconPos="action.iconPos ?? iconPos">
-            <template #icon>
-              <BaseIcon :icon="action.icon" />
-            </template>
-          </Button>
-        </router-link>
+        <Button
+          text
+          rounded
+          :label="$t(action.labelKey)"
+          :iconPos="action.iconPos ?? iconPos"
+          @click="
+            () => {
+              action.before?.()
+              router.push(action.to)
+            }
+          "
+        >
+          <template #icon>
+            <BaseIcon :icon="action.icon" />
+          </template>
+        </Button>
       </li>
     </ul>
   </nav>
