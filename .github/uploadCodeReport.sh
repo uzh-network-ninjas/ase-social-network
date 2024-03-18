@@ -28,6 +28,12 @@ for service in "${services[@]}"; do
 
     # Check if the coverage report exists, then upload it
     if [ -f "${REPORTS_DIR}/coverage_${service}.xml" ]; then
+        # create sample codecov.yml file with following content
+            # fixes:
+                #  "/code/app/::ms-test-sample/app/"
+        
+        
+
         # Use the CODECOV_TOKEN and GITHUB_RUN_ID environment variables directly
         codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
     else
