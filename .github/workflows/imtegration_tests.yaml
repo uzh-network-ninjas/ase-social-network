@@ -1,0 +1,27 @@
+name: Run Integration tests for the repository
+
+on:
+  pull_request:
+    branches:
+      ['main']
+
+jobs:
+  test_and_upload_coverage:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
+        ports:
+          - 2375:2375
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Run Integration Tests
+      run: |
+        bash ./run_tests.sh --integration-tests
+
+    # todo create comment on given pull request?
