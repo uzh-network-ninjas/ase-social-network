@@ -20,6 +20,9 @@ REPORTS_DIR=$script_dir"/reports"
 run_unit_tests_for_service() {
     local service_name=$1
     echo "Running unit tests for $service_name"
+
+    # echo execution rights to test.sh
+    ls -l $script_dir/"$service_name"/test.sh
     
     if $WITH_COVERAGE; then
         $script_dir/"$service_name"/test.sh "${REPORTS_DIR}" --with-coverage
