@@ -22,3 +22,4 @@ python-jose==3.3.0
 # dev testing
 pytest 
 pytest-asyncio
+httpx==0.26.0
