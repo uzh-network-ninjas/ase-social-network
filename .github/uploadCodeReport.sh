@@ -6,7 +6,8 @@
 REPORTS_DIR="./reports"
 
 # Define all services
-all_services=("ms-test-sample") # Add all your service names here
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+source $script_dir/../support/testable_services.conf
 
 # if input is * then services = all services
 if [ "$1" == "*" ]; then
@@ -23,19 +24,13 @@ for service in "${services[@]}"; do
     echo "Processing $service..."
 
     # Run tests for the service
-    # Assuming your tests generate coverage-service.xml in the specified reports directory
-    bash ./run_tests.sh "$service"
+    bash ./run_tests.sh "$service" --with-coverage
 
     # Check if the coverage report exists, then upload it
     if [ -f "${REPORTS_DIR}/coverage_${service}.xml" ]; then
-        # create sample codecov.yml file with following content
-            # fixes:
-                #  "/code/app/::ms-test-sample/app/"
-        
-        
 
         # Use the CODECOV_TOKEN and GITHUB_RUN_ID environment variables directly
-        codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
+        # codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
     else
         echo "No coverage report found for $service."
     fi
