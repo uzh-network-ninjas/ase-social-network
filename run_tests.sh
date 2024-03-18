@@ -39,8 +39,14 @@ run_tests_for_service() {
     # Run tests inside a Docker container and generate coverage report
     docker run --rm -v "${volume_path}" "${service_name}_test" pytest --cov="app" --cov-report=xml:/reports/coverage_"${service_name}".xml
 
+    coverage_report="${REPORTS_DIR}/coverage_${service_name}.xml"
+
     # replace /code/app/ with /service_name/app/ in the coverage report
-    sed -i "s/\/code\/app\//\/${service_name}\/app\//g" "${REPORTS_DIR}/coverage_${service_name}.xml"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s/\/code\/app/\/${service_name}\/app/g" "$coverage_report"
+    else
+        sed -i "s/\/code\/app/\/${service_name}\/app/g" "$coverage_report"
+    fi
 }
 
 # Check if a microservice name was provided as an argument
