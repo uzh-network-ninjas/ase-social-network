@@ -30,7 +30,7 @@ for service in "${services[@]}"; do
     if [ -f "${REPORTS_DIR}/coverage_${service}.xml" ]; then
 
         # Use the CODECOV_TOKEN and GITHUB_RUN_ID environment variables directly
-        # codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
+        codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
     else
         echo "No coverage report found for $service."
     fi
