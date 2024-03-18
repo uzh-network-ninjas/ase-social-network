@@ -18,10 +18,10 @@ jobs:
       uses: docker/setup-buildx-action@v3
 
     - name: Run Tests and Generate Coverage Reports
-      run: |
+      run: bash ./run_tests.sh
         # Your script to run tests and generate coverage reports
         # Ensure your script adjusts paths as necessary for GitHub Actions environment
-        ./run_tests.sh
+        # ./run_tests.sh
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
