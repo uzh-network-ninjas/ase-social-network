@@ -1,3 +1,22 @@
 {
-  "hello": "Hello World"
+  "create_account": "Create Account",
+  "email": "Email",
+  "username": "Username",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "sign_up": "Sign Up",
+  "sign_in": "Sign In",
+  "sign_out": "Sign Out",
+  "tos": "terms and conditions",
+  "agree_term": "I agree to the {0}.",
+  "already_have_account": "Already have an account?",
+  "sign_in_here": "Sign in here",
+  "sign_up_here": "Sign up here",
+  "valid_email_error": "Please enter a valid email address.",
+  "email_taken_error": "An account with this email already exists.",
+  "username_taken_error": "This username has already been taken.",
+  "confirm_password_mismatch": "Passwords do not match.",
+  "forgot_password": "Forgot your password?",
+  "no_account_yet": "Don't have an account yet?",
+  "invalid_username_or_password": "Invalid username or password."
 }

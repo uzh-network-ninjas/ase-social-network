@@ -6,19 +6,20 @@ export default {
     class: [
       'relative',
       '[&>input]:w-full',
-      '[&>*:first-child]:absolute',
-      '[&>*:first-child]:top-1/2',
-      '[&>*:first-child]:-translate-y-1/2',
-      '[&>*:first-child]:text-medium-emphasis',
+      '[&>*:last-child]:absolute',
+      '[&>*:last-child]:top-1/2',
+      '[&>*:last-child]:-translate-y-1/2',
+      '[&>*:last-child]:text-medium-emphasis',
       {
-        '[&>*:first-child]:right-3': props.iconPosition === 'right',
-        '[&>*:first-child]:left-3': props.iconPosition === 'left'
+        '[&>*:last-child]:right-3': props.iconPosition === 'right',
+        '[&>*:last-child]:left-3': props.iconPosition === 'left'
       },
       {
-        '[&>*:last-child]:pr-10': props.iconPosition === 'right',
-        '[&>*:last-child]:pl-10': props.iconPosition === 'left'
+        '[&>*:first-child]:pr-10': props.iconPosition === 'right',
+        '[&>*:first-child]:pl-10': props.iconPosition === 'left'
       },
-      '[&>*:first-child]:has-[.wrapper-info-disabled]:text-disabled'
+      '[&>*:last-child]:has-[.wrapper-info-disabled]:text-disabled',
+      '[&>*:last-child]:has-[.wrapper-info-invalid]:text-error'
     ]
   })
 }
