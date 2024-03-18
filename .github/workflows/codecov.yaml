@@ -1,0 +1,31 @@
+name: Build, Test, and Upload Coverage to Codecov
+
+on: [push, pull_request]
+
+jobs:
+  test_and_upload_coverage:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
+        ports:
+          - 2375:2375
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Run Tests and Generate Coverage Reports
+      run: |
+        # Your script to run tests and generate coverage reports
+        # Ensure your script adjusts paths as necessary for GitHub Actions environment
+        ./your-test-script.sh
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        files: ./reports/coverage_*.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
