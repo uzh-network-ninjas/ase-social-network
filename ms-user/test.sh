@@ -7,6 +7,7 @@
 # Initialize variables
 WITH_COVERAGE=false
 REPORTS_DIR="./reports" # Default reports directory
+SERVICE_NAME="ms-user"
 
 # Source common functions
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
@@ -20,7 +21,6 @@ while getopts ":h" option; do
             exit;;
         \?) # Invalid option
             echo "Error: Invalid option"
-            exit;;
             exit;;
     esac
 done
@@ -43,7 +43,7 @@ if [ "$#" -ge 1 ]; then
     REPORTS_DIR=$1
 fi
 
-SERVICE_NAME="ms-test-sample"
+
 
 
 echo "Running tests for $SERVICE_NAME..."
