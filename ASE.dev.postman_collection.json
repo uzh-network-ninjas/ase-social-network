@@ -1,0 +1,425 @@
+{
+	"info": {
+		"_postman_id": "a5c38b58-9457-434b-924c-ae2ad05e09a4",
+		"name": "ASE - social network",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20317814",
+		"_collection_link": "https://warped-crater-963207.postman.co/workspace/network-ninjas~73829257-a871-475a-a5e2-217000946d40/collection/20317814-a5c38b58-9457-434b-924c-ae2ad05e09a4?action=share&source=collection_link&creator=20317814"
+	},
+	"item": [
+		{
+			"name": "Authentification",
+			"item": [
+				{
+					"name": "register",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"USER_ID\", pm.response.json().id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"jerome\",\r\n    \"email\": \"jerome@uzh.ch\",\r\n    \"password\": \"maier\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{auth_base_url}}/user",
+							"host": [
+								"{{endpoint}}{{auth_base_url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"TOKEN\", pm.response.json().access_token)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"jerome\",\r\n    \"password\": \"maier\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{auth_base_url}}/token",
+							"host": [
+								"{{endpoint}}{{auth_base_url}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login coco",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"TOKEN\", pm.response.json().access_token)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"coco\",\r\n    \"password\": \"chad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{auth_base_url}}/token",
+							"host": [
+								"{{endpoint}}{{auth_base_url}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Service",
+			"item": [
+				{
+					"name": "update user profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"coco\",\r\n    \"email\": \"coco@uzh.com\",\r\n    \"preferences\": [\"coconuts\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/{{USER_ID}}",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								"{{USER_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/?username=jerome",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "jerome"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search user coco",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/?username=jerome",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "jerome"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload image for user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/adam/Pictures/download.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}users/asd/image",
+							"host": [
+								"{{endpoint}}{{user_base_url}}users"
+							],
+							"path": [
+								"asd",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post Service",
+			"item": [
+				{
+					"name": "Ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{post_base_url}}}/helloworld",
+							"host": [
+								"{{endpoint}}{{post_base_url}}}"
+							],
+							"path": [
+								"helloworld"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "auth_base_url",
+			"value": "/authenticator",
+			"type": "string"
+		},
+		{
+			"key": "user_base_url",
+			"value": "/users",
+			"type": "string"
+		},
+		{
+			"key": "endpoint",
+			"value": "localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "TOKEN",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
