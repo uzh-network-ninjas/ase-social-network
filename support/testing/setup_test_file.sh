@@ -3,7 +3,7 @@
 # Default values
 WITH_COVERAGE=false
 REPORTS_DIR="./reports"
-SERVICE_NAME="ms-authenticate"
+# SERVICE_NAME=not-identified" # cannot be defined there -> ottherwise conflict with main scripts
 
 # Parse command-line arguments
 function parse_args() {
