@@ -3,11 +3,17 @@ FROM python:3.12
 WORKDIR /code
 COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONPATH=/code
+
+
 COPY ./app /code/app
+COPY ./tests /code/tests
 
 # Define the default value of the PORT environment variable
 ENV PORT 8080
 
 # Use shell form to use the PORT environment variable
-# TODO --reload is for development only
+# --reload is for development only (create new for production without Tests as well)
 CMD uvicorn app.AuthenticateController:app --host 0.0.0.0 --port $PORT --reload

@@ -1,0 +1,45 @@
+name: Run Integration tests for the repository
+
+on:
+  pull_request:
+    branches:
+      ['main']
+
+jobs:
+  test_and_upload_coverage:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
+        ports:
+          - 2375:2375
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Check for Skip Integration Test Flag in Commit Message
+      id: check_skip_flag
+      run: |
+        commit_message=$(jq -r ".pull_request.title" "$GITHUB_EVENT_PATH")
+        if [[ $commit_message == *"--without-integration-test"* ]]; then
+          echo "::set-output name=skip::true"
+        else
+          echo "::set-output name=skip::false"
+        fi
+
+    - name: Run Integration Tests
+      if: steps.check_skip_flag.outputs.skip == 'false'
+      run: |
+        bash ./run_tests.sh --integration-tests
+
+    - name: Comment on PR if Integration Tests are Skipped
+      if: steps.check_skip_flag.outputs.skip == 'true'
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          :warning: Integration tests were skipped based on the commit message flag.
+        token: ${{ secrets.GITHUB_TOKEN }}

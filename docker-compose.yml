@@ -1,4 +1,12 @@
 version: '3.8'
+
+x-aws-config: 
+  &aws-env
+  AWS_ACCESS_KEY_ID: test
+  AWS_SECRET_ACCESS_KEY: test
+  AWS_DEFAULT_REGION: us-east-1
+  S3_ENDPOINT_URL: http://localstack:4566
+
 services:
 
   # 
@@ -22,8 +30,9 @@ services:
   ms-user:
     build: ms-user
     environment:
-      - PORT=5002
-      - MONGO_URL=mongodb://ms-user-db:27017/ms_user_db
+      <<: *aws-env
+      PORT: 5002
+      MONGO_URL: mongodb://ms-user-db:27017/ms_user_db
     ports:
       - "9002:5002" # Expose port 8000 on the host, maps to port 5000 inside the container
     volumes:
@@ -82,7 +91,19 @@ services:
     networks:
       - ms-net
 
-  
+  localstack:
+    container_name: "localstack-main"
+    image: localstack/localstack
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+      - "4510-4559:4510-4559"  # external services port range
+    volumes:
+      - "./volume:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./support/localstack/localstack-setup.sh:/etc/localstack/init/ready.d/script.sh
+    networks:
+      - ms-net
+
   # 
   # KONG
   # 
