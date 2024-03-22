@@ -15,5 +15,5 @@ COPY ./tests /code/tests
 ENV PORT 8080
 
 # Use shell form to use the PORT environment variable
-# TODO --reload is for development only
+# --reload is for development only (create new for production without Tests as well)
 CMD uvicorn app.AuthenticateController:app --host 0.0.0.0 --port $PORT --reload

@@ -9,5 +9,5 @@ COPY ./app /code/app
 ENV PORT 8080
 
 # Use shell form to use the PORT environment variable
-# TODO for development only with --reload
+# for development only with --reload
 CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT --reload
