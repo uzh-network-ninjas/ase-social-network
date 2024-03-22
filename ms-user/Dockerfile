@@ -8,8 +8,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH=/code
 
-
-COPY ./ /code
+COPY ./app /code/app
+COPY ./tests /code/tests
 
 # Define the default value of the PORT environment variable
 ENV PORT 8080

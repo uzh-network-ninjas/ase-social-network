@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the most important part, the service name
-SERVICE_NAME="ms-user"
+SERVICE_NAME="ms-authenticate"
 
 # Import common functions and variables
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
