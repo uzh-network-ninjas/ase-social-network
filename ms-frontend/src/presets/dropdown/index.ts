@@ -1,7 +1,7 @@
 import type { DropdownContext, DropdownProps, DropdownState } from 'primevue/dropdown'
 
 type options = {
-  props: DropdownProps & { text: any }
+  props: DropdownProps
   state: DropdownState
   context: DropdownContext
 }
