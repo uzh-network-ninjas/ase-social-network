@@ -26,7 +26,7 @@ export default {
       'py-3',
       'px-4',
 
-      'cursor-pointer',
+      { 'cursor-pointer': !props.disabled },
       { 'wrapper-info-filled': props.modelValue !== undefined || state.overlayVisible },
       { 'wrapper-info-disabled': props.disabled },
       { 'wrapper-info-invalid': props.invalid }
