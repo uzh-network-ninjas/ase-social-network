@@ -100,7 +100,7 @@ services:
     volumes:
       - "./volume:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - ./support/localstack/localstack-setup.sh:/etc/localstack/init/ready.d/script.sh
+      - "./support/localstack/localstack-setup.sh:/etc/localstack/init/ready.d/script.sh"
     networks:
       - ms-net
 
