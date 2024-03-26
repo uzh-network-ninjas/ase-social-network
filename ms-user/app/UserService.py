@@ -23,11 +23,11 @@ class UserService:
         result["id"] = str(result["_id"])
         return UserOut(**result)
 
-    #TODO Adjust method as it probably always returns user, even on failure of insertion
+    #TODO currently still returns user
     async def update_user_by_id(self, user_id: str, updated_user: UserUpdate) -> UserUpdate:
         result = await self.ur.update_user_by_id(user_id, updated_user)
-        if not result:
-            raise HTTPException(status_code=404, detail="User not found!")
+        if not result.raw_result["updatedExisting"]:
+            raise HTTPException(status_code=400, detail="Could not update user!")
         return updated_user
 
     async def delete_user_by_id(self, user_id: str) -> dict[str, str]:

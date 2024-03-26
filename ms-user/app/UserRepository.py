@@ -2,6 +2,7 @@ import os
 
 from app.models.User import UserUpdate
 from bson import ObjectId
+from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.results import UpdateResult
 
@@ -19,6 +20,7 @@ class UserRepository:
 
     async def update_user_by_id(self, user_id: str, updated_user: UserUpdate) -> UpdateResult:
         updated_userdata = updated_user.model_dump(exclude_unset=True)
+        updated_userdata["updated_at"] = datetime.now()
         return await self.collection.update_one({"_id": ObjectId(user_id)}, {"$set": updated_userdata})
 
     async def delete_user_by_id(self, user_id: str) -> dict:
