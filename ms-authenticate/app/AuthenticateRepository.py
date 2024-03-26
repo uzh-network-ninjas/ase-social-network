@@ -1,7 +1,9 @@
+from datetime import datetime
 import os
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
-from app.models.UserRegisterIn import UserRegisterIn
-from app.models.UserLoginIn import UserLoginIn
+from app.models.UserRegister import UserRegister
+from app.models.UserLogin import UserLogin
 from app.models.UserOut import UserOut
 
 
@@ -11,7 +13,7 @@ class AuthenticateRepository:
         db = client.ms_user_db
         self.collection = db.user_collection
 
-    async def find_user(self, user: UserLoginIn):
+    async def user_exists(self, user: UserLogin) -> bool:
         if await self.collection.find_one({
             '$or': [
                 {'username': user.username},
@@ -21,29 +23,44 @@ class AuthenticateRepository:
             return True
         return False
 
-    async def find_user_by_name(self, username: str):
+    async def username_exists(self, username: str) -> bool:
         if await self.collection.find_one({"username": username}):
             return True
         return False
 
-    async def find_user_by_email(self, email: str):
+    async def user_email_exists(self, email: str) -> bool:
         if await self.collection.find_one({"email": email}):
             return True
         return False
 
-    async def add_user(self, user: UserRegisterIn):
+    async def add_user(self, user: UserRegister) -> UserOut:
         user_dict = user.model_dump()
         result = await self.collection.insert_one(user_dict)
         user_dict['id'] = str(result.inserted_id)
         return UserOut(**user_dict)
 
-    async def get_user(self, user: UserLoginIn):
+    async def get_user_by_name_or_email(self, user: UserLogin) -> UserLogin:
         result = await self.collection.find_one({
             '$or': [
                 {'username': user.username},
                 {'email': user.email}
             ]
         })
-        found_user = UserLoginIn(**result)
+        found_user = UserLogin(**result)
         found_user.id = str(result["_id"])
         return found_user
+
+    async def get_user_by_id(self, user_id: str) -> UserLogin:
+        result = await self.collection.find_one({"_id": ObjectId(user_id)})
+        found_user = UserLogin(**result)
+        found_user.id = str(result["_id"])
+        return found_user
+
+    async def update_user_password(self, user_id: str, new_password: str):
+        await self.collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {
+                'password': new_password,
+                'updated_at': datetime.now()
+            }}
+        )
