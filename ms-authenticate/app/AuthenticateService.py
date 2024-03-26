@@ -2,8 +2,8 @@ from app.AuthenticateRepository import AuthenticateRepository
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from app.models.UserRegisterIn import UserRegisterIn
-from app.models.UserLoginIn import UserLoginIn
+from app.models.UserRegister import UserRegister
+from app.models.UserLogin import UserLogin
 from app.models.UserOut import UserOut
 from datetime import timedelta, datetime
 import jwt
@@ -33,7 +33,7 @@ class AuthenticateService:
             headers={"kid": self.auth_encryption['KID']}
         )
 
-    async def register_user(self, user: UserRegisterIn) -> UserOut:
+    async def register_user(self, user: UserRegister) -> UserOut:
         if await self.auth_repo.username_exists(user.username):
             raise HTTPException(status_code=409, detail="Username already exists")
         if await self.auth_repo.user_email_exists(user.email):
@@ -42,7 +42,7 @@ class AuthenticateService:
         user.password = hashed_password
         return await self.auth_repo.add_user(user)
 
-    async def login_user(self, user: UserLoginIn) -> str:
+    async def login_user(self, user: UserLogin) -> str:
         if not await self.auth_repo.user_exists(user):
             raise HTTPException(status_code=404, detail="User not found")
         hashed_user = await self.auth_repo.get_user_by_name_or_email(user)

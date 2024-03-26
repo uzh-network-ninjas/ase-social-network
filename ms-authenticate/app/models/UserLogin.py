@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class UserLoginIn(BaseModel):
+class UserLogin(BaseModel):
     id: Optional[str] = None
     username: str | None = None
     email: str | None = None
