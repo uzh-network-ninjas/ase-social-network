@@ -1,10 +1,11 @@
 from app.AuthenticateRepository import AuthenticateRepository
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from app.models.UserRegister import UserRegister
 from app.models.UserLogin import UserLogin
 from app.models.UserOut import UserOut
+from app.models.UpdateUserPassword import UpdateUserPassword
 from datetime import timedelta, datetime
 import jwt
 
@@ -33,6 +34,13 @@ class AuthenticateService:
             headers={"kid": self.auth_encryption['KID']}
         )
 
+    @staticmethod
+    def extract_user_id(request) -> str:
+        bearer = request.headers.get("Authorization")
+        token = bearer.split(" ")[1]
+        payload = jwt.decode(token, options={"verify_signature": False})
+        return payload["sub"]
+
     async def register_user(self, user: UserRegister) -> UserOut:
         if await self.auth_repo.username_exists(user.username):
             raise HTTPException(status_code=409, detail="Username already exists")
@@ -49,3 +57,12 @@ class AuthenticateService:
         if not self.auth_encryption['pwd_context'].verify(user.password, hashed_user.password):
             raise HTTPException(status_code=404, detail="Invalid password")
         return self.generate_token(hashed_user)
+
+    async def update_user_password(self, request: Request, update_user_password: UpdateUserPassword):
+        hashed_user = await self.auth_repo.get_user_by_id(self.extract_user_id(request))
+        hashed_password = self.auth_encryption['pwd_context'].hash(update_user_password.curr_password)
+        if not self.auth_encryption['pwd_context'].verify(hashed_user.password, hashed_password):
+            raise HTTPException(status_code=404, detail="Invalid password")
+        if update_user_password.curr_password == update_user_password.new_password:
+            raise HTTPException(status_code=400, detail="The new password must differ from the current one")
+        await self.auth_repo.update_user_password(hashed_user.id, update_user_password.new_password)

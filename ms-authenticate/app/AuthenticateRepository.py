@@ -1,4 +1,6 @@
+from datetime import datetime
 import os
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.models.UserRegister import UserRegister
 from app.models.UserLogin import UserLogin
@@ -47,3 +49,18 @@ class AuthenticateRepository:
         found_user = UserLogin(**result)
         found_user.id = str(result["_id"])
         return found_user
+
+    async def get_user_by_id(self, user_id: str) -> UserLogin:
+        result = await self.collection.find_one({"_id": ObjectId(user_id)})
+        found_user = UserLogin(**result)
+        found_user.id = str(result["_id"])
+        return found_user
+
+    async def update_user_password(self, user_id: str, new_password: str):
+        await self.collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {
+                'password': new_password,
+                'updated_at': datetime.now()
+            }}
+        )
