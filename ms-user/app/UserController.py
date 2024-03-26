@@ -16,31 +16,25 @@ app = FastAPI()
 us = UserService()
 
 @app.get("/{user_id}", response_model=UserOut)
-async def get_user(user_id: str):
+async def get_user(user_id: str) -> UserOut:
     return await us.get_user_by_id(user_id)
 
 @app.get("/", response_model=UserOut)
-async def search_user(username: str):
+async def search_user(username: str) -> UserOut:
     return await us.get_user_by_username(username)
 
 @app.patch("/", response_model=UserUpdate)
-async def update_user(request: Request, updated_user: UserUpdate):
-    bearer = request.headers.get("Authorization")
-    token = bearer.split(" ")[1]
-    payload = jwt.decode(token, options={"verify_signature": False})
-    user_id = payload["sub"]
+async def update_user(request: Request, updated_user: UserUpdate) -> UserUpdate:
+    user_id = us.extract_user_id_from_token(request)
     return await us.update_user_by_id(user_id, updated_user)
 
 @app.delete("/")
-async def delete_user(request: Request):
-    bearer = request.headers.get("Authorization")
-    token = bearer.split(" ")[1]
-    payload = jwt.decode(token, options={"verify_signature": False})
-    user_id = payload["sub"]
+async def delete_user(request: Request) -> dict[str, str]:
+    user_id = us.extract_user_id_from_token(request)
     return await us.delete_user_by_id(user_id)
 
 @app.get("/users/{user_id}/following", response_model=None)
-async def get_following_users():
+async def get_following_users() -> NotImplementedError:
     raise NotImplementedError
 
 @app.post("/users/{user_id}/image", response_model=None)
