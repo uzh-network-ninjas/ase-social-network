@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 echo "Initializing localstack s3"
 
 awslocal s3 mb s3://ms-user
