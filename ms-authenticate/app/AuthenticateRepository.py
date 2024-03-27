@@ -32,7 +32,7 @@ class AuthenticateRepository:
             return True
         return False
 
-    async def add_user(self, user: UserRegister):
+    async def add_user(self, user: UserRegister) -> UserLogin:
         user_dict = user.model_dump()
         result = await self.collection.insert_one(user_dict)
         user_dict['id'] = str(result.inserted_id)

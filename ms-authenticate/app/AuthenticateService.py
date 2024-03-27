@@ -40,7 +40,7 @@ class AuthenticateService:
         payload = jwt.decode(token, options={"verify_signature": False})
         return payload["sub"]
 
-    async def register_user(self, user: UserRegister):
+    async def register_user(self, user: UserRegister) -> UserLogin:
         if await self.auth_repo.username_exists(user.username):
             raise HTTPException(status_code=409, detail="Username already exists")
         if await self.auth_repo.user_email_exists(user.email):
