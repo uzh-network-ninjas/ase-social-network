@@ -6,6 +6,7 @@ from app.models.User import UserOut, UserUpdate
 from app.UserRepository import UserRepository
 from fastapi import HTTPException, Request, UploadFile
 
+
 class UserService:
     def __init__(self):
         self.ur = UserRepository()
@@ -33,7 +34,8 @@ class UserService:
     async def update_user_image_by_id(self, user_id: str, image: UploadFile) -> UserOut:
         bucket_name = "ms-user"
         s3_folder = "user-images"
-        s3_client = boto3.client('s3',
+        s3_client = boto3.client(
+            's3',
             endpoint_url=os.getenv("S3_ENDPOINT_URL"),
             aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID", "test"),
             aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY", "test"),
