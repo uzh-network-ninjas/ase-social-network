@@ -6,13 +6,15 @@ class UserOut(BaseModel):
     id: str
     username: str
     email: str
-    preferences: Optional[List[str]] = []
-    restrictions: Optional[List[str]] = []
-    updated_at: Optional[datetime] = None
+    image: str
+    preferences: List[str]
+    restrictions: List[str]
+    updated_at: datetime
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
+    image: Optional[str] = None
     preferences: Optional[List[str]] = []
     restrictions: Optional[List[str]] = []
     updated_at: Optional[datetime] = None
