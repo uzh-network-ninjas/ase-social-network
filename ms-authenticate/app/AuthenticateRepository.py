@@ -4,7 +4,6 @@ from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.models.UserRegister import UserRegister
 from app.models.UserLogin import UserLogin
-from app.models.UserOut import UserOut
 
 
 class AuthenticateRepository:
@@ -33,11 +32,11 @@ class AuthenticateRepository:
             return True
         return False
 
-    async def add_user(self, user: UserRegister) -> UserOut:
+    async def add_user(self, user: UserRegister) -> UserLogin:
         user_dict = user.model_dump()
         result = await self.collection.insert_one(user_dict)
         user_dict['id'] = str(result.inserted_id)
-        return UserOut(**user_dict)
+        return UserLogin(**user_dict)
 
     async def get_user_by_name_or_email(self, user: UserLogin) -> UserLogin:
         result = await self.collection.find_one({

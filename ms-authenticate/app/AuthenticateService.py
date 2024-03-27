@@ -4,7 +4,6 @@ from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from app.models.UserRegister import UserRegister
 from app.models.UserLogin import UserLogin
-from app.models.UserOut import UserOut
 from app.models.UpdateUserPassword import UpdateUserPassword
 from datetime import timedelta, datetime
 import jwt
@@ -41,14 +40,16 @@ class AuthenticateService:
         payload = jwt.decode(token, options={"verify_signature": False})
         return payload["sub"]
 
-    async def register_user(self, user: UserRegister) -> UserOut:
+    async def register_user(self, user: UserRegister) -> UserLogin:
         if await self.auth_repo.username_exists(user.username):
             raise HTTPException(status_code=409, detail="Username already exists")
         if await self.auth_repo.user_email_exists(user.email):
             raise HTTPException(status_code=409, detail="Email already in use")
-        hashed_password = self.auth_encryption['pwd_context'].hash(user.password)
-        user.password = hashed_password
-        return await self.auth_repo.add_user(user)
+        user_to_register = user.copy()
+        user_to_register.password = self.auth_encryption['pwd_context'].hash(user.password)
+        registered_user = await self.auth_repo.add_user(user_to_register)
+        registered_user.password = user.password
+        return registered_user
 
     async def login_user(self, user: UserLogin) -> str:
         if not await self.auth_repo.user_exists(user):
@@ -60,9 +61,8 @@ class AuthenticateService:
 
     async def update_user_password(self, request: Request, update_user_password: UpdateUserPassword):
         hashed_user = await self.auth_repo.get_user_by_id(self.extract_user_id(request))
-        hashed_password = self.auth_encryption['pwd_context'].hash(update_user_password.curr_password)
-        if not self.auth_encryption['pwd_context'].verify(hashed_user.password, hashed_password):
+        if not self.auth_encryption['pwd_context'].verify(update_user_password.curr_password, hashed_user.password):
             raise HTTPException(status_code=404, detail="Invalid password")
         if update_user_password.curr_password == update_user_password.new_password:
             raise HTTPException(status_code=400, detail="The new password must differ from the current one")
-        await self.auth_repo.update_user_password(hashed_user.id, update_user_password.new_password)
+        await self.auth_repo.update_user_password(hashed_user.id, self.auth_encryption['pwd_context'].hash(update_user_password.new_password))

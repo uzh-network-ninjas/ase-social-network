@@ -7,6 +7,7 @@ class UserRegister(BaseModel):
     username: str
     email: str
     password: str
+    image: Optional[str] = None
     preferences: List[str] = []
     restrictions: List[str] = []
     created_at: datetime = datetime.now()
