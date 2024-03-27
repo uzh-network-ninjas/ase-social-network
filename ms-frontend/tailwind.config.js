@@ -17,7 +17,7 @@ export default {
         'success': '#A1CB4D',
         'warning': '#EDBE5E',
         'error': '#E25336',
-
+        'selection-indicator': '#000000'
       },
       fontFamily: {
         sans: [

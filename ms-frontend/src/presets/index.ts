@@ -5,6 +5,7 @@ import button from '@/presets/button'
 import checkbox from '@/presets/checkbox'
 import ripple from '@/presets/ripple'
 import global from '@/presets/global'
+import dropdown from '@/presets/dropdown'
 
 export default {
   global,
@@ -16,5 +17,6 @@ export default {
   iconfield,
   floatlabel,
   button,
-  checkbox
+  checkbox,
+  dropdown
 }

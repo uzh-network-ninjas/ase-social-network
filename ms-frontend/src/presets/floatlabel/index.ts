@@ -18,6 +18,10 @@ export default {
       '[&>*:last-child]:px-1',
       '[&>*:first-child]:peer',
 
+      // Override focus appearance if child is disabled
+      '[&:has(.wrapper-info-disabled)>*:last-child]:top-1/2',
+      '[&:has(.wrapper-info-disabled)>*:last-child]:text-base',
+
       // Focus Appearance
       '[&:focus-within>*:last-child]:-top-0',
       '[&:focus-within>*:last-child]:bg-background',
