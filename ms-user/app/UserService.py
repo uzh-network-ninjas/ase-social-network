@@ -55,11 +55,10 @@ class UserService:
             raise HTTPException(status_code=400, detail="Could not update user profile picture reference!")
         return await self.get_user_by_id(user_id)
 
-    async def delete_user_by_id(self, user_id: str) -> dict[str, str]:
+    async def delete_user_by_id(self, user_id: str):
         result = await self.ur.delete_user_by_id(user_id)
         if not result:
             raise HTTPException(status_code=404, detail="User not found!")
-        return {"deleted": result["username"]}
 
     @staticmethod
     def extract_user_id_from_token(request: Request) -> str:
