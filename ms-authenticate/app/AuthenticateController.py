@@ -21,6 +21,6 @@ async def login_generate_token(user: UserLogin) -> dict:
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.put("/password", status_code=status.HTTP_204_NO_CONTENT)
+@app.patch("/password", status_code=status.HTTP_204_NO_CONTENT)
 async def update_password(request: Request, update_user_password: UpdateUserPassword):
     await auth_service.update_user_password(request, update_user_password)
