@@ -12,6 +12,7 @@ class UserOut(BaseModel):
     restrictions: Optional[List[str]] = []
     following: Optional[List[str]] = []
     followers: Optional[List[str]] = []
+    created_at: datetime
     updated_at: Optional[datetime] = None
 
 

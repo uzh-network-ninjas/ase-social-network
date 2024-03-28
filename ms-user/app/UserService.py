@@ -5,6 +5,7 @@ import os
 from app.models.User import UserOut, UserUpdate
 from app.UserRepository import UserRepository
 from fastapi import HTTPException, Request, UploadFile
+from typing import List
 
 
 class UserService:
@@ -60,7 +61,7 @@ class UserService:
         if not result:
             raise HTTPException(status_code=404, detail="User not found!")
 
-    async def follow_user_by_id(self, user_id: str, follow_user_id: str):
+    async def follow_user_by_id(self, user_id: str, follow_user_id: str) -> UserOut:
         user_to_follow = await self.get_user_by_id(follow_user_id)
         curr_user = await self.ur.get_user_by_id(user_id)
         if user_to_follow.id in curr_user['following']:
@@ -70,6 +71,14 @@ class UserService:
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update user following list")
         return await self.get_user_by_id(user_id)
+
+    async def get_following_users_by_id(self, user_id: str) -> List:
+        following_users = []
+        print('hello')
+        user = await self.get_user_by_id(user_id)
+        for following_user in user.following:
+            following_users.append(await self.get_user_by_id(following_user))
+        return following_users
 
     @staticmethod
     def extract_user_id_from_token(request: Request) -> str:

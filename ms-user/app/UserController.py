@@ -1,6 +1,7 @@
 from app.models.User import UserOut, UserUpdate
 from app.UserService import UserService
 from fastapi import FastAPI, Request, UploadFile, status
+from typing import List
 
 app = FastAPI()
 us = UserService()
@@ -34,9 +35,9 @@ async def delete_user(request: Request):
     await us.delete_user_by_id(user_id)
 
 
-@app.get("/users/{user_id}/following", response_model=None)
-async def get_following_users() -> NotImplementedError:
-    raise NotImplementedError
+@app.get("/{user_id}/following", status_code=status.HTTP_200_OK)
+async def get_following_users(user_id: str) -> List:
+    return await us.get_following_users_by_id(user_id)
 
 
 @app.patch("/following/{user_id}", status_code=status.HTTP_200_OK, response_model=UserOut)
