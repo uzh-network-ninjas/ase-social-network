@@ -51,10 +51,7 @@ class UserService:
             raise HTTPException(status_code=400, detail="Could not update user profile picture!")
 
         updated_user = UserUpdate(image=object_key)
-        result = await self.ur.update_user_by_id(user_id, updated_user)
-        if not result.raw_result["updatedExisting"]:
-            raise HTTPException(status_code=400, detail="Could not update user profile picture reference!")
-        return await self.get_user_by_id(user_id)
+        return await self.update_user_by_id(user_id, updated_user)
 
     async def delete_user_by_id(self, user_id: str):
         result = await self.ur.delete_user_by_id(user_id)
@@ -68,15 +65,22 @@ class UserService:
         curr_user = await self.ur.get_user_by_id(user_id)
         if follow_user_id in curr_user["following"]:
             raise HTTPException(status_code=409, detail="User already followed")
-        curr_user["following"].append(follow_user_id)
-        result = await self.ur.update_user_by_id(user_id, UserUpdate(**curr_user))
-        if not result.raw_result["updatedExisting"]:
-            raise HTTPException(status_code=400, detail="Could not update user following list")
         user_to_follow["followers"].append(user_id)
-        result = await self.ur.update_user_by_id(follow_user_id, UserUpdate(**user_to_follow))
-        if not result.raw_result["updatedExisting"]:
-            raise HTTPException(status_code=400, detail="Could not update user follower list")
-        return await self.get_user_by_id(user_id)
+        _ = await self.update_user_by_id(follow_user_id, UserUpdate(**user_to_follow))
+        curr_user["following"].append(follow_user_id)
+        return await self.update_user_by_id(user_id, UserUpdate(**curr_user))
+
+    async def unfollow_user_by_id(self, user_id: str, unfollow_user_id: str):
+        user_to_unfollow = await self.ur.get_user_by_id(unfollow_user_id)
+        if not user_to_unfollow:
+            raise HTTPException(status_code=404, detail="User not found!")
+        curr_user = await self.ur.get_user_by_id(user_id)
+        if unfollow_user_id not in curr_user["following"]:
+            raise HTTPException(status_code=404, detail="User is not followed")
+        curr_user["following"].remove(unfollow_user_id)
+        _ = await self.update_user_by_id(user_id, UserUpdate(**curr_user))
+        user_to_unfollow["followers"].remove(user_id)
+        _ = await self.update_user_by_id(unfollow_user_id, UserUpdate(**user_to_unfollow))
 
     async def get_following_users_by_id(self, user_id: str) -> List:
         following_users = []
