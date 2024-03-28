@@ -62,19 +62,24 @@ class UserService:
             raise HTTPException(status_code=404, detail="User not found!")
 
     async def follow_user_by_id(self, user_id: str, follow_user_id: str) -> UserOut:
-        user_to_follow = await self.get_user_by_id(follow_user_id)
+        user_to_follow = await self.ur.get_user_by_id(follow_user_id)
+        if not user_to_follow:
+            raise HTTPException(status_code=404, detail="User not found!")
         curr_user = await self.ur.get_user_by_id(user_id)
-        if user_to_follow.id in curr_user['following']:
+        if follow_user_id in curr_user["following"]:
             raise HTTPException(status_code=409, detail="User already followed")
-        curr_user['following'].append(user_to_follow.id)
+        curr_user["following"].append(follow_user_id)
         result = await self.ur.update_user_by_id(user_id, UserUpdate(**curr_user))
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update user following list")
+        user_to_follow["followers"].append(user_id)
+        result = await self.ur.update_user_by_id(follow_user_id, UserUpdate(**user_to_follow))
+        if not result.raw_result["updatedExisting"]:
+            raise HTTPException(status_code=400, detail="Could not update user follower list")
         return await self.get_user_by_id(user_id)
 
     async def get_following_users_by_id(self, user_id: str) -> List:
         following_users = []
-        print('hello')
         user = await self.get_user_by_id(user_id)
         for following_user in user.following:
             following_users.append(await self.get_user_by_id(following_user))
