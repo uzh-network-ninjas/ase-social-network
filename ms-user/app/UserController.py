@@ -37,3 +37,9 @@ async def delete_user(request: Request):
 @app.get("/users/{user_id}/following", response_model=None)
 async def get_following_users() -> NotImplementedError:
     raise NotImplementedError
+
+
+@app.patch("/following/{user_id}", status_code=status.HTTP_200_OK, response_model=UserOut)
+async def follow_user(request: Request, user_id: str):
+    curr_user_id = us.extract_user_id_from_token(request)
+    return await us.follow_user_by_id(curr_user_id, user_id)

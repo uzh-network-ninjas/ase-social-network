@@ -60,6 +60,17 @@ class UserService:
         if not result:
             raise HTTPException(status_code=404, detail="User not found!")
 
+    async def follow_user_by_id(self, user_id: str, follow_user_id: str):
+        user_to_follow = await self.get_user_by_id(follow_user_id)
+        curr_user = await self.ur.get_user_by_id(user_id)
+        if user_to_follow.id in curr_user['following']:
+            raise HTTPException(status_code=409, detail="User already followed")
+        curr_user['following'].append(user_to_follow.id)
+        result = await self.ur.update_user_by_id(user_id, UserUpdate(**curr_user))
+        if not result.raw_result["updatedExisting"]:
+            raise HTTPException(status_code=400, detail="Could not update user following list")
+        return await self.get_user_by_id(user_id)
+
     @staticmethod
     def extract_user_id_from_token(request: Request) -> str:
         bearer = request.headers.get("Authorization")
