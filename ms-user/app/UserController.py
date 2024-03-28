@@ -9,7 +9,8 @@ us = UserService()
 
 @app.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=UserOut)
 async def get_user(user_id: str) -> UserOut:
-    return await us.get_user_by_id(user_id)
+    result = await us.get_user_by_id(user_id)
+    return UserOut(**result)
 
 
 @app.get("/", status_code=status.HTTP_200_OK, response_model=UserOut)
@@ -20,7 +21,8 @@ async def search_user(username: str) -> UserOut:
 @app.patch("/", status_code=status.HTTP_200_OK, response_model=UserOut)
 async def update_user(request: Request, updated_user: UserUpdate) -> UserOut:
     user_id = us.extract_user_id_from_token(request)
-    return await us.update_user_by_id(user_id, updated_user)
+    result = await us.update_user_by_id(user_id, updated_user)
+    return UserOut(**result)
 
 
 @app.patch("/image", status_code=status.HTTP_200_OK, response_model=UserOut)

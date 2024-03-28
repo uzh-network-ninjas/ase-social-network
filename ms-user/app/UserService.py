@@ -17,7 +17,7 @@ class UserService:
         if not result:
             raise HTTPException(status_code=404, detail="User not found!")
         result["id"] = str(result["_id"])
-        return UserOut(**result)
+        return result
 
     async def get_user_by_username(self, username: str) -> UserOut:
         result = await self.ur.get_user_by_username(username)
@@ -59,10 +59,8 @@ class UserService:
             raise HTTPException(status_code=404, detail="User not found!")
 
     async def follow_user_by_id(self, user_id: str, follow_user_id: str) -> UserOut:
-        user_to_follow = await self.ur.get_user_by_id(follow_user_id)
-        if not user_to_follow:
-            raise HTTPException(status_code=404, detail="User not found!")
-        curr_user = await self.ur.get_user_by_id(user_id)
+        user_to_follow = await self.get_user_by_id(follow_user_id)
+        curr_user = await self.get_user_by_id(user_id)
         if follow_user_id in curr_user["following"]:
             raise HTTPException(status_code=409, detail="User already followed")
         user_to_follow["followers"].append(user_id)
@@ -71,10 +69,8 @@ class UserService:
         return await self.update_user_by_id(user_id, UserUpdate(**curr_user))
 
     async def unfollow_user_by_id(self, user_id: str, unfollow_user_id: str):
-        user_to_unfollow = await self.ur.get_user_by_id(unfollow_user_id)
-        if not user_to_unfollow:
-            raise HTTPException(status_code=404, detail="User not found!")
-        curr_user = await self.ur.get_user_by_id(user_id)
+        user_to_unfollow = await self.get_user_by_id(unfollow_user_id)
+        curr_user = await self.get_user_by_id(user_id)
         if unfollow_user_id not in curr_user["following"]:
             raise HTTPException(status_code=404, detail="User is not followed")
         curr_user["following"].remove(unfollow_user_id)
@@ -85,15 +81,17 @@ class UserService:
     async def get_following_users_by_id(self, user_id: str) -> List:
         following_users = []
         user = await self.get_user_by_id(user_id)
-        for following_user_id in user.following:
-            following_users.append(await self.get_user_by_id(following_user_id))
+        for following_user_id in user["following"]:
+            result = await self.get_user_by_id(following_user_id)
+            following_users.append(UserOut(**result))
         return following_users
 
     async def get_user_followers_by_id(self, user_id: str) -> List:
         user_followers = []
         user = await self.get_user_by_id(user_id)
-        for user_follower_id in user.followers:
-            user_followers.append(await self.get_user_by_id(user_follower_id))
+        for user_follower_id in user["followers"]:
+            result = await self.get_user_by_id(user_follower_id)
+            user_followers.append(UserOut(**result))
         return user_followers
 
     @staticmethod
