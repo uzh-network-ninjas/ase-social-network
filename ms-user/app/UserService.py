@@ -81,9 +81,16 @@ class UserService:
     async def get_following_users_by_id(self, user_id: str) -> List:
         following_users = []
         user = await self.get_user_by_id(user_id)
-        for following_user in user.following:
-            following_users.append(await self.get_user_by_id(following_user))
+        for following_user_id in user.following:
+            following_users.append(await self.get_user_by_id(following_user_id))
         return following_users
+
+    async def get_user_followers_by_id(self, user_id: str) -> List:
+        user_followers = []
+        user = await self.get_user_by_id(user_id)
+        for user_follower_id in user.followers:
+            user_followers.append(await self.get_user_by_id(user_follower_id))
+        return user_followers
 
     @staticmethod
     def extract_user_id_from_token(request: Request) -> str:
