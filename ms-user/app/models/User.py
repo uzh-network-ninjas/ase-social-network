@@ -2,14 +2,19 @@ from datetime import datetime
 from pydantic import BaseModel
 from typing import List, Optional
 
+
 class UserOut(BaseModel):
     id: str
     username: str
     email: str
-    image: str
-    preferences: List[str]
-    restrictions: List[str]
-    updated_at: datetime
+    image: Optional[str] = None
+    preferences: Optional[List[str]] = []
+    restrictions: Optional[List[str]] = []
+    following: Optional[List[str]] = []
+    followers: Optional[List[str]] = []
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
@@ -17,4 +22,6 @@ class UserUpdate(BaseModel):
     image: Optional[str] = None
     preferences: Optional[List[str]] = []
     restrictions: Optional[List[str]] = []
+    following: Optional[List[str]] = []
+    followers: Optional[List[str]] = []
     updated_at: Optional[datetime] = None

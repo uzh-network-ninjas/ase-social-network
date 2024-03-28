@@ -6,6 +6,7 @@ from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.results import UpdateResult
 
+
 class UserRepository:
     def __init__(self):
         client = AsyncIOMotorClient(os.getenv("MONGO_URL", "mongodb://localhost:27017"))

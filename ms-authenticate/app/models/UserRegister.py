@@ -8,7 +8,9 @@ class UserRegister(BaseModel):
     email: str
     password: str
     image: Optional[str] = None
-    preferences: List[str] = []
-    restrictions: List[str] = []
+    preferences: Optional[List[str]] = []
+    restrictions: Optional[List[str]] = []
+    following: Optional[List[str]] = []
+    followers: Optional[List[str]] = []
     created_at: datetime = datetime.now()
     updated_at: Optional[datetime] = None
