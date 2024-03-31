@@ -10,7 +10,7 @@
                 <div class="flex items-center gap-4 flex-[1_0_0]">
 
                     <!--Back button-->
-                    <Button text rounded class="w-6 h-6">
+                    <Button text rounded class="w-6 h-6" @click= $router.go(-1)>
                         <template #icon>
                             <BaseIcon icon="back" />
                         </template>
@@ -20,10 +20,6 @@
                     <div class="text-2xl not-italic font-extralight leading-[normal] font-inter text-medium-emphasis">
                         Profile
                     </div>
-
-
-
-
 
                 </div>
                 <Button text rounded class="flex justify-center items-center gap-3 p-1.5 rounded-lg">
@@ -112,7 +108,7 @@
 
                             <!--Follow button-->
                             <div class="flex justify-center items-center gap-2 px-4 py-1">
-                                <Button rounded label="Follow" iconPos="left">
+                                <Button rounded :label= "followButtonText" iconPos="left" @click="toggleFollow">
                                     <template #icon>
                                         <BaseIcon icon="user-plus" />
                                     </template>
@@ -132,33 +128,13 @@
 
                 </div>
             </div>
-            <!-- <div class="mx-4 flex h-full items-center justify-center pt-8 md:justify-start">
-                <div class="flex flex-col gap-8">
-                    <h1
-                        class="text-center text-2xl font-light uppercase tracking-widest text-secondary md:text-start md:text-5xl">
-                        {{ $t('profile') }}
-                    </h1>
-
-                    <div class="profile-header">
-                        <img :src="profilePicUrl" alt="Profile Picture" class="profile-picture" />
-                        <h1>{{ username }}</h1>
-                        <div class="profile-stats">
-                            <div>{{ uploadedReviewsCount }} Reviews</div>
-                            <div>{{ followersCount }} Followers</div>
-                            <div>{{ followsCount }} Follows</div>
-                        </div>
-                        <button @click="toggleFollow" class="follow-button">{{ isFollowing ? $t('unfollow') :
-                            $t('follow') }}</button>
-                    </div>
-                </div>
-            </div> -->
         </main>
         <DecoStrip class="fixed bottom-0 right-1/4 top-0 z-50 max-lg:invisible lg:visible" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import Navbar, { type MenuOption } from '@/components/TopNav.vue'
 import Button from 'primevue/button'
@@ -179,6 +155,10 @@ const followersCount = ref<number>(12)
 const followsCount = ref<number>(50)
 
 const isFollowing = ref<boolean>(false)
+
+const followButtonText = computed(() => {
+  return isFollowing.value ? "Unfollow" : "Follow"
+})
 
 // Function to toggle follow status
 const toggleFollow = () => {
