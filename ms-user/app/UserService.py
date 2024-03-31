@@ -2,7 +2,8 @@ import boto3
 import jwt
 import os
 
-from app.models.User import UserOut, UserUpdate
+from app.models.UserUpdate import UserUpdate
+from app.models.UserOut import UserOut
 from app.UserRepository import UserRepository
 from fastapi import HTTPException, Request, UploadFile
 from typing import List
@@ -17,7 +18,7 @@ class UserService:
         if not result:
             raise HTTPException(status_code=404, detail="User not found!")
         result["id"] = str(result["_id"])
-        return result
+        return UserOut(**result)
 
     async def get_user_by_username(self, username: str) -> UserOut:
         result = await self.ur.get_user_by_username(username)
@@ -61,37 +62,37 @@ class UserService:
     async def follow_user_by_id(self, user_id: str, follow_user_id: str) -> UserOut:
         user_to_follow = await self.get_user_by_id(follow_user_id)
         curr_user = await self.get_user_by_id(user_id)
-        if follow_user_id in curr_user["following"]:
+        if follow_user_id in curr_user.following:
             raise HTTPException(status_code=409, detail="User already followed")
-        user_to_follow["followers"].append(user_id)
-        _ = await self.update_user_by_id(follow_user_id, UserUpdate(**user_to_follow))
-        curr_user["following"].append(follow_user_id)
-        return await self.update_user_by_id(user_id, UserUpdate(**curr_user))
+        user_to_follow.followers.append(user_id)
+        _ = await self.update_user_by_id(follow_user_id, UserUpdate(**user_to_follow.dict()))
+        curr_user.following.append(follow_user_id)
+        return await self.update_user_by_id(user_id, UserUpdate(**curr_user.dict()))
 
     async def unfollow_user_by_id(self, user_id: str, unfollow_user_id: str):
         user_to_unfollow = await self.get_user_by_id(unfollow_user_id)
         curr_user = await self.get_user_by_id(user_id)
-        if unfollow_user_id not in curr_user["following"]:
+        if unfollow_user_id not in curr_user.following:
             raise HTTPException(status_code=404, detail="User is not followed")
-        curr_user["following"].remove(unfollow_user_id)
-        _ = await self.update_user_by_id(user_id, UserUpdate(**curr_user))
-        user_to_unfollow["followers"].remove(user_id)
-        _ = await self.update_user_by_id(unfollow_user_id, UserUpdate(**user_to_unfollow))
+        curr_user.following.remove(unfollow_user_id)
+        _ = await self.update_user_by_id(user_id, UserUpdate(**curr_user.dict()))
+        user_to_unfollow.followers.remove(user_id)
+        _ = await self.update_user_by_id(unfollow_user_id, UserUpdate(**user_to_unfollow.dict()))
 
     async def get_following_users_by_id(self, user_id: str) -> List:
         following_users = []
         user = await self.get_user_by_id(user_id)
-        for following_user_id in user["following"]:
+        for following_user_id in user.following:
             result = await self.get_user_by_id(following_user_id)
-            following_users.append(UserOut(**result))
+            following_users.append(UserOut(**result.dict()))
         return following_users
 
     async def get_user_followers_by_id(self, user_id: str) -> List:
         user_followers = []
         user = await self.get_user_by_id(user_id)
-        for user_follower_id in user["followers"]:
+        for user_follower_id in user.followers:
             result = await self.get_user_by_id(user_follower_id)
-            user_followers.append(UserOut(**result))
+            user_followers.append(UserOut(**result.dict()))
         return user_followers
 
     @staticmethod
