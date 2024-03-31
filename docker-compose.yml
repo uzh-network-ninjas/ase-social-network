@@ -42,17 +42,17 @@ services:
     networks:
       - ms-net
 
-  ms-post:
-    build: ms-post
+  ms-review:
+    build: ms-review
     environment:
       - PORT=5001
-      - MONGO_URL=mongodb://ms-post-db:27017/ms_post_db
+      - MONGO_URL=mongodb://ms-review-db:27017/ms_review_db
     ports:
       - "9001:5001"
     volumes:
-      - ./ms-post/app:/code/app
+      - ./ms-review/app:/code/app
     depends_on:
-      - ms-post-db
+      - ms-review-db
     networks:
       - ms-net
 
@@ -67,14 +67,14 @@ services:
     networks:
       - ms-net
 
-  ms-post-db:
+  ms-review-db:
     image: mongo
     environment:
-      - MONGO_INITDB_DATABASE=ms_post_db
+      - MONGO_INITDB_DATABASE=ms_review_db
     ports:
       - "10001:27017"
     volumes:
-      - ms-post-db-volume:/data/db
+      - ms-review-db-volume:/data/db
     networks:
       - ms-net
       
@@ -104,13 +104,13 @@ services:
     networks:
       - ms-net
 
-  # 
+  #
   # KONG
-  # 
+  #
 
 volumes:
   ms-user-db-volume:
-  ms-post-db-volume:
+  ms-review-db-volume:
 
 networks:
   ms-net:

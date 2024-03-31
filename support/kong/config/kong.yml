@@ -3,12 +3,6 @@ _format_version: "3.0"
 _transform: true
 
 services:
-- name: post-service
-  url: http://ms-post:5001
-  routes:
-  - name: post-route
-    paths:
-    - /posts
 
 - name: authenticate-service
   url: http://ms-authenticate:5000
@@ -24,6 +18,13 @@ services:
     paths:
     - /users
 
+- name: review-service
+  url: http://ms-review:5001
+  routes:
+  - name: review-route
+    paths:
+    - /reviews
+
 - name: frontend-service
   url: http://ms-frontend:5173
   routes:
@@ -33,7 +34,7 @@ services:
 
 plugins:
 - name: jwt
-  service: post-service
+  service: review-service
   enabled: true
   config:
     key_claim_name: kid
