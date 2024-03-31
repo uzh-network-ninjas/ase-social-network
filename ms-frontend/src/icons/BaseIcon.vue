@@ -6,6 +6,10 @@ import MagnifyingGlassIcon from '@/icons/MagnifyingGlassIcon.vue'
 import SparklesIcon from '@/icons/SparklesIcon.vue'
 import ArrowLeftEndOnRectangle from '@/icons/ArrowLeftEndOnRectangle.vue'
 import ArrowLeftStartOnRectangle from '@/icons/ArrowLeftStartOnRectangle.vue'
+import UserPlusIcon from '@/icons/UserPlusIcon.vue'
+import ShareIcon from '@/icons/ShareIcon.vue'
+import BackIcon from '@/icons/BackIcon.vue'
+import ThreeDotsIcon from '@/icons/ThreeDotsIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -15,6 +19,10 @@ export type IconType =
   | 'sparkles'
   | 'arrow-left-end-on-rectangle'
   | 'arrow-left-start-on-rectangle'
+  | 'user-plus'
+  | 'share'
+  | 'back'
+  | 'three-dots'
   | undefined
 
 withDefaults(
@@ -40,4 +48,8 @@ defineOptions({
   <SparklesIcon v-else-if="icon == 'sparkles'" v-bind="$attrs" />
   <ArrowLeftEndOnRectangle v-else-if="icon == 'arrow-left-end-on-rectangle'" v-bind="$attrs" />
   <ArrowLeftStartOnRectangle v-else-if="icon == 'arrow-left-start-on-rectangle'" v-bind="$attrs" />
+  <UserPlusIcon v-else-if="icon == 'user-plus'" v-bind="$attrs" />
+  <ShareIcon v-else-if="icon == 'share'" v-bind="$attrs" />
+  <BackIcon v-else-if="icon == 'back'" v-bind="$attrs" />
+  <ThreeDotsIcon v-else-if="icon == 'three-dots'" v-bind="$attrs"/>
 </template>
