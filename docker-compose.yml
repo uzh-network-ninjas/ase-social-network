@@ -45,8 +45,9 @@ services:
   ms-review:
     build: ms-review
     environment:
-      - PORT=5001
-      - MONGO_URL=mongodb://ms-review-db:27017/ms_review_db
+      <<: *aws-env
+      PORT: 5001
+      MONGO_URL: mongodb://ms-review-db:27017/ms_review_db
     ports:
       - "9001:5001"
     volumes:
