@@ -5,6 +5,7 @@ import button from '@/presets/button'
 import checkbox from '@/presets/checkbox'
 import ripple from '@/presets/ripple'
 import global from '@/presets/global'
+import togglebutton from '@/presets/togglebutton'
 import dropdown from '@/presets/dropdown'
 
 export default {
@@ -18,5 +19,6 @@ export default {
   floatlabel,
   button,
   checkbox,
+  togglebutton,
   dropdown
 }
