@@ -7,8 +7,11 @@ class ReviewCreate(BaseModel):
     text: str
     rating: int
     image: Optional[str] = None
-    location: Optional[str] = None
+    location: str
     created_at: Optional[datetime] = datetime.now()
+
+class ReviewCreateImage(BaseModel):
+    image: str
 
 class ReviewOut(BaseModel):
     user_id: str #TODO return username that gets fetched from ms-user too, right?
@@ -16,4 +19,4 @@ class ReviewOut(BaseModel):
     text: str
     rating: int
     image: Optional[str] = None
-    location: Optional[str] = None
+    location: str
