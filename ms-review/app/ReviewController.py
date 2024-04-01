@@ -1,7 +1,7 @@
 from typing import List, Annotated
 
 from app.models.Review import ReviewCreate, ReviewOut
-from ReviewService import ReviewService
+from app.ReviewService import ReviewService
 from fastapi import FastAPI, Request, UploadFile, Form
 
 app = FastAPI()
