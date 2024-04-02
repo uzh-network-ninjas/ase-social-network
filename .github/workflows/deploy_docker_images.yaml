@@ -40,8 +40,8 @@ jobs:
       run: |
         for SERVICE in $SERVICES; do
           echo "Building and pushing Docker image for $SERVICE"
-          # VERSIONED_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$SERVICE:${{ env.VERSION }}"
-          LATEST_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$SERVICE:latest"
+          # VERSIONED_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/$SERVICE:${{ env.VERSION }}"
+          LATEST_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/$SERVICE:latest"
           
           # docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
           docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$LATEST_IMAGE_NAME"
