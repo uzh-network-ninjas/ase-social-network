@@ -32,12 +32,14 @@ jobs:
     - name: Read services from config
       id: read-services
       run: |
-        SERVICES=$(cat support/services.conf | tr '\n' ' ')
+        SERVICES=$(cat support/services.conf | tr '\r\n' ' ')
         echo "SERVICES=$SERVICES" >> $GITHUB_ENV
+        echo $SERVICES
 
     - name: Build and push Docker images
       run: |
         for SERVICE in $SERVICES; do
+          echo "Building and pushing Docker image for $SERVICE"
           # VERSIONED_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$SERVICE:${{ env.VERSION }}"
           LATEST_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$SERVICE:latest"
           
