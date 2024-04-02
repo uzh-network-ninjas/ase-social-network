@@ -1,0 +1,78 @@
+version: '3.8'
+
+x-aws-config: 
+  &aws-env
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+  AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+  S3_ENDPOINT_URL: ${S3_ENDPOINT_URL}
+
+
+
+services:
+  ms-authenticate:
+    build: ms-authenticate
+    environment:
+      - PORT=5000
+      - MONGO_URL=mongodb://ms-user-db:27017/ms_user_db
+    depends_on:
+      - ms-user-db
+    networks:
+      - ms-net
+      
+  ms-user:
+    build: ms-user
+    environment:
+      <<: *aws-env
+      PORT: 5002
+      MONGO_URL: mongodb://ms-user-db:27017/ms_user_db
+
+    depends_on:
+      - ms-user-db
+    networks:
+      - ms-net
+
+  ms-review:
+    build: ms-review
+    environment:
+      <<: *aws-env
+      PORT: 5001
+      MONGO_URL: mongodb://ms-review-db:27017/ms_review_db
+
+    depends_on:
+      - ms-review-db
+    networks:
+      - ms-net
+
+  ms-user-db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=ms_user_db
+    volumes:
+      - ms-user-db-volume:/data/db
+    networks:
+      - ms-net
+
+  ms-review-db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=ms_review_db
+    volumes:
+      - ms-review-db-volume:/data/db
+    networks:
+      - ms-net
+      
+  ms-frontend:
+    build: 
+      context: ms-frontend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - ms-net
+
+volumes:
+  ms-user-db-volume:
+  ms-review-db-volume:
+
+networks:
+  ms-net:
