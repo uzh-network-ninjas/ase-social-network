@@ -37,7 +37,7 @@ run_docker_container_python() {
 
     docker build -t "${service_name}_test" -f "${service_name}/Dockerfile.test" "${service_name}/."
     # Run Docker container
-    docker run --rm "${service_name}_test" -v "${volume_path}" pytest --cov="app" --cov-report=xml:/reports/coverage_"${service_name}".xml
+    docker run --rm  -v "${volume_path}"  "${service_name}_test" pytest --cov="app" --cov-report=xml:/reports/coverage_"${service_name}".xml
 }
 
 # Function to modify the coverage report
