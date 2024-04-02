@@ -43,7 +43,8 @@ jobs:
           # VERSIONED_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$SERVICE:${{ env.VERSION }}"
           LATEST_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$SERVICE:latest"
           
-          docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
+          # docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
+          docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$LATEST_IMAGE_NAME"
           
           docker push "$VERSIONED_IMAGE_NAME"
           docker push "$LATEST_IMAGE_NAME"
