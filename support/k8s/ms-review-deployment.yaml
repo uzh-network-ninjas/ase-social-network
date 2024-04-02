@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\adam\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f docker-compose.base.yml --out ./support/k8s/
+    kompose.version: 1.31.2 (a92241f79)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ms-review
+  name: ms-review
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ms-review
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\adam\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f docker-compose.base.yml --out ./support/k8s/
+        kompose.version: 1.31.2 (a92241f79)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/network-ninjas-ms-net: "true"
+        io.kompose.service: ms-review
+    spec:
+      containers:
+        - env:
+            - name: AWS_ACCESS_KEY_ID
+            - name: AWS_DEFAULT_REGION
+            - name: AWS_SECRET_ACCESS_KEY
+            - name: MONGO_URL
+              value: mongodb://ms-review-db:27017/ms_review_db
+            - name: PORT
+              value: "5001"
+            - name: S3_ENDPOINT_URL
+          image: ms-review
+          name: ms-review
+          resources: {}
+      restartPolicy: Always
+status: {}

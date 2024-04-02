@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\adam\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f docker-compose.base.yml --out ./support/k8s/
+    kompose.version: 1.31.2 (a92241f79)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ms-user-db
+  name: ms-user-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ms-user-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\adam\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f docker-compose.base.yml --out ./support/k8s/
+        kompose.version: 1.31.2 (a92241f79)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/network-ninjas-ms-net: "true"
+        io.kompose.service: ms-user-db
+    spec:
+      containers:
+        - env:
+            - name: MONGO_INITDB_DATABASE
+              value: ms_user_db
+          image: mongo
+          name: ms-user-db
+          resources: {}
+          volumeMounts:
+            - mountPath: /data/db
+              name: ms-user-db-volume
+      restartPolicy: Always
+      volumes:
+        - name: ms-user-db-volume
+          persistentVolumeClaim:
+            claimName: ms-user-db-volume
+status: {}
