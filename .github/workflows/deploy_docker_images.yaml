@@ -42,6 +42,8 @@ jobs:
           echo "Building and pushing Docker image for $SERVICE"
           # VERSIONED_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/$SERVICE:${{ env.VERSION }}"
           LATEST_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/$SERVICE:latest"
+
+          echo "LATEST_IMAGE_NAME=$LATEST_IMAGE_NAME"
           
           # docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
           docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$LATEST_IMAGE_NAME"
