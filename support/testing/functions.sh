@@ -35,8 +35,10 @@ run_docker_container_python() {
 
     echo "volume path: ${volume_path}"
 
+    docker build -t "${service_name}_test" -f "${service_name}/Dockerfile.test" "${service_name}/."
     # Run Docker container
-    docker run --rm -v "${volume_path}" -f Dockerfile.test "${service_name}_test" pytest --cov="app" --cov-report=xml:/reports/coverage_"${service_name}".xml
+    docker run --rm "${service_name}_test" -v "${volume_path}" pytest --cov="app" --cov-report=xml:/reports/coverage_"${service_name}".xml
+}
 
 # Function to modify the coverage report
 modify_coverage_report_python() {
@@ -54,6 +56,8 @@ modify_coverage_report_python() {
 run_docker_container_python_without_coverage() {
     local service_name=$1
 
-    # Run Docker container
-    docker run --rm "${service_name}_test"  -f Dockerfile.test pytest
+    docker build -t "${service_name}_test" -f "${service_name}/Dockerfile.test" "${service_name}/."
+
+    # Run Docker container and execute pytest
+    docker run --rm "${service_name}_test" pytest
 }
