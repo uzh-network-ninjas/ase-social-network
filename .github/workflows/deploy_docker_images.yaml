@@ -33,7 +33,9 @@ jobs:
       id: read_folders
       run: |
         source support/services.conf
-        printf "%s\n" "${services[@]}" > services_list.txt
+        for service in "${services[@]}"; do
+          echo "$service"
+        done > services_list.txt
         echo "FOLDERS=$(cat services_list.txt | xargs)" >> $GITHUB_ENV
 
     - name: Build and push Docker images
