@@ -8,7 +8,7 @@ on:
     #   - 'v*'  # This will trigger the workflow on tags like v1.0, v2.0, etc.
 
 env:
-  DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
 
 jobs:
   build-and-push:
@@ -42,8 +42,6 @@ jobs:
           echo "Building and pushing Docker image for $SERVICE"
           # VERSIONED_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/$SERVICE:${{ env.VERSION }}"
           LATEST_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/$SERVICE:latest"
-
-          echo "LATEST_IMAGE_NAME=$LATEST_IMAGE_NAME"
           
           # docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
           docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$LATEST_IMAGE_NAME"
