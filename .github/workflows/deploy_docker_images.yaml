@@ -29,22 +29,19 @@ jobs:
       id: get_version
       run: echo "VERSION=$(echo ${GITHUB_REF#refs/*/})" >> $GITHUB_ENV
     
-    - name: Read service folders from config
-      id: read_folders
+    - name: Read services from config
+      id: read-services
       run: |
-        source support/services.conf
-        for service in "${services[@]}"; do
-          echo "$service"
-        done > services_list.txt
-        echo "FOLDERS=$(cat services_list.txt | xargs)" >> $GITHUB_ENV
+        SERVICES=$(cat support/services.conf | tr '\n' ' ')
+        echo "SERVICES=$SERVICES" >> $GITHUB_ENV
 
     - name: Build and push Docker images
       run: |
-        for FOLDER in $FOLDERS; do
-          # VERSIONED_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$FOLDER:${{ env.VERSION }}"
-          LATEST_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$FOLDER:latest"
+        for SERVICE in $SERVICES; do
+          # VERSIONED_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$SERVICE:${{ env.VERSION }}"
+          LATEST_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$SERVICE:latest"
           
-          docker build "$FOLDER" -f "$FOLDER/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
+          docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
           
           docker push "$VERSIONED_IMAGE_NAME"
           docker push "$LATEST_IMAGE_NAME"
