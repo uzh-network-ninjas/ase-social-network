@@ -8,4 +8,4 @@ class ReviewOut(BaseModel):
     text: str
     rating: int
     image: Optional[str] = None
-    location: Optional[str] = None
+    location: str

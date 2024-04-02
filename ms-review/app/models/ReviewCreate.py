@@ -8,5 +8,5 @@ class ReviewCreate(BaseModel):
     text: str
     rating: int
     image: Optional[str] = None
-    location: Optional[str] = None
+    location: str
     created_at: Optional[datetime] = datetime.now()
