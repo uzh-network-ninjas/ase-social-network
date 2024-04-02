@@ -3,15 +3,15 @@
 		"_postman_id": "a5c38b58-9457-434b-924c-ae2ad05e09a4",
 		"name": "ASE - social network",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20317814",
-		"_collection_link": "https://warped-crater-963207.postman.co/workspace/network-ninjas~73829257-a871-475a-a5e2-217000946d40/collection/20317814-a5c38b58-9457-434b-924c-ae2ad05e09a4?action=share&source=collection_link&creator=20317814"
+		"_exporter_id": "33518942",
+		"_collection_link": "https://warped-crater-963207.postman.co/workspace/network-ninjas~73829257-a871-475a-a5e2-217000946d40/collection/20317814-a5c38b58-9457-434b-924c-ae2ad05e09a4?action=share&source=collection_link&creator=33518942"
 	},
 	"item": [
 		{
 			"name": "Authentification",
 			"item": [
 				{
-					"name": "register",
+					"name": "register u1",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -27,7 +27,20 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.globals.set(\"USER_ID\", pm.response.json().id)"
+									"// Decode JWT token\r",
+									"function parseJwt(token) {\r",
+									"    var base64Url = token.split('.')[1];\r",
+									"    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');\r",
+									"    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {\r",
+									"        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);\r",
+									"    }).join(''));\r",
+									"\r",
+									"    return JSON.parse(jsonPayload);\r",
+									"}\r",
+									"\r",
+									"var token = pm.response.json().access_token\r",
+									"pm.collectionVariables.set(\"TOKEN User 1\", token)\r",
+									"pm.collectionVariables.set(\"ID User 1\", parseJwt(token).sub)"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -59,7 +72,7 @@
 					"response": []
 				},
 				{
-					"name": "login",
+					"name": "register u2",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -75,7 +88,81 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.globals.set(\"TOKEN\", pm.response.json().access_token)"
+									"// Decode JWT token\r",
+									"function parseJwt(token) {\r",
+									"    var base64Url = token.split('.')[1];\r",
+									"    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');\r",
+									"    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {\r",
+									"        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);\r",
+									"    }).join(''));\r",
+									"\r",
+									"    return JSON.parse(jsonPayload);\r",
+									"}\r",
+									"\r",
+									"var token = pm.response.json().access_token\r",
+									"pm.collectionVariables.set(\"TOKEN User 2\", token)\r",
+									"pm.collectionVariables.set(\"ID User 2\", parseJwt(token).sub)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"max\",\r\n    \"email\": \"max@uzh.ch\",\r\n    \"password\": \"muster\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{auth_base_url}}/user",
+							"host": [
+								"{{endpoint}}{{auth_base_url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login u1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Decode JWT token\r",
+									"function parseJwt(token) {\r",
+									"    var base64Url = token.split('.')[1];\r",
+									"    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');\r",
+									"    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {\r",
+									"        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);\r",
+									"    }).join(''));\r",
+									"\r",
+									"    return JSON.parse(jsonPayload);\r",
+									"}\r",
+									"\r",
+									"var token = pm.response.json().access_token\r",
+									"pm.collectionVariables.set(\"TOKEN User 1\", token)\r",
+									"pm.collectionVariables.set(\"ID User 1\", parseJwt(token).sub)"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -88,6 +175,67 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"username\": \"jerome\",\r\n    \"password\": \"maier\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{auth_base_url}}/token",
+							"host": [
+								"{{endpoint}}{{auth_base_url}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login u2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Decode JWT token\r",
+									"function parseJwt(token) {\r",
+									"    var base64Url = token.split('.')[1];\r",
+									"    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');\r",
+									"    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {\r",
+									"        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);\r",
+									"    }).join(''));\r",
+									"\r",
+									"    return JSON.parse(jsonPayload);\r",
+									"}\r",
+									"\r",
+									"var token = pm.response.json().access_token\r",
+									"pm.collectionVariables.set(\"TOKEN User 2\", token)\r",
+									"pm.collectionVariables.set(\"ID User 2\", parseJwt(token).sub)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"max\",\r\n    \"password\": \"muster\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -123,7 +271,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.globals.set(\"TOKEN\", pm.response.json().access_token)"
+									"pm.collectionVariables.set(\"TOKEN User 1\", pm.response.json().access_token)"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -153,21 +301,16 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "User Service",
-			"item": [
+				},
 				{
-					"name": "update user profile",
+					"name": "update password u1",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{TOKEN}}",
+									"value": "{{TOKEN User 1}}",
 									"type": "string"
 								}
 							]
@@ -176,7 +319,179 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"coco\",\r\n    \"email\": \"coco@uzh.com\",\r\n    \"preferences\": [\"coconuts\"]\r\n}",
+							"raw": "{\r\n    \"curr_password\": \"maier\",\r\n    \"new_password\": \"maier1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{auth_base_url}}/password",
+							"host": [
+								"{{endpoint}}{{auth_base_url}}"
+							],
+							"path": [
+								"password"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User Service",
+			"item": [
+				{
+					"name": "get user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/{{ID User 1}}",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								"{{ID User 1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/?username=jerome",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "jerome"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search user max",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/?username=max",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "max"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get following users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/{{ID User 1}}/following",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								"{{ID User 1}}",
+								"following"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user followers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/{{ID User 2}}/followers",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								"{{ID User 2}}",
+								"followers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user profile",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"coco\",\r\n    \"email\": \"coco@uzh.ch\",\r\n    \"preferences\": [\"coconuts\"],\r\n    \"restrictions\": [\"walnuts\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -196,111 +511,100 @@
 					"response": []
 				},
 				{
-					"name": "user profile",
+					"name": "update user profile picture",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{TOKEN}}",
+									"value": "{{TOKEN User 1}}",
 									"type": "string"
 								}
 							]
 						},
-						"method": "GET",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1eeeb8c2-7e8c-48a0-9fa8-a5d72f0b3391"
+								}
+							]
+						},
 						"url": {
-							"raw": "{{endpoint}}{{user_base_url}}/{{USER_ID}}",
+							"raw": "{{endpoint}}{{user_base_url}}/image",
 							"host": [
 								"{{endpoint}}{{user_base_url}}"
 							],
 							"path": [
-								"{{USER_ID}}"
+								"image"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "search user",
+					"name": "u1 follows u2",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{TOKEN}}",
+									"value": "{{TOKEN User 1}}",
 									"type": "string"
 								}
 							]
 						},
-						"method": "GET",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{endpoint}}{{user_base_url}}/?username=jerome",
+							"raw": "{{endpoint}}{{user_base_url}}/following/{{ID User 2}}",
 							"host": [
 								"{{endpoint}}{{user_base_url}}"
 							],
 							"path": [
-								""
-							],
-							"query": [
-								{
-									"key": "username",
-									"value": "jerome"
-								}
+								"following",
+								"{{ID User 2}}"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "search user coco",
+					"name": "u1 unfollows u2",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
+						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{endpoint}}{{user_base_url}}/?username=jerome",
+							"raw": "{{endpoint}}{{user_base_url}}/following/{{ID User 2}}",
 							"host": [
 								"{{endpoint}}{{user_base_url}}"
 							],
 							"path": [
-								""
-							],
-							"query": [
-								{
-									"key": "username",
-									"value": "jerome"
-								}
+								"following",
+								"{{ID User 2}}"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Upload image for user",
+					"name": "Upload image for user - Old test",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -309,7 +613,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/adam/Pictures/download.jpeg"
+									"src": "/C:/Users/adam/Pictures/ACME_logo.png"
 								}
 							]
 						},
@@ -325,51 +629,66 @@
 						}
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{TOKEN User 1}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
 				},
 				{
-					"name": "delete user",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}{{user_base_url}}/",
-							"host": [
-								"{{endpoint}}{{user_base_url}}"
-							],
-							"path": [
-								""
-							]
-						}
-					},
-					"response": []
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
 		{
-			"name": "Post Service",
+			"name": "Review Service",
 			"item": [
 				{
-					"name": "Ping",
+					"name": "append review image",
 					"request": {
-						"method": "GET",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "review_id",
+									"value": "1234",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": "{{endpoint}}{{post_base_url}}}/helloworld",
+							"raw": "{{endpoint}}{{review_base_url}}/image",
 							"host": [
-								"{{endpoint}}{{post_base_url}}}"
+								"{{endpoint}}{{review_base_url}}"
 							],
 							"path": [
-								"helloworld"
+								"image"
 							]
 						}
 					},
@@ -378,6 +697,16 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{TOKEN User 1}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -403,23 +732,40 @@
 	"variable": [
 		{
 			"key": "auth_base_url",
-			"value": "/authenticator",
+			"value": "authenticator",
 			"type": "string"
 		},
 		{
 			"key": "user_base_url",
-			"value": "/users",
+			"value": "users",
+			"type": "string"
+		},
+		{
+			"key": "review_base_url",
+			"value": "reviews",
 			"type": "string"
 		},
 		{
 			"key": "endpoint",
-			"value": "localhost:8000",
+			"value": "localhost:8000/",
 			"type": "string"
 		},
 		{
-			"key": "TOKEN",
+			"key": "TOKEN User 1",
 			"value": "",
 			"type": "string"
+		},
+		{
+			"key": "TOKEN User 2",
+			"value": ""
+		},
+		{
+			"key": "ID User 2",
+			"value": ""
+		},
+		{
+			"key": "ID User 1",
+			"value": ""
 		}
 	]
 }

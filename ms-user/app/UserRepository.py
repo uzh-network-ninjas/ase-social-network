@@ -1,6 +1,6 @@
 import os
 
-from app.models.User import UserUpdate
+from app.models.UserUpdate import UserUpdate
 from bson import ObjectId
 from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient

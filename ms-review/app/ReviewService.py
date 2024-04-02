@@ -2,7 +2,9 @@ import boto3
 import jwt
 import os
 
-from app.models.Review import ReviewCreate, ReviewCreateImage, ReviewOut
+from app.models.ReviewCreate import ReviewCreate
+from app.models.ReviewOut import ReviewOut
+from app.models.ReviewCreateImage import ReviewCreateImage
 from app.ReviewRepository import ReviewRepository
 from fastapi import HTTPException, Request, UploadFile
 from typing import List
