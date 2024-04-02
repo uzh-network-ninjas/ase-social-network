@@ -3,9 +3,11 @@ import jwt
 import os
 
 from app.models.ReviewCreate import ReviewCreate
+from app.models.ReviewListOut import ReviewListOut
 from app.models.ReviewOut import ReviewOut
 from app.models.ReviewCreateImage import ReviewCreateImage
 from app.ReviewRepository import ReviewRepository
+from datetime import datetime
 from fastapi import HTTPException, Request, UploadFile
 from typing import List
 
@@ -48,8 +50,19 @@ class ReviewService:
         result["id"] = str(result["_id"])
         return ReviewOut(**result)
 
-    async def get_feed_by_token(self, token):
-        raise NotImplementedError
+    async def get_feed_by_cursor_and_followed_users(self, timestamp_cursor: datetime, following: List) -> ReviewListOut:
+        pagesize = 5 #defines the amount of returned reviews
+
+        #i guess you extract the user_ids of the followed users here, so i am going to pass user_ids as a placeholder argument
+        user_ids = ["placeholder"]
+
+        #not sure where (service or repo) you implement the logic to get reviews from followings only, but i assume you create a
+        #query with the $in operator to retrieve all reviews that have a user_id contained in the given list,
+        #so i will put my query with operator into the repo class too
+
+        result = await self.rr.get_feed_by_cursor_and_user_ids(timestamp_cursor, user_ids, pagesize)
+        #modify result to return ReviewListOut model conform data
+        return result
 
     async def get_reviews_by_place_ids(self, place_ids: List[str]):
         raise NotImplementedError
