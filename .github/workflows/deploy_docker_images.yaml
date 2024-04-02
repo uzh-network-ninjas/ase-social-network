@@ -32,7 +32,7 @@ jobs:
     - name: Read service folders from config
       id: read_folders
       run: |
-        echo "FOLDERS=$(cat /support/services.conf | xargs)" >> $GITHUB_ENV
+        echo "FOLDERS=$(cat support/services.conf | xargs)" >> $GITHUB_ENV
 
     - name: Build and push Docker images
       run: |
@@ -40,7 +40,7 @@ jobs:
           # VERSIONED_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$FOLDER:${{ env.VERSION }}"
           LATEST_IMAGE_NAME="${{ env.DOCKER_HUB_USERNAME }}/$FOLDER:latest"
           
-          docker build "$FOLDER" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
+          docker build "$FOLDER" -f "$FOLDER/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
           
           docker push "$VERSIONED_IMAGE_NAME"
           docker push "$LATEST_IMAGE_NAME"
