@@ -32,7 +32,9 @@ jobs:
     - name: Read service folders from config
       id: read_folders
       run: |
-        echo "FOLDERS=$(cat support/services.conf | xargs)" >> $GITHUB_ENV
+        source support/services.conf
+        printf "%s\n" "${services[@]}" > services_list.txt
+        echo "FOLDERS=$(cat services_list.txt | xargs)" >> $GITHUB_ENV
 
     - name: Build and push Docker images
       run: |
