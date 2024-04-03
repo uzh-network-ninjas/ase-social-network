@@ -10,7 +10,7 @@
                 <div class="flex items-center gap-4 flex-[1_0_0]">
 
                     <!--Back button-->
-                    <Button text rounded class="w-6 h-6" @click= $router.go(-1)>
+                    <Button text rounded class="w-6 h-6" @click=$router.go(-1)>
                         <template #icon>
                             <BaseIcon icon="back" />
                         </template>
@@ -54,7 +54,7 @@
                         <!--Username-->
                         <div
                             class="text-[color:var(--secondary-color,#5C917F)] text-center text-2xl not-italic font-light leading-[normal]">
-                            {{ username }}
+                            {{ user?.username }}
                         </div>
 
                         <!--Stats-->
@@ -64,7 +64,7 @@
                             <div class="flex flex-col justify-center items-start">
                                 <div
                                     class="self-stretch text-[color:var(--text-high-emphasis,rgba(0,0,0,0.89))] text-center text-2xl not-italic font-light leading-[normal]">
-                                    {{ uploadedReviewsCount }}
+                                    {{ user?.reviews }}
                                 </div>
                                 <div
                                     class="self-stretch text-[color:var(--text-medium-emphasis,rgba(0,0,0,0.60))] text-center text-base not-italic font-light leading-[normal]">
@@ -79,7 +79,7 @@
                             <div class="flex flex-col justify-center items-start">
                                 <div
                                     class="self-stretch text-[color:var(--text-high-emphasis,rgba(0,0,0,0.89))] text-center text-2xl not-italic font-light leading-[normal]">
-                                    {{ followersCount }}
+                                    {{ user?.followers.length }}
                                 </div>
                                 <div
                                     class="self-stretch text-[color:var(--text-medium-emphasis,rgba(0,0,0,0.60))] text-center text-base not-italic font-light leading-[normal]">
@@ -94,7 +94,7 @@
                             <div class="flex flex-col justify-center items-start">
                                 <div
                                     class="self-stretch text-[color:var(--text-high-emphasis,rgba(0,0,0,0.89))] text-center text-2xl not-italic font-light leading-[normal]">
-                                    {{ followsCount }}
+                                    {{ user?.following.length }}
                                 </div>
                                 <div
                                     class="self-stretch text-[color:var(--text-medium-emphasis,rgba(0,0,0,0.60))] text-center text-base not-italic font-light leading-[normal]">
@@ -108,7 +108,7 @@
 
                             <!--Follow button-->
                             <div class="flex justify-center items-center gap-2 px-4 py-1">
-                                <Button rounded :label= "followButtonText" iconPos="left" @click="toggleFollow">
+                                <Button rounded :label="followButtonText" iconPos="left" @click="toggleFollow">
                                     <template #icon>
                                         <BaseIcon icon="user-plus" />
                                     </template>
@@ -139,25 +139,24 @@ import { useAuthStore } from '@/stores/auth'
 import Navbar, { type MenuOption } from '@/components/TopNav.vue'
 import Button from 'primevue/button'
 import BaseIcon from '@/icons/BaseIcon.vue'
-import InputText from 'primevue/inputtext'
-import InputIcon from 'primevue/inputicon'
-import FloatLabel from 'primevue/floatlabel'
-import IconField from 'primevue/iconfield'
+import { useRouter } from 'vue-router'
+import { userService } from '@/services/userService'
+import { User } from '@/types/User'
+
+const router = useRouter()
+
 
 const authStore = useAuthStore()
 
-const profilePicUrl = ref<string>('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png')
-const username = ref<string>('username')
+const userId = ref<string>('')
+const user = ref<User>()
 
-// Mock data for demonstration, replace with actual data retrieval
-const uploadedReviewsCount = ref<number>(10)
-const followersCount = ref<number>(12)
-const followsCount = ref<number>(50)
+const profilePicUrl = ref<string>('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png')
 
 const isFollowing = ref<boolean>(false)
 
 const followButtonText = computed(() => {
-  return isFollowing.value ? "Unfollow" : "Follow"
+    return isFollowing.value ? "Unfollow" : "Follow"
 })
 
 // Function to toggle follow status
@@ -176,7 +175,11 @@ const topNavActions: MenuOption[] = [
 
 // Fetch user profile data on component mount
 onMounted(async () => {
-    // Fetch user profile data from API or store
-    // Set profilePicUrl and username accordingly
+    userId.value = router.currentRoute.value.params.userId as string // Access userId from router
+    try {
+        user.value = await userService.getUser(userId.value)
+    } catch (error) {
+        console.error('Error fetching user profile:', error)
+    }
 })
 </script>

@@ -27,12 +27,15 @@ const router = createRouter({
       name: 'terms-and-conditions',
       redirect: '/'
     },
+    
     {
-      path: '/profile',
+      path: '/profile/:userId',
       name: 'profile',
       component: ProfileView
     }
   ]
 })
+
+
 
 export default router
