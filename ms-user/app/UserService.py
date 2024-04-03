@@ -4,9 +4,9 @@ import os
 
 from app.models.UserUpdate import UserUpdate
 from app.models.UserOut import UserOut
+from app.models.UserListOut import UserListOut
 from app.UserRepository import UserRepository
 from fastapi import HTTPException, Request, UploadFile
-from typing import List
 
 
 class UserService:
@@ -79,21 +79,21 @@ class UserService:
         user_to_unfollow.followers.remove(user_id)
         _ = await self.update_user_by_id(unfollow_user_id, UserUpdate(**user_to_unfollow.dict()))
 
-    async def get_following_users_by_id(self, user_id: str) -> List:
+    async def get_following_users_by_id(self, user_id: str) -> UserListOut:
         following_users = []
         user = await self.get_user_by_id(user_id)
         for following_user_id in user.following:
             result = await self.get_user_by_id(following_user_id)
             following_users.append(UserOut(**result.dict()))
-        return following_users
+        return UserListOut(**{"users": following_users})
 
-    async def get_user_followers_by_id(self, user_id: str) -> List:
+    async def get_user_followers_by_id(self, user_id: str) -> UserListOut:
         user_followers = []
         user = await self.get_user_by_id(user_id)
         for user_follower_id in user.followers:
             result = await self.get_user_by_id(user_follower_id)
             user_followers.append(UserOut(**result.dict()))
-        return user_followers
+        return UserListOut(**{"users": user_followers})
 
     @staticmethod
     def extract_user_id_from_token(request: Request) -> str:

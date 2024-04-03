@@ -9,14 +9,14 @@ auth_service = AuthenticateService()
 
 
 @app.post("/user", status_code=status.HTTP_201_CREATED)
-async def register(user: UserRegister) -> dict:
+async def register(user: UserRegister) -> dict[str, str]:
     registered_user = await auth_service.register_user(user)
     access_token = await auth_service.login_user(registered_user)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 @app.post("/token", status_code=status.HTTP_201_CREATED)
-async def login_generate_token(user: UserLogin) -> dict:
+async def login_generate_token(user: UserLogin) -> dict[str, str]:
     access_token = await auth_service.login_user(user)
     return {"access_token": access_token, "token_type": "bearer"}
 
