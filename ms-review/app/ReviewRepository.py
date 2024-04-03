@@ -1,12 +1,13 @@
 import os
 
-from models.ReviewCreate import ReviewCreate
-from models.ReviewCreateImage import ReviewCreateImage
+from app.models.ReviewCreate import ReviewCreate
+from app.models.ReviewCreateImage import ReviewCreateImage
 from bson import ObjectId
 from datetime import datetime
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCursor
 from pymongo.results import UpdateResult, InsertOneResult
 from typing import List
+
 
 class ReviewRepository:
     def __init__(self):
@@ -26,10 +27,11 @@ class ReviewRepository:
     async def get_review_by_id(self, review_id: str) -> dict:
         return await self.collection.find_one({"_id": ObjectId(review_id)})
 
-    #TODO not sure about return type yet, please investigate :D
-    async def get_feed_by_cursor_and_user_ids(self, timestamp_cursor: datetime, user_ids: List[str], pagesize):
+    async def get_feed_by_cursor_and_user_ids(self, timestamp_cursor: datetime, user_ids: List[str], page_no: str, page_size=25) -> AsyncIOMotorCursor:
+        skip_reviews = page_size * (int(page_no) - 1)
         query = {
-            "created_at": {"$lt": timestamp_cursor} #,
-            #"user_id": {"$in": user_ids} is this right?
+            "created_at": {"$lt": timestamp_cursor},
+            "user_id": {"$in": user_ids}
         }
-        return await self.collection.find(query).sort("created_at", -1).limit(pagesize)
+        cursor = self.collection.find(query).sort("created_at", -1).skip(skip_reviews).limit(page_size)
+        return await cursor.to_list(length=page_size)

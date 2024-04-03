@@ -1,4 +1,4 @@
-from ReviewOut import ReviewOut
+from app.models.ReviewOut import ReviewOut
 from pydantic import BaseModel
 from typing import List
 
