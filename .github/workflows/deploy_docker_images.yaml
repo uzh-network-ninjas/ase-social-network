@@ -3,9 +3,9 @@ name: Build and Push Docker images
 on:
   push:
     branches:
-      - feature-CIintegration-separate-enviroments  # Trigger on pushes to the main branch, adjust if necessary
-    # tags:
-    #   - 'v*'  # This will trigger the workflow on tags like v1.0, v2.0, etc.
+      - main  # Trigger on pushes to the main branch, adjust if necessary
+    tags:
+      - 'v*'  # This will trigger the workflow on tags like v1.0, v2.0, etc.
 
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
