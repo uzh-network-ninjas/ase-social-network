@@ -5,7 +5,7 @@ from app.models.ReviewCreateImage import ReviewCreateImage
 from app.models.ReviewOut import ReviewOut
 from bson import ObjectId
 from datetime import datetime
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCursor
+from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.results import UpdateResult, InsertOneResult
 from typing import List
 
