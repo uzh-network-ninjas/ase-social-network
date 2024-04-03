@@ -38,12 +38,11 @@ class ReviewRepository:
             "created_at": {"$lt": timestamp_cursor},
             "user_id": {"$in": user_ids}
         }
-        cursor = self.collection.find(query).sort("created_at", -1).limit(page_size)
-        return await cursor.to_list(length=page_size)
+        return await self.collection.find(query).sort("created_at", -1).limit(page_size).to_list(length=page_size)
 
 
     async def get_reviews_by_username(self, username: str) -> ReviewListOut:
-        return await self.collection.find({"username": username}).to_list(length=None)
+        return await self.collection.find({"username": username}).sort("created_at", -1).to_list(length=None)
 
 
     async def get_reviews_by_locations_and_usernames(self, location_ids: List[str], usernames: List[str]) -> ReviewListOut:
@@ -52,4 +51,4 @@ class ReviewRepository:
             query["location.id"] = {"$in": location_ids}
         if usernames is not None:
             query["username"] = {"$in": usernames}
-        return await self.collection.find(query).to_list(length=None)
+        return await self.collection.find(query).sort("created_at", -1).to_list(length=None)
