@@ -1,7 +1,8 @@
-from app.models.User import UserOut, UserUpdate
+from app.models.UserUpdate import UserUpdate
+from app.models.UserOut import UserOut
+from app.models.UserListOut import UserListOut
 from app.UserService import UserService
 from fastapi import FastAPI, Request, UploadFile, status
-from typing import List
 
 app = FastAPI()
 us = UserService()
@@ -35,12 +36,23 @@ async def delete_user(request: Request):
     await us.delete_user_by_id(user_id)
 
 
-@app.get("/{user_id}/following", status_code=status.HTTP_200_OK)
-async def get_following_users(user_id: str) -> List:
+@app.get("/{user_id}/following", status_code=status.HTTP_200_OK, response_model=UserListOut)
+async def get_following_users(user_id: str) -> UserListOut:
     return await us.get_following_users_by_id(user_id)
 
 
+@app.get("/{user_id}/followers", status_code=status.HTTP_200_OK, response_model=UserListOut)
+async def get_user_followers(user_id: str) -> UserListOut:
+    return await us.get_user_followers_by_id(user_id)
+
+
 @app.patch("/following/{user_id}", status_code=status.HTTP_200_OK, response_model=UserOut)
-async def follow_user(request: Request, user_id: str):
+async def follow_user(request: Request, user_id: str) -> UserOut:
     curr_user_id = us.extract_user_id_from_token(request)
     return await us.follow_user_by_id(curr_user_id, user_id)
+
+
+@app.delete("/following/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def unfollow_user(request: Request, user_id: str):
+    curr_user_id = us.extract_user_id_from_token(request)
+    await us.unfollow_user_by_id(curr_user_id, user_id)

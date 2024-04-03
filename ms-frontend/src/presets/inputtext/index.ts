@@ -19,7 +19,7 @@ export default {
       { 'focus-visible:border-primary': !props.invalid && !context.disabled },
 
       {
-        'border-medium-emphasis': !props.invalid,
+        'border-medium-emphasis': !props.invalid && !context.disabled,
         'border-error': props.invalid && !context.disabled
       },
       { 'border-disabled': context.disabled },

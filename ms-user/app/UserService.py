@@ -2,10 +2,11 @@ import boto3
 import jwt
 import os
 
-from app.models.User import UserOut, UserUpdate
+from app.models.UserUpdate import UserUpdate
+from app.models.UserOut import UserOut
+from app.models.UserListOut import UserListOut
 from app.UserRepository import UserRepository
 from fastapi import HTTPException, Request, UploadFile
-from typing import List
 
 
 class UserService:
@@ -51,10 +52,7 @@ class UserService:
             raise HTTPException(status_code=400, detail="Could not update user profile picture!")
 
         updated_user = UserUpdate(image=object_key)
-        result = await self.ur.update_user_by_id(user_id, updated_user)
-        if not result.raw_result["updatedExisting"]:
-            raise HTTPException(status_code=400, detail="Could not update user profile picture reference!")
-        return await self.get_user_by_id(user_id)
+        return await self.update_user_by_id(user_id, updated_user)
 
     async def delete_user_by_id(self, user_id: str):
         result = await self.ur.delete_user_by_id(user_id)
@@ -63,22 +61,39 @@ class UserService:
 
     async def follow_user_by_id(self, user_id: str, follow_user_id: str) -> UserOut:
         user_to_follow = await self.get_user_by_id(follow_user_id)
-        curr_user = await self.ur.get_user_by_id(user_id)
-        if user_to_follow.id in curr_user['following']:
+        curr_user = await self.get_user_by_id(user_id)
+        if follow_user_id in curr_user.following:
             raise HTTPException(status_code=409, detail="User already followed")
-        curr_user['following'].append(user_to_follow.id)
-        result = await self.ur.update_user_by_id(user_id, UserUpdate(**curr_user))
-        if not result.raw_result["updatedExisting"]:
-            raise HTTPException(status_code=400, detail="Could not update user following list")
-        return await self.get_user_by_id(user_id)
+        user_to_follow.followers.append(user_id)
+        _ = await self.update_user_by_id(follow_user_id, UserUpdate(**user_to_follow.dict()))
+        curr_user.following.append(follow_user_id)
+        return await self.update_user_by_id(user_id, UserUpdate(**curr_user.dict()))
 
-    async def get_following_users_by_id(self, user_id: str) -> List:
+    async def unfollow_user_by_id(self, user_id: str, unfollow_user_id: str):
+        user_to_unfollow = await self.get_user_by_id(unfollow_user_id)
+        curr_user = await self.get_user_by_id(user_id)
+        if unfollow_user_id not in curr_user.following:
+            raise HTTPException(status_code=404, detail="User is not followed")
+        curr_user.following.remove(unfollow_user_id)
+        _ = await self.update_user_by_id(user_id, UserUpdate(**curr_user.dict()))
+        user_to_unfollow.followers.remove(user_id)
+        _ = await self.update_user_by_id(unfollow_user_id, UserUpdate(**user_to_unfollow.dict()))
+
+    async def get_following_users_by_id(self, user_id: str) -> UserListOut:
         following_users = []
-        print('hello')
         user = await self.get_user_by_id(user_id)
-        for following_user in user.following:
-            following_users.append(await self.get_user_by_id(following_user))
-        return following_users
+        for following_user_id in user.following:
+            result = await self.get_user_by_id(following_user_id)
+            following_users.append(UserOut(**result.dict()))
+        return UserListOut(**{"users": following_users})
+
+    async def get_user_followers_by_id(self, user_id: str) -> UserListOut:
+        user_followers = []
+        user = await self.get_user_by_id(user_id)
+        for user_follower_id in user.followers:
+            result = await self.get_user_by_id(user_follower_id)
+            user_followers.append(UserOut(**result.dict()))
+        return UserListOut(**{"users": user_followers})
 
     @staticmethod
     def extract_user_id_from_token(request: Request) -> str:
