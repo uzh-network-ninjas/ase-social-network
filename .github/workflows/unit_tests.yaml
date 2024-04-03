@@ -66,6 +66,7 @@ jobs:
         bash ./.github/uploadCodeReport_unitTests.sh '*'
 
     - name: Find Comment
+      if: github.event_name == 'pull_request'
       uses: peter-evans/find-comment@v3
       id: fc
       with:
@@ -74,7 +75,7 @@ jobs:
         body-includes: Build output
       
     - name: Post Test Results Comment
-      if: always() 
+      if: github.event_name == 'pull_request' && always()
       uses: peter-evans/create-or-update-comment@v4
       with:
         comment-id: ${{ steps.fc.outputs.comment-id }}
