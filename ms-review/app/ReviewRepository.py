@@ -2,6 +2,7 @@ import os
 
 from app.models.ReviewCreate import ReviewCreate
 from app.models.ReviewCreateImage import ReviewCreateImage
+from app.models.ReviewOut import ReviewOut
 from bson import ObjectId
 from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCursor
@@ -27,7 +28,7 @@ class ReviewRepository:
     async def get_review_by_id(self, review_id: str) -> dict:
         return await self.collection.find_one({"_id": ObjectId(review_id)})
 
-    async def get_feed_by_cursor_and_user_ids(self, timestamp_cursor: datetime, user_ids: List[str], page_no: str, page_size=25) -> AsyncIOMotorCursor:
+    async def get_feed_by_cursor_and_user_ids(self, timestamp_cursor: datetime, user_ids: List[str], page_no: str, page_size=25) -> List[ReviewOut]:
         skip_reviews = page_size * (int(page_no) - 1)
         query = {
             "created_at": {"$lt": timestamp_cursor},
