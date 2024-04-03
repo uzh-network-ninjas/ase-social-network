@@ -2,6 +2,7 @@ import os
 
 from app.models.ReviewCreate import ReviewCreate
 from app.models.ReviewCreateImage import ReviewCreateImage
+from app.models.ReviewListOut import ReviewListOut
 from app.models.ReviewOut import ReviewOut
 from bson import ObjectId
 from datetime import datetime
@@ -16,22 +17,38 @@ class ReviewRepository:
         db = client.ms_review_db
         self.collection = db.review_collection
 
-    async def add_review(self, user_id: str, review: ReviewCreate) -> InsertOneResult:
+
+    async def add_review(self, review: ReviewCreate, user_id: str, username: str) -> InsertOneResult:
         review_dict = review.model_dump()
         review_dict["user_id"] = user_id
+        review_dict["username"] = username
         return await self.collection.insert_one(review_dict)
+
 
     async def update_review_image(self, review_id: str, review_image: ReviewCreateImage) -> UpdateResult:
         updated_review = review_image.model_dump()
         return await self.collection.update_one({"_id": ObjectId(review_id)}, {"$set": updated_review})
 
+
     async def get_review_by_id(self, review_id: str) -> dict:
         return await self.collection.find_one({"_id": ObjectId(review_id)})
 
-    async def get_feed_by_cursor_and_user_ids(self, timestamp_cursor: datetime, user_ids: List[str], page_size=25) -> List[ReviewOut]:
+    async def get_feed_by_cursor_and_user_ids(self, timestamp_cursor: datetime, user_ids: List[str], page_size: int = 25) -> ReviewListOut:
         query = {
             "created_at": {"$lt": timestamp_cursor},
             "user_id": {"$in": user_ids}
         }
-        cursor = self.collection.find(query).sort("created_at", -1).limit(page_size)
-        return await cursor.to_list(length=page_size)
+        return await self.collection.find(query).sort("created_at", -1).limit(page_size).to_list(length=page_size)
+
+
+    async def get_reviews_by_username(self, username: str) -> ReviewListOut:
+        return await self.collection.find({"username": username}).sort("created_at", -1).to_list(length=None)
+
+
+    async def get_reviews_by_locations_and_usernames(self, location_ids: List[str], usernames: List[str]) -> ReviewListOut:
+        query = {}
+        if location_ids is not None:
+            query["location.id"] = {"$in": location_ids}
+        if usernames is not None:
+            query["username"] = {"$in": usernames}
+        return await self.collection.find(query).sort("created_at", -1).to_list(length=None)

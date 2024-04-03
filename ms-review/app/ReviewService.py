@@ -1,3 +1,5 @@
+import json
+
 import boto3
 import jwt
 import os
@@ -16,9 +18,11 @@ class ReviewService:
     def __init__(self):
         self.rr = ReviewRepository()
 
-    async def create_review(self, user_id: str, review: ReviewCreate) -> ReviewOut:
-        result = await self.rr.add_review(user_id, review)
+
+    async def create_review(self, review: ReviewCreate, user_id: str, username: str) -> ReviewOut:
+        result = await self.rr.add_review(review, user_id, username)
         return await self.get_review_by_id(result.inserted_id)
+
 
     async def append_review_image_by_id(self, review_id: str, image: UploadFile) -> ReviewOut:
         bucket_name = "ms-review"
@@ -35,8 +39,8 @@ class ReviewService:
             file_content = await image.read()
             object_key = f"{s3_folder}/{review_id}/{image.filename}"
             s3_client.put_object(Bucket=bucket_name, Key=object_key, Body=file_content)
-        except Exception as e:
-            raise HTTPException(status_code=400, detail="Could not append review image!" + str(e))
+        except Exception:
+            raise HTTPException(status_code=400, detail="Could not append review image!")
 
         updated_review = ReviewCreateImage(image=object_key)
         result = await self.rr.update_review_image(review_id, updated_review)
@@ -44,12 +48,14 @@ class ReviewService:
             raise HTTPException(status_code=400, detail="Could not update review image reference!")
         return await self.get_review_by_id(review_id)
 
+
     async def get_review_by_id(self, review_id: str) -> ReviewOut:
         result = await self.rr.get_review_by_id(review_id)
         if not result:
             raise HTTPException(status_code=404, detail="Review not found!")
         result["id"] = str(result["_id"])
         return ReviewOut(**result)
+
 
     async def get_feed_by_cursor_and_followed_users(self, timestamp_cursor: datetime, user_ids: List[str]) -> ReviewListOut:
         if len(user_ids) == 0:
@@ -60,15 +66,39 @@ class ReviewService:
             raise HTTPException(status_code=404, detail="No reviews found")
         for review in reviews:
             review["id"] = str(review["_id"])
-        return ReviewListOut(**{"reviews": reviews})
+        return ReviewListOut(reviews=reviews)
 
-    async def get_reviews_by_place_ids(self, place_ids: List[str]):
-        raise NotImplementedError
+
+    async def get_reviews_by_username(self, username: str) -> ReviewListOut:
+        result = await self.rr.get_reviews_by_username(username)
+        if not result:
+            raise HTTPException(status_code=404, detail="User has not created any reviews yet!")
+        for review in result:
+            review["id"] = str(review["_id"])
+        return ReviewListOut(reviews=result)
+
+
+    async def get_reviews_by_locations_and_usernames(self, location_ids: List[str], usernames: List[str]) -> ReviewListOut:
+        result = await self.rr.get_reviews_by_locations_and_usernames(location_ids, usernames)
+        if not result:
+            raise HTTPException(status_code=404, detail="No reviews for this location and user combination!")
+        for review in result:
+            review["id"] = str(review["_id"])
+        return ReviewListOut(reviews=result)
+
+
+    def extract_user_id_from_token(self, request: Request) -> str:
+        payload = self.extract_payload_from_token(request)
+        return payload["sub"]
+
+
+    def extract_username_from_token(self, request: Request) -> str:
+        payload = self.extract_payload_from_token(request)
+        return payload["username"]
+
 
     @staticmethod
-    def extract_user_id_from_token(request: Request) -> str:
+    def extract_payload_from_token(request: Request) -> dict:
         bearer = request.headers.get("Authorization")
         token = bearer.split(" ")[1]
-        payload = jwt.decode(token, options={"verify_signature": False})
-        user_id = payload["sub"]
-        return user_id
+        return jwt.decode(token, options={"verify_signature": False})
