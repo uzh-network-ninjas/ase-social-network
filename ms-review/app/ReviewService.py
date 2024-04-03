@@ -3,11 +3,14 @@ import jwt
 import os
 
 from app.models.ReviewCreate import ReviewCreate
+from app.models.ReviewListOut import ReviewListOut
 from app.models.ReviewOut import ReviewOut
 from app.models.ReviewCreateImage import ReviewCreateImage
 from app.ReviewRepository import ReviewRepository
+from datetime import datetime
 from fastapi import HTTPException, Request, UploadFile
 from typing import List
+
 
 class ReviewService:
     def __init__(self):
@@ -48,8 +51,16 @@ class ReviewService:
         result["id"] = str(result["_id"])
         return ReviewOut(**result)
 
-    async def get_feed_by_token(self, token):
-        raise NotImplementedError
+    async def get_feed_by_cursor_and_followed_users(self, timestamp_cursor: datetime, user_ids: List[str]) -> ReviewListOut:
+        if len(user_ids) == 0:
+            raise HTTPException(status_code=404, detail="No users found")
+        page_size = 25
+        reviews = await self.rr.get_feed_by_cursor_and_user_ids(timestamp_cursor, user_ids, page_size)
+        if len(reviews) == 0:
+            raise HTTPException(status_code=404, detail="No reviews found")
+        for review in reviews:
+            review["id"] = str(review["_id"])
+        return ReviewListOut(**{"reviews": reviews})
 
     async def get_reviews_by_place_ids(self, place_ids: List[str]):
         raise NotImplementedError
