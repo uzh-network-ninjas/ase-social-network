@@ -1,0 +1,45 @@
+# ./helm/kong/values.yaml
+
+ingressController:
+  enabled: false
+image:
+  repository: kong/kong-gateway
+  tag: "3.6.1.1"
+
+secretVolumes:
+   - kong-cluster-cert
+
+env:
+  # This is a control_plane node
+  role: control_plane
+  # These certificates are used for control plane / data plane communication
+  cluster_cert: /etc/secrets/kong-cluster-cert/tls.crt
+  cluster_cert_key: /etc/secrets/kong-cluster-cert/tls.key
+
+  database: "off"
+  password: kong_admin_password
+  
+ # The control plane serves the Admin API
+admin:
+  enabled: true
+  http:
+    enabled: true
+
+# Clustering endpoints are required in hybrid mode
+cluster:
+  enabled: true
+  tls:
+    enabled: true
+
+clustertelemetry:
+  enabled: true
+  tls:
+    enabled: true
+
+# Optional features
+manager:
+  enabled: false
+
+# These roles will be served by different Helm releases
+proxy:
+  enabled: false
