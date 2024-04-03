@@ -28,11 +28,10 @@ class ReviewRepository:
     async def get_review_by_id(self, review_id: str) -> dict:
         return await self.collection.find_one({"_id": ObjectId(review_id)})
 
-    async def get_feed_by_cursor_and_user_ids(self, timestamp_cursor: datetime, user_ids: List[str], page_no: str, page_size=25) -> List[ReviewOut]:
-        skip_reviews = page_size * (int(page_no) - 1)
+    async def get_feed_by_cursor_and_user_ids(self, timestamp_cursor: datetime, user_ids: List[str], page_size=25) -> List[ReviewOut]:
         query = {
             "created_at": {"$lt": timestamp_cursor},
             "user_id": {"$in": user_ids}
         }
-        cursor = self.collection.find(query).sort("created_at", -1).skip(skip_reviews).limit(page_size)
+        cursor = self.collection.find(query).sort("created_at", -1).limit(page_size)
         return await cursor.to_list(length=page_size)

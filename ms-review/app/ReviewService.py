@@ -51,11 +51,11 @@ class ReviewService:
         result["id"] = str(result["_id"])
         return ReviewOut(**result)
 
-    async def get_feed_by_cursor_and_followed_users(self, timestamp_cursor: datetime, user_ids: List[str], page_no: str) -> ReviewListOut:
+    async def get_feed_by_cursor_and_followed_users(self, timestamp_cursor: datetime, user_ids: List[str]) -> ReviewListOut:
         if len(user_ids) == 0:
             raise HTTPException(status_code=404, detail="No users found")
         page_size = 25
-        reviews = await self.rr.get_feed_by_cursor_and_user_ids(timestamp_cursor, user_ids, page_no, page_size)
+        reviews = await self.rr.get_feed_by_cursor_and_user_ids(timestamp_cursor, user_ids, page_size)
         if len(reviews) == 0:
             raise HTTPException(status_code=404, detail="No reviews found")
         for review in reviews:

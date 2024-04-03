@@ -28,11 +28,11 @@ async def get_review(review_id: str) -> ReviewOut:
     return await rs.get_review_by_id(review_id)
 
 
-@app.get("/page/{page_no}", response_model=ReviewListOut)
-async def get_feed(request: Request, page_no: str, timestamp_cursor: datetime = datetime.now()) -> ReviewListOut:
+@app.get("/", response_model=ReviewListOut)
+async def get_feed(request: Request, timestamp_cursor: datetime = datetime.now()) -> ReviewListOut:
     user_id = rs.extract_user_id_from_token(request)
     response = requests.get(f'http://kong:8000/users/{user_id}', headers=request.headers)
-    return await rs.get_feed_by_cursor_and_followed_users(timestamp_cursor, response.json()["following"], page_no)
+    return await rs.get_feed_by_cursor_and_followed_users(timestamp_cursor, response.json()["following"])
 
 
 @app.get("/")
