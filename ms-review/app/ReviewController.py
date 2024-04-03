@@ -36,11 +36,11 @@ async def get_feed(request: Request, timestamp_cursor: datetime = datetime.now()
     return await rs.get_feed_by_cursor_and_followed_users(timestamp_cursor, response.json()["following"])
 
 
-@app.get("/")
-async def get_reviews(username: str):
+@app.get("/users/", response_model=ReviewListOut)
+async def get_reviews_by_username(username: str) -> ReviewListOut:
     return await rs.get_reviews_by_username(username)
 
 
-@app.get("/")
-async def get_reviews(location_ids: List[str], usernames: List[str] = None):
+@app.get("/maps/", response_model=ReviewListOut)
+async def get_filtered_reviews(location_ids: List[str] = None, usernames: List[str] = None) -> ReviewListOut:
     return await rs.get_reviews_by_locations_and_usernames(location_ids, usernames)

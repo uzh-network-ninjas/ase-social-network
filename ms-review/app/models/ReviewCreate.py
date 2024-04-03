@@ -1,5 +1,5 @@
+from app.models.Location import Location
 from datetime import datetime
-from Location import Location
 from pydantic import BaseModel
 from typing import Optional
 
