@@ -19,3 +19,9 @@ wheel==0.41.2
 pyjwt==2.8.0
 python-multipart
 boto3
+
+# dev testing
+pytest 
+pytest-asyncio
+httpx==0.26.0
+pytest-cov
