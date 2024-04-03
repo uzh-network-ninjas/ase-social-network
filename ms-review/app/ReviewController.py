@@ -41,6 +41,6 @@ async def get_reviews_by_username(username: str) -> ReviewListOut:
     return await rs.get_reviews_by_username(username)
 
 
-@app.get("/places/", response_model=ReviewListOut)
+@app.get("/locations/", response_model=ReviewListOut)
 async def get_filtered_reviews(location_ids: List[str] = None, usernames: List[str] = None) -> ReviewListOut:
     return await rs.get_reviews_by_locations_and_usernames(location_ids, usernames)
