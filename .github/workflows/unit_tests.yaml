@@ -64,13 +64,21 @@ jobs:
         GITHUB_RUN_ID: ${{ github.run_id }}
       run: |
         bash ./.github/uploadCodeReport_unitTests.sh '*'
+
+    - name: Find Comment
+      uses: peter-evans/find-comment@v3
+      id: fc
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: Build output
       
     - name: Post Test Results Comment
       if: always() 
-      uses: peter-evans/create-or-update-comment@v1
+      uses: peter-evans/create-or-update-comment@v4
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        issue-number: ${{ github.event.pull_request.number || github.sha }}
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
         body: |
           ## Test Results
           $(cat ./reports/test_results.md)
