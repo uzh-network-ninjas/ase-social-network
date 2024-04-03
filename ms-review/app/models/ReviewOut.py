@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 
@@ -9,3 +10,4 @@ class ReviewOut(BaseModel):
     rating: int
     image: Optional[str] = None
     location: str
+    created_at: datetime
