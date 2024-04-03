@@ -15,7 +15,8 @@ rs = ReviewService()
 @app.post("/", response_model=ReviewOut)
 async def create_review(request: Request, review: ReviewCreate) -> ReviewOut:
     user_id = rs.extract_user_id_from_token(request)
-    return await rs.create_review(user_id, review)
+    username = rs.extract_username_from_token(request)
+    return await rs.create_review(review, user_id, username)
 
 
 @app.patch("/image", response_model=ReviewOut)
@@ -36,5 +37,10 @@ async def get_feed(request: Request, timestamp_cursor: datetime = datetime.now()
 
 
 @app.get("/")
-async def get_reviews_of_places(place_ids: List[str]):
-    raise NotImplementedError
+async def get_reviews(username: str):
+    return await rs.get_reviews_by_username(username)
+
+
+@app.get("/")
+async def get_reviews(location_ids: List[str], usernames: List[str] = None):
+    return await rs.get_reviews_by_locations_and_usernames(location_ids, usernames)
