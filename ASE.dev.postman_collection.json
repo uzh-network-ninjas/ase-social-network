@@ -3,8 +3,8 @@
 		"_postman_id": "a5c38b58-9457-434b-924c-ae2ad05e09a4",
 		"name": "ASE - social network",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "33518942",
-		"_collection_link": "https://warped-crater-963207.postman.co/workspace/network-ninjas~73829257-a871-475a-a5e2-217000946d40/collection/20317814-a5c38b58-9457-434b-924c-ae2ad05e09a4?action=share&source=collection_link&creator=33518942"
+		"_exporter_id": "20317814",
+		"_collection_link": "https://warped-crater-963207.postman.co/workspace/network-ninjas~73829257-a871-475a-a5e2-217000946d40/collection/20317814-a5c38b58-9457-434b-924c-ae2ad05e09a4?action=share&source=collection_link&creator=20317814"
 	},
 	"item": [
 		{
@@ -255,54 +255,6 @@
 					"response": []
 				},
 				{
-					"name": "login coco",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.collectionVariables.set(\"TOKEN User 1\", pm.response.json().access_token)"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"coco\",\r\n    \"password\": \"chad\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}{{auth_base_url}}/token",
-							"host": [
-								"{{endpoint}}{{auth_base_url}}"
-							],
-							"path": [
-								"token"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "update password u1",
 					"request": {
 						"auth": {
@@ -391,7 +343,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{endpoint}}{{user_base_url}}/?username=jerome",
+							"raw": "{{endpoint}}{{user_base_url}}/?username=max",
 							"host": [
 								"{{endpoint}}{{user_base_url}}"
 							],
@@ -401,7 +353,7 @@
 							"query": [
 								{
 									"key": "username",
-									"value": "jerome"
+									"value": "max"
 								}
 							]
 						}
@@ -513,16 +465,6 @@
 				{
 					"name": "update user profile picture",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{TOKEN User 1}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PATCH",
 						"header": [],
 						"body": {
@@ -550,16 +492,6 @@
 				{
 					"name": "u1 follows u2",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{TOKEN User 1}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PATCH",
 						"header": [],
 						"body": {
@@ -585,6 +517,43 @@
 					"response": []
 				},
 				{
+					"name": "u2 follows u1",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN User 2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{user_base_url}}/following/{{ID User 1}}",
+							"host": [
+								"{{endpoint}}{{user_base_url}}"
+							],
+							"path": [
+								"following",
+								"{{ID User 1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "u1 unfollows u2",
 					"request": {
 						"method": "DELETE",
@@ -597,34 +566,6 @@
 							"path": [
 								"following",
 								"{{ID User 2}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Upload image for user - Old test",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/C:/Users/adam/Pictures/ACME_logo.png"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{endpoint}}{{user_base_url}}users/asd/image",
-							"host": [
-								"{{endpoint}}{{user_base_url}}users"
-							],
-							"path": [
-								"asd",
-								"image"
 							]
 						}
 					},
@@ -668,6 +609,44 @@
 			"name": "Review Service",
 			"item": [
 				{
+					"name": "create review",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"ID Review\", pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"This a nice review the THIRD!!!\",\r\n    \"rating\": \"5\",\r\n    \"location\": {\r\n        \"id\": \"googleMapsLocationID\",\r\n        \"name\": \"testlocation3\",\r\n        \"coordinates\": {\r\n            \"x\": 1,\r\n            \"y\": 1\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{review_base_url}}/",
+							"host": [
+								"{{endpoint}}{{review_base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "append review image",
 					"request": {
 						"method": "PATCH",
@@ -677,8 +656,13 @@
 							"formdata": [
 								{
 									"key": "review_id",
-									"value": "1234",
+									"value": "{{ID Review}}",
 									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1eeeb8c2-7e8c-48a0-9fa8-a5d72f0b3391"
 								}
 							]
 						},
@@ -693,6 +677,132 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "get review by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{review_base_url}}/{{ID Review}}",
+							"host": [
+								"{{endpoint}}{{review_base_url}}"
+							],
+							"path": [
+								"{{ID Review}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user feed",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN User 2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{review_base_url}}/?timestamp_cursor=2024-04-03T18:04:45.607000",
+							"host": [
+								"{{endpoint}}{{review_base_url}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "timestamp_cursor",
+									"value": "2024-04-03T18:04:45.607000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get reviews by username",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}{{review_base_url}}/users/?username=jerome",
+							"host": [
+								"{{endpoint}}{{review_base_url}}"
+							],
+							"path": [
+								"users",
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "jerome"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get reviews by locations & usernames",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"location_ids\": [\"googleMapsLocationID\"],\r\n    \"usernames\": [\"jerome\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}{{review_base_url}}/maps/",
+							"host": [
+								"{{endpoint}}{{review_base_url}}"
+							],
+							"path": [
+								"maps",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		}
@@ -766,6 +876,11 @@
 		{
 			"key": "ID User 1",
 			"value": ""
+		},
+		{
+			"key": "ID Review",
+			"value": "",
+			"type": "string"
 		}
 	]
 }

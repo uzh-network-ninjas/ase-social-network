@@ -5,8 +5,9 @@ on:
     branches:
       ['main']
 
+
 jobs:
-  test_and_upload_coverage:
+  integration_test:
     runs-on: ubuntu-latest
     services:
       docker:
