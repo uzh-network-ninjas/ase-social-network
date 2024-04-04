@@ -14,10 +14,10 @@ class AuthenticateService:
     def __init__(self):
         self.auth_repo = AuthenticateRepository()
         self.auth_encryption = {
-            'SECRET_KEY': os.getenv("JWT_SECRET_KEY", "no_key"), #'H8WBDhQlcfjoFmIiYymmkRm1y0A2c5WU',
+            'SECRET_KEY': os.getenv("JWT_SECRET", "no_key"),
             'ALGORITHM': os.getenv("JWT_ALGORITHM", "HS256"),
             'ACCESS_TOKEN_EXPIRE_MINUTES': os.getenv("JWT_EXPIRE_MINUTES", 3000),
-            'KID': os.getenv("JWT_KONG_KEY", "no_key"),#'ooNKWeo0vijweijrKn234123J93c0qkD',
+            'KID': os.getenv("JWT_KONG_KEY", "no_key"),
             'pwd_context': CryptContext(schemes=["bcrypt"], deprecated="auto"),
             'oauth2_scheme': OAuth2PasswordBearer(tokenUrl="token")
         }

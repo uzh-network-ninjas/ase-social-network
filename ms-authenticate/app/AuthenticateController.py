@@ -9,7 +9,7 @@ app = FastAPI()
 auth_service = AuthenticateService()
 
 # List of required environment variables
-required_env_vars = ["MONGO_URL", "JWT_KONG_KEY", "JWT_SECRET_KEY", "JWT_ALGORITHM"]
+required_env_vars = ["MONGO_URL", "JWT_KONG_KEY", "JWT_SECRET", "JWT_ALGORITHM"]
 
 # Function to check for missing environment variables
 def check_env_vars():

@@ -1,4 +1,4 @@
-#!/bin/bash -xv
+#!/bin/bash
 
 # Define the path to your template and output file
 TEMPLATE_PATH="/opt/kong/config/kong.template.yml"
