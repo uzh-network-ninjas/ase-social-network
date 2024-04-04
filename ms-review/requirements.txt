@@ -19,6 +19,8 @@ wheel==0.41.2
 pyjwt==2.8.0
 python-multipart
 boto3
+requests
+
 
 # dev testing
 pytest 

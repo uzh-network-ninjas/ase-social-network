@@ -1,8 +1,8 @@
 from app.models.UserUpdate import UserUpdate
 from app.models.UserOut import UserOut
+from app.models.UserListOut import UserListOut
 from app.UserService import UserService
 from fastapi import FastAPI, Request, UploadFile, status
-from typing import List
 
 app = FastAPI()
 us = UserService()
@@ -36,13 +36,13 @@ async def delete_user(request: Request):
     await us.delete_user_by_id(user_id)
 
 
-@app.get("/{user_id}/following", status_code=status.HTTP_200_OK)
-async def get_following_users(user_id: str) -> List:
+@app.get("/{user_id}/following", status_code=status.HTTP_200_OK, response_model=UserListOut)
+async def get_following_users(user_id: str) -> UserListOut:
     return await us.get_following_users_by_id(user_id)
 
 
-@app.get("/{user_id}/followers", status_code=status.HTTP_200_OK)
-async def get_user_followers(user_id: str) -> List:
+@app.get("/{user_id}/followers", status_code=status.HTTP_200_OK, response_model=UserListOut)
+async def get_user_followers(user_id: str) -> UserListOut:
     return await us.get_user_followers_by_id(user_id)
 
 
