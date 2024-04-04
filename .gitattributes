@@ -1,2 +1,2 @@
 support/localstack/localstack-setup.sh eol=lf
-support/kong/kong-setup.sh eol=lf
+support/kong/custom-entrypoint.sh eol=lf
