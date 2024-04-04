@@ -4,6 +4,9 @@ on:
   # push:
   pull_request:
 
+permissions: 
+   pull-requests: write 
+   
 jobs:
   test_and_upload_coverage:
     runs-on: ubuntu-latest
