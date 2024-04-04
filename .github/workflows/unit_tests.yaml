@@ -1,7 +1,7 @@
 name: Build, Test, and Upload Unit tests Coverage to Codecov
 
 on:
-  push:
+  # push:
   pull_request:
 
 jobs:
@@ -65,21 +65,29 @@ jobs:
       run: |
         bash ./.github/uploadCodeReport_unitTests.sh '*'
 
-    - name: Find Comment
+    - name: Comment PR
       if: github.event_name == 'pull_request' && always()
-      uses: peter-evans/find-comment@v3
-      id: fc
+      uses: thollander/actions-comment-pull-request@v2
       with:
-        issue-number: ${{ github.event.pull_request.number }}
-        comment-author: 'github-actions[bot]'
-        body-includes: Build output
-      
-    - name: Post Test Results Comment
-      if: github.event_name == 'pull_request' && always()
-      uses: peter-evans/create-or-update-comment@v4
-      with:
-        comment-id: ${{ steps.fc.outputs.comment-id }}
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
+        message: |
           ## Test Results
           $(cat ./reports/test_results.md)
+        comment_tag: test_results
+
+    # - name: Find Comment
+      
+    #   uses: peter-evans/find-comment@v3
+    #   id: fc
+    #   with:
+    #     issue-number: ${{ github.event.pull_request.number }}
+    #     comment-author: 'github-actions[bot]'
+    #     body-includes: Build output
+      
+    # - name: Post Test Results Comment
+    #   if: github.event_name == 'pull_request' && always()
+    #   uses: peter-evans/create-or-update-comment@v4
+    #   with:
+    #     comment-id: ${{ steps.fc.outputs.comment-id }}
+    #     issue-number: ${{ github.event.pull_request.number }}
+    #     body: |
+          
