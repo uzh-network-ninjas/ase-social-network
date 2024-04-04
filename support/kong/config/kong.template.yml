@@ -52,6 +52,6 @@ plugins:
 consumers:
 - username: login_server_issuer
   jwt_secrets:
-    - key: "ooNKWeo0vijweijrKn234123J93c0qkD"
-      secret: "H8WBDhQlcfjoFmIiYymmkRm1y0A2c5WU"
-      algorithm: "HS256"
+    - key: "${JWT_KONG_KEY}"
+      secret: "${JWT_SECRET}"
+      algorithm: "${JWT_ALGORITHM}"

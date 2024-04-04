@@ -7,16 +7,17 @@ from app.models.UserLogin import UserLogin
 from app.models.UpdateUserPassword import UpdateUserPassword
 from datetime import timedelta, datetime
 import jwt
+import os
 
 
 class AuthenticateService:
     def __init__(self):
         self.auth_repo = AuthenticateRepository()
         self.auth_encryption = {
-            'SECRET_KEY': 'H8WBDhQlcfjoFmIiYymmkRm1y0A2c5WU',
-            'ALGORITHM': 'HS256',
-            'ACCESS_TOKEN_EXPIRE_MINUTES': 300,
-            'KID': 'ooNKWeo0vijweijrKn234123J93c0qkD',
+            'SECRET_KEY': os.getenv("JWT_SECRET_KEY", "no_key"), #'H8WBDhQlcfjoFmIiYymmkRm1y0A2c5WU',
+            'ALGORITHM': os.getenv("JWT_ALGORITHM", "HS256"),
+            'ACCESS_TOKEN_EXPIRE_MINUTES': os.getenv("JWT_EXPIRE_MINUTES", 3000),
+            'KID': os.getenv("JWT_KONG_KEY", "no_key"),#'ooNKWeo0vijweijrKn234123J93c0qkD',
             'pwd_context': CryptContext(schemes=["bcrypt"], deprecated="auto"),
             'oauth2_scheme': OAuth2PasswordBearer(tokenUrl="token")
         }
