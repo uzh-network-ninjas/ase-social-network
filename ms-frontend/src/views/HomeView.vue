@@ -95,7 +95,10 @@ const navigateToProfilePage = (userId: string) => {
 
     <div class="my-1 flex w-fit flex-col gap-2">
       <Button>Sign In</Button>
-      <Button outlined @click="navigateToProfilePage(id)">{{ name }}</Button>
+      <router-link class="outlined-none" :to="`/profile/${authStore.user?.id ?? ''}`" tabindex="-1">
+        <Button label="To Profile" link rounded />
+      </router-link>
+
       <Button text>Hello</Button>
       <Button rounded>Button</Button>
       <Button outlined rounded>Hello</Button>
