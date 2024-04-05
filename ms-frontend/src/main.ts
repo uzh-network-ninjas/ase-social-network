@@ -8,6 +8,7 @@ import router from './router'
 import { i18n } from '@/i18n'
 import PrimeVue from 'primevue/config'
 import presets from '@/presets'
+import Ripple from 'primevue/ripple'
 
 const app = createApp(App)
 
@@ -19,5 +20,7 @@ app.use(PrimeVue, {
   ripple: true,
   pt: presets
 })
+
+app.directive('ripple', Ripple)
 
 app.mount('#app')
