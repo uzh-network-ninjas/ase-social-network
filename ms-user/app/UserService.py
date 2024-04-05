@@ -2,6 +2,9 @@ import boto3
 import jwt
 import os
 
+from app.models.DietaryCriteria import DietaryCriteria
+from app.models.Preferences import Preferences
+from app.models.Restrictions import Restrictions
 from app.models.UserUpdate import UserUpdate
 from app.models.UserOut import UserOut
 from app.models.UserListOut import UserListOut
@@ -28,6 +31,11 @@ class UserService:
         return UserOut(**result)
 
     async def update_user_by_id(self, user_id: str, updated_user: UserUpdate) -> UserOut:
+        preferences = [preference for preference in updated_user.preferences if preference not in Preferences]
+        restrictions = [restriction for restriction in updated_user.restrictions if restriction not in Restrictions]
+        if preferences or restrictions:
+            raise HTTPException(status_code=400, detail=f"Preferences/Restrictions do not exist: "
+                                                        f"{', '.join(preferences + restrictions)}")
         result = await self.ur.update_user_by_id(user_id, updated_user)
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update user details!")
@@ -102,3 +110,9 @@ class UserService:
         payload = jwt.decode(token, options={"verify_signature": False})
         user_id = payload["sub"]
         return user_id
+
+
+    @staticmethod
+    def get_dietary_criteria() -> DietaryCriteria:
+        return DietaryCriteria(preferences=[preference.value for preference in Preferences],
+                        restrictions=[restriction.value for restriction in Restrictions])
