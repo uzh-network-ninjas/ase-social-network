@@ -69,13 +69,13 @@ class ReviewService:
         return ReviewListOut(reviews=result)
 
 
-    async def get_reviews_by_username(self, username: str, user_id: str) -> ReviewListOut:
-        result = await self.rr.get_reviews_by_username(username)
+    async def get_reviews_by_user_id(self, user_id: str, current_user_id: str) -> ReviewListOut:
+        result = await self.rr.get_reviews_by_user_id(user_id)
         if not result:
             raise HTTPException(status_code=404, detail="User has not created any reviews yet!")
         for review in result:
             review["id"] = str(review["_id"])
-            review["liked_by_current_user"] = user_id in review["liked_by"]
+            review["liked_by_current_user"] = current_user_id in review["liked_by"]
         return ReviewListOut(reviews=result)
 
 

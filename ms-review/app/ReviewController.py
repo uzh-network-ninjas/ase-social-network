@@ -39,9 +39,9 @@ async def get_feed(request: Request, timestamp_cursor: datetime = datetime.now()
 
 
 @app.get("/users/", response_model=ReviewListOut)
-async def get_reviews_by_username(request: Request, username: str) -> ReviewListOut:
-    user_id = rs.extract_user_id_from_token(request)
-    return await rs.get_reviews_by_username(username, user_id)
+async def get_reviews_from_user(request: Request, user_id: str) -> ReviewListOut:
+    extracted_user_id = rs.extract_user_id_from_token(request)
+    return await rs.get_reviews_by_user_id(user_id, extracted_user_id)
 
 
 @app.get("/locations/", response_model=ReviewListOut)

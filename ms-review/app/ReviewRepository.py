@@ -40,8 +40,8 @@ class ReviewRepository:
         return await self.collection.find(query).sort("created_at", -1).limit(page_size).to_list(length=page_size)
 
 
-    async def get_reviews_by_username(self, username: str) -> List[ReviewOut]:
-        return await self.collection.find({"username": username}).sort("created_at", -1).to_list(length=None)
+    async def get_reviews_by_user_id(self, user_id: str) -> List[ReviewOut]:
+        return await self.collection.find({"user_id": user_id}).sort("created_at", -1).to_list(length=None)
 
 
     async def get_reviews_by_locations_and_usernames(self, location_ids: List[str], usernames: List[str]) -> List[ReviewOut]:
