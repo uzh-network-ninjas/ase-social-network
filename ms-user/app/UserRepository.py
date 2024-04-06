@@ -19,6 +19,9 @@ class UserRepository:
     async def get_user_by_username(self, username: str) -> dict:
         return await self.collection.find_one({"username": username})
 
+    async def get_user_by_email(self, email: str) -> dict:
+        return await self.collection.find_one({"email": email})
+
     async def update_user_by_id(self, user_id: str, updated_user: UserUpdate) -> UpdateResult:
         updated_userdata = updated_user.model_dump(exclude_unset=True)
         updated_userdata["updated_at"] = datetime.now()

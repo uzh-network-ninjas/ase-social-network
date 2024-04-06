@@ -31,6 +31,15 @@ class UserService:
         return UserOut(**result)
 
     async def update_user_by_id(self, user_id: str, updated_user: UserUpdate) -> UserOut:
+        if not await self.ur.get_user_by_id(user_id):
+            raise HTTPException(status_code=404, detail="User not found!")
+        username = await self.ur.get_user_by_username(updated_user.username)
+        email = await self.ur.get_user_by_email(updated_user.email)
+        detail = (f"Username already taken: {updated_user.username}!" if username else "") \
+            + (" " if username and email else "") \
+            + (f"Email already taken: {updated_user.email}!" if email else "")
+        if detail:
+            raise HTTPException(status_code=400, detail=detail)
         preferences = [preference for preference in updated_user.preferences if preference not in Preferences]
         restrictions = [restriction for restriction in updated_user.restrictions if restriction not in Restrictions]
         if preferences or restrictions:
@@ -42,6 +51,8 @@ class UserService:
         return await self.get_user_by_id(user_id)
 
     async def update_user_image_by_id(self, user_id: str, image: UploadFile) -> UserOut:
+        if not await self.ur.get_user_by_id(user_id):
+            raise HTTPException(status_code=404, detail="User not found!")
         bucket_name = "ms-user"
         s3_folder = "user-images"
         s3_client = boto3.client(
@@ -114,5 +125,7 @@ class UserService:
 
     @staticmethod
     def get_dietary_criteria() -> DietaryCriteria:
-        return DietaryCriteria(preferences=[preference.value for preference in Preferences],
-                        restrictions=[restriction.value for restriction in Restrictions])
+        return DietaryCriteria(
+            preferences=[preference.value for preference in Preferences],
+            restrictions=[restriction.value for restriction in Restrictions]
+        )
