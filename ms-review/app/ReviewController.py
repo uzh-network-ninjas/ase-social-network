@@ -32,7 +32,7 @@ async def get_review(request: Request, review_id: str) -> ReviewOut:
 
 
 @app.get("/", response_model=ReviewListOut)
-async def get_feed(request: Request, timestamp_cursor: datetime = datetime.now()) -> ReviewListOut:
+async def get_feed(request: Request, timestamp_cursor: datetime = None) -> ReviewListOut:
     user_id = rs.extract_user_id_from_token(request)
     response = requests.get(f'http://kong:8000/users/{user_id}', headers=request.headers)
     return await rs.get_feed_by_cursor_and_followed_users(timestamp_cursor, response.json()["following"], user_id)

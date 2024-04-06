@@ -21,6 +21,7 @@ class ReviewRepository:
         review_dict = review.model_dump()
         review_dict["user_id"] = user_id
         review_dict["username"] = username
+        review_dict["created_at"] = datetime.now()
         return await self.collection.insert_one(review_dict)
 
 
