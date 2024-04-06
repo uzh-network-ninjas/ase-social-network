@@ -30,5 +30,8 @@
   "confirm_new_password": "Confirm New Password",
   "new_password_identical": "The new password cannot be the same as your current password.",
   "password_change_success": "Password changed successfully.",
-  "email_change_success": "Email changed successfully."
+  "email_change_success": "Email changed successfully.",
+  "change_username": "Change Username",
+  "profile": "Profile",
+  "username_change_success": "Username changed successfully."
 }

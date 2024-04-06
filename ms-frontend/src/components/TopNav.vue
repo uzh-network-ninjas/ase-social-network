@@ -30,10 +30,10 @@ withDefaults(
       <li class="grow">
         <router-link
           class="flex w-fit items-center gap-2 rounded-lg text-primary outline-none ring-primary ring-offset-1 focus-visible:ring-1"
-          to="/"
+          :to="{ name: 'home' }"
         >
           <BaseIcon icon="sparkles" :stroke-width="1.5" class="h-8 w-8" />
-          <span class="text-xl font-medium uppercase tracking-widest max-sm:invisible"
+          <span class="text-xl font-medium uppercase tracking-widest max-sm:hidden"
             >Review App</span
           >
         </router-link>

@@ -26,5 +26,8 @@
   "confirm_new_password": "Neues Passwort Bestätigen",
   "new_password_identical": "Das neue Passwort darf nicht mit dem aktuellen Passwort übereinstimmen.",
   "password_change_success": "Passwort erfolgreich geändert.",
-  "email_change_success": "Email erfolgreich geändert."
+  "email_change_success": "Email erfolgreich geändert.",
+  "change_username": "Benutzername ändern",
+  "profile": "Profil",
+  "username_change_success": "Benutzername erfolgreich geändert."
 }

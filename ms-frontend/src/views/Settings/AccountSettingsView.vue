@@ -67,7 +67,7 @@ const toggleShowCurrentPassword = function (): void {
 const updateEmail = function () {
   emailChanged.value = false
   authStore
-    .updateEmail(email.value)
+    .updateEmail({ email: email.value })
     .then(() => {
       emailChanged.value = true
     })

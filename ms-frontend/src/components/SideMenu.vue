@@ -35,23 +35,21 @@ const isTargetRoute = function (targetRoute: RouteLocationRaw) {
 
 <template>
   <nav>
-    <ul>
+    <ul class="flex flex-col gap-2">
       <li v-for="action in actions" :key="action.labelKey">
-        <div
-          :class="[
-            'rounded-lg',
-            'px-4',
-            'py-2',
-            isTargetRoute(action.to)
-              ? 'bg-secondary text-white'
-              : 'bg-white text-medium-emphasis hover:bg-selection-indicator hover:bg-opacity-5'
-          ]"
-        >
-          <router-link :to="action.to" class="flex gap-4 outline-none">
+        <router-link :to="action.to" class="group outline-none">
+          <div
+            :class="[
+              'flex gap-4 rounded-lg px-4 py-2 ring-offset-1 group-focus-visible:ring-1',
+              isTargetRoute(action.to)
+                ? 'bg-secondary text-white ring-secondary'
+                : 'bg-white text-medium-emphasis ring-medium-emphasis hover:bg-selection-indicator hover:bg-opacity-5 '
+            ]"
+          >
             <BaseIcon :icon="action.icon" :strokeWidth="1.5" />
             <span class="pr-2">{{ $t(action.labelKey) }}</span>
-          </router-link>
-        </div>
+          </div>
+        </router-link>
       </li>
     </ul>
   </nav>

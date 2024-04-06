@@ -6,6 +6,11 @@ import { RouterView } from 'vue-router'
 
 const topNavActions: SideMenuOption[] = [
   {
+    labelKey: 'profile',
+    icon: 'user',
+    to: { name: 'settings-profile' }
+  },
+  {
     labelKey: 'account',
     icon: 'cog-6-tooth',
     to: { name: 'settings-account' }
@@ -14,14 +19,14 @@ const topNavActions: SideMenuOption[] = [
 </script>
 
 <template>
-  <header class="sticky top-0 z-40">
+  <header class="sticky top-0 z-20">
     <SignedInTopNav />
     <PageHeader label="Settings" />
   </header>
-  <main class="sm:mx-8">
+  <main class="sm:mx-8 sm:my-4">
     <div class="relative flex w-full flex-col gap-8">
       <div
-        class="w-48 max-sm:w-full max-sm:border-b max-sm:border-b-medium-emphasis max-sm:px-4 max-sm:py-4 sm:fixed"
+        class="w-48 max-sm:w-full max-sm:border-b max-sm:border-b-medium-emphasis max-sm:px-4 max-sm:py-4 sm:fixed sm:z-30"
       >
         <SideMenu :actions="topNavActions" />
       </div>
