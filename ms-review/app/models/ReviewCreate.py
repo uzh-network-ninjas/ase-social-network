@@ -13,4 +13,4 @@ class ReviewCreate(BaseModel):
     location: Location
     like_count: Optional[int] = 0
     liked_by: Optional[List[str]] = []
-    created_at: Optional[datetime] = datetime.now()
+    created_at: Optional[datetime] = None

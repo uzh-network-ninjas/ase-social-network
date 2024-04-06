@@ -12,5 +12,5 @@ class UserRegister(BaseModel):
     restrictions: Optional[List[str]] = []
     following: Optional[List[str]] = []
     followers: Optional[List[str]] = []
-    created_at: datetime = datetime.now()
+    created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
