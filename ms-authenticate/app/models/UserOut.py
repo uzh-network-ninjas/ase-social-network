@@ -7,5 +7,5 @@
 #     id: str
 #     username: str
 #     email: str
-#     created_at: datetime = datetime.now()
+#     created_at: Optional[datetime] = None
 #     updated_at: Optional[datetime] = None
