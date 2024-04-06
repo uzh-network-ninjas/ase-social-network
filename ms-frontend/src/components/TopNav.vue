@@ -9,7 +9,7 @@ export interface MenuOption {
   icon?: IconType
   iconPos?: 'left' | 'right' | 'top' | 'bottom'
   before?: () => void
-  to: RouteLocationRaw
+  to?: RouteLocationRaw
 }
 
 withDefaults(
@@ -26,38 +26,43 @@ withDefaults(
 
 <template>
   <nav class="bg-background">
-    <ul class="flex gap-4 px-4 py-2">
+    <ul class="flex h-16 items-center gap-4 px-4 py-2">
       <li class="grow">
         <router-link
           class="flex w-fit items-center gap-2 rounded-lg text-primary outline-none ring-primary ring-offset-1 focus-visible:ring-1"
-          to="/"
+          :to="{ name: 'home' }"
         >
           <BaseIcon icon="sparkles" :stroke-width="1.5" class="h-8 w-8" />
-          <span class="text-xl font-medium uppercase tracking-widest">Review App</span>
+          <span class="text-xl font-medium uppercase tracking-widest max-sm:hidden"
+            >Review App</span
+          >
         </router-link>
       </li>
-      <li
-        v-for="action in actions"
-        :key="`${action.labelKey}:${action.to}`"
-        class="flex items-center gap-2 text-primary"
-      >
-        <Button
-          text
-          rounded
-          :label="$t(action.labelKey)"
-          :iconPos="action.iconPos ?? iconPos"
-          @click="
-            () => {
-              action.before?.()
-              router.push(action.to)
-            }
-          "
+      <slot name="center">
+        <li
+          v-for="action in actions"
+          :key="`${action.labelKey}:${action.to}`"
+          class="flex items-center gap-2 text-primary"
         >
-          <template #icon>
-            <BaseIcon :icon="action.icon" />
-          </template>
-        </Button>
-      </li>
+          <Button
+            text
+            rounded
+            :label="$t(action.labelKey)"
+            :iconPos="action.iconPos ?? iconPos"
+            @click="
+              () => {
+                action.before?.()
+                if (action.to) router.push(action.to)
+              }
+            "
+          >
+            <template #icon>
+              <BaseIcon :icon="action.icon" />
+            </template>
+          </Button>
+        </li>
+      </slot>
+      <slot name="end"></slot>
     </ul>
   </nav>
 </template>

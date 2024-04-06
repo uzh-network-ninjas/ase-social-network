@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import Navbar, { type MenuOption } from '@/components/TopNav.vue'
+import TopNav, { type MenuOption } from '@/components/TopNav.vue'
 import { type IconType } from '@/icons/BaseIcon.vue'
 import { useAuthStore } from '@/stores/auth'
+import SignedInTopNav from '@/components/SignedInTopNav.vue'
 
 const authStore = useAuthStore()
 
@@ -11,34 +12,22 @@ const name = authStore.user?.username ?? ''
 console.log('username: ', name)
 
 const topNavActions: MenuOption[] = [
-  ...(signedIn
-    ? [
-        {
-          labelKey: 'sign_out',
-          icon: 'arrow-left-end-on-rectangle' as IconType,
-          before: () => {
-            authStore.signOut()
-          },
-          to: { name: 'sign-in' }
-        }
-      ]
-    : [
-        {
-          labelKey: 'sign_up',
-          to: { name: 'sign-up' }
-        },
-        {
-          labelKey: 'sign_in',
-          icon: 'arrow-left-start-on-rectangle' as IconType,
-          to: { name: 'sign-in' }
-        }
-      ])
+  {
+    labelKey: 'sign_up',
+    to: { name: 'sign-up' }
+  },
+  {
+    labelKey: 'sign_in',
+    icon: 'arrow-left-start-on-rectangle' as IconType,
+    to: { name: 'sign-in' }
+  }
 ]
 </script>
 
 <template>
   <header class="sticky top-0 z-40">
-    <Navbar :actions="topNavActions" iconPos="right" />
+    <TopNav v-if="!authStore.signedIn" :actions="topNavActions" iconPos="right" />
+    <SignedInTopNav v-else />
   </header>
 
   <main class="m-8">

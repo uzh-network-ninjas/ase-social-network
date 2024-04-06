@@ -5,6 +5,7 @@ import { User } from '@/types/User'
 import router from '@/router'
 import { jwtDecode } from 'jwt-decode'
 import { userService } from '@/services/userService'
+import type { UserUpdate } from '@/types/UserUpdate'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User>()
@@ -45,7 +46,20 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = undefined
     token.value = undefined
     localStorage.removeItem('user')
+    await router.push({ name: 'sign-in' })
   }
 
-  return { user, signUp, signIn, signOut, signedIn, token }
+  const updatePassword = async function (currentPassword: string, newPassword: string) {
+    return authService.updatePassword(currentPassword, newPassword)
+  }
+
+  const updateEmail = async function (update: UserUpdate) {
+    if (!user.value) return Promise.reject(new Error('User is not set.'))
+    return userService.updateUser(user.value.id, update).then((response) => {
+      user.value = response
+      localStorage.setItem('user', JSON.stringify(user.value))
+    })
+  }
+
+  return { user, signUp, signIn, signOut, updatePassword, updateEmail, signedIn, token }
 })

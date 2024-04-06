@@ -18,5 +18,20 @@
   "confirm_password_mismatch": "Passwords do not match.",
   "forgot_password": "Forgot your password?",
   "no_account_yet": "Don't have an account yet?",
-  "invalid_username_or_password": "Invalid username or password."
+  "invalid_username_or_password": "Invalid username or password.",
+  "account": "Account",
+  "update": "Update",
+  "settings": "Settings",
+  "change_email": "Change Email",
+  "change_password": "Change Password",
+  "current_password_wrong": "Password not correct.",
+  "current_password": "Current Password",
+  "new_password": "New Password",
+  "confirm_new_password": "Confirm New Password",
+  "new_password_identical": "The new password cannot be the same as your current password.",
+  "password_change_success": "Password changed successfully.",
+  "email_change_success": "Email changed successfully.",
+  "change_username": "Change Username",
+  "profile": "Profile",
+  "username_change_success": "Username changed successfully."
 }
