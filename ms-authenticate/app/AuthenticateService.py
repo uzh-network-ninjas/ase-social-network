@@ -57,13 +57,13 @@ class AuthenticateService:
             raise HTTPException(status_code=404, detail="User not found")
         hashed_user = await self.auth_repo.get_user_by_name_or_email(user)
         if not self.auth_encryption['pwd_context'].verify(user.password, hashed_user.password):
-            raise HTTPException(status_code=404, detail="Invalid password")
+            raise HTTPException(status_code=401, detail="Invalid password")
         return self.generate_token(hashed_user)
 
     async def update_user_password(self, request: Request, update_user_password: UpdateUserPassword):
         hashed_user = await self.auth_repo.get_user_by_id(self.extract_user_id(request))
         if not self.auth_encryption['pwd_context'].verify(update_user_password.curr_password, hashed_user.password):
-            raise HTTPException(status_code=404, detail="Invalid password")
+            raise HTTPException(status_code=401, detail="Invalid password")
         if update_user_password.curr_password == update_user_password.new_password:
             raise HTTPException(status_code=400, detail="The new password must differ from the current one")
         await self.auth_repo.update_user_password(hashed_user.id, self.auth_encryption['pwd_context'].hash(update_user_password.new_password))
