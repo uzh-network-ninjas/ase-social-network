@@ -6,6 +6,7 @@ import TestView from '@/views/TestView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import AccountSettingsView from '@/views/Settings/AccountSettingsView.vue'
 import ProfileSettingsView from '@/views/Settings/ProfileSettingsView.vue'
+import PreferenceSettingsView from '@/views/Settings/PreferenceSettingsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,11 @@ const router = createRouter({
           path: 'profile',
           name: 'settings-profile',
           component: ProfileSettingsView
+        },
+        {
+          path: 'preferences',
+          name: 'settings-preferences',
+          component: PreferenceSettingsView
         }
       ]
     },

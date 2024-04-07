@@ -12,6 +12,9 @@ import FriendsIcon from '@/icons/FriendsIcon.vue'
 import ChevronLeft from '@/icons/ChevronLeft.vue'
 import ArrowUp from '@/icons/ArrowUp.vue'
 import ArrowDown from '@/icons/ArrowDown.vue'
+import PhotoIcon from '@/icons/PhotoIcon.vue'
+import ArrowUpTray from '@/icons/ArrowUpTray.vue'
+import FaceSmileIcon from '@/icons/FaceSmileIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -27,6 +30,9 @@ export type IconType =
   | 'friends'
   | 'cog-6-tooth'
   | 'chevron-left'
+  | 'photo'
+  | 'arrow-up-tray'
+  | 'face-smile'
   | undefined
 
 withDefaults(
@@ -106,6 +112,19 @@ defineOptions({
   <ArrowUp v-else-if="icon == 'arrow-up'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
   <ArrowDown
     v-else-if="icon == 'arrow-down'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <PhotoIcon v-else-if="icon == 'photo'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
+  <ArrowUpTray
+    v-else-if="icon == 'arrow-up-tray'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <FaceSmileIcon
+    v-else-if="icon == 'face-smile'"
     v-bind="$attrs"
     :size="size"
     :strokeWidth="strokeWidth"
