@@ -3,28 +3,20 @@ export class User {
   image: string | null
   username: string
   email: string
-  preferences?: string[]
+  preferences: string[]
+  restrictions: string[]
   followers: User[]
   following: User[]
 
   constructor(data: {
     id: string
-    username: string
-    email: string
-    preferences?: string[]
-    followers: User[]
-    following: User[]
-  }) {
-  preferences: string[]
-  restrictions: string[]
-
-  constructor(data: {
-    id: string
-    image: string | null
+    image: string
     username: string
     email: string
     preferences: string[]
     restrictions: string[]
+    followers: User[]
+    following: User[]
   }) {
     this.id = data.id
     this.image = data.image
@@ -34,6 +26,5 @@ export class User {
     this.restrictions = data.restrictions
     this.followers = data.followers
     this.following = data.following
-    this.image = data.image
   }
 }

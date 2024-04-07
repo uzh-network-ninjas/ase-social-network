@@ -3,14 +3,22 @@ import { User } from '@/types/User'
 import type { UserUpdate } from '@/types/UserUpdate'
 import type { DietaryCriteria } from '@/types/DietaryCriteria'
 
+let updateAbortController: AbortController
+
 export const userService = {
   async getUser(userId: string) {
     const response = await apiClient.get(`users/${userId}`)
     return new User(response.data)
   },
 
-  async updateUser(userId: string, update: UserUpdate) {
-    const response = await apiClient.patch(`users`, update)
+  async updateUser(update: UserUpdate) {
+    if (updateAbortController) {
+      updateAbortController.abort()
+    }
+    updateAbortController = new AbortController()
+    const response = await apiClient.patch(`users`, update, {
+      signal: updateAbortController.signal
+    })
     return new User(response.data)
   },
 
@@ -22,8 +30,8 @@ export const userService = {
   },
 
   async getDietaryCriteria() {
-    const response = await apiClient.get('/users/dietary_criteria/');
-    return response.data as DietaryCriteria;
+    const response = await apiClient.get('/users/dietary_criteria/')
+    return response.data as DietaryCriteria
   },
 
   async followUser(userId: string): Promise<void> {

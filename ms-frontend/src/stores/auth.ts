@@ -60,7 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const updateUser = async function (update: UserUpdate) {
     if (!user.value) return Promise.reject(new Error('User is not set.'))
-    return userService.updateUser(user.value.id, update).then((response) => {
+    return userService.updateUser(update).then((response) => {
       user.value = response
       localStorage.setItem('user', JSON.stringify(user.value))
     })

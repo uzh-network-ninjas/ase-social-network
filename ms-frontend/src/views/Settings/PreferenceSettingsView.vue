@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TogglePillGroup from '@/components/TogglePillGroup.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 import { userService } from '@/services/userService'
 import type { DietaryCriteria } from '@/types/DietaryCriteria'
@@ -14,20 +14,29 @@ const preferences_options = ref<string[]>([])
 const restrictions = ref<string[]>(authStore.user?.restrictions ?? [])
 const preferences = ref<string[]>(authStore.user?.preferences ?? [])
 
-const restrictionChangeFailed = ref<boolean>(false)
-const preferenceChangeFailed = ref<boolean>(false)
-
 onMounted(() => {
-  userService.getDietaryCriteria().then((response: DietaryCriteria) => {
-    restriction_options.value = response.restrictions
-    preferences_options.value = response.preferences
-  }).catch((error) => {
-    console.log(error)
-  })
+  userService
+    .getDietaryCriteria()
+    .then((response: DietaryCriteria) => {
+      restriction_options.value = response.restrictions
+      preferences_options.value = response.preferences
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 })
 
-// TODO: UPDATE DATA
+const updateCriteria = function () {
+  authStore.updateUser({ restrictions: restrictions.value, preferences: preferences.value })
+}
 
+watch(
+  [restrictions, preferences],
+  () => {
+    updateCriteria()
+  },
+  { deep: true }
+)
 </script>
 
 <template>
@@ -40,9 +49,6 @@ onMounted(() => {
         </h2>
       </div>
       <TogglePillGroup v-model="restrictions" :options="restriction_options" />
-      <span v-if="restrictionChangeFailed" class="text-light w-full truncate text-error">
-        {{ ' ' /*TODO:*/ }}
-      </span>
     </div>
     <div class="flex flex-col gap-8">
       <div class="w-full border-b border-b-medium-emphasis">
@@ -51,9 +57,6 @@ onMounted(() => {
         </h2>
       </div>
       <TogglePillGroup v-model="preferences" :options="preferences_options" />
-      <span v-if="preferenceChangeFailed" class="text-light w-full truncate text-error">
-        {{ ' ' /*TODO:*/ }}
-      </span>
     </div>
   </div>
 </template>
