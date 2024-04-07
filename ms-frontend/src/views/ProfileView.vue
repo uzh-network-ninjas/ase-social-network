@@ -111,6 +111,16 @@
                 </Button>
               </div>
 
+              <div v-else class="flex items-center justify-center gap-2 px-4 py-1">
+                <router-link :to="{ name: 'settings-profile' }" custom v-slot="{ navigate }">
+                  <Button rounded :label="$t('edit')" iconPos="left" @click="navigate">
+                    <template #icon>
+                      <BaseIcon icon="pencil-square" :size="5" />
+                    </template>
+                  </Button>
+                </router-link>
+              </div>
+
               <!--Share button-->
               <div class="flex items-center justify-center gap-3 px-4 py-1">
                 <Button outlined rounded label="Share" iconPos="left">

@@ -7,6 +7,8 @@ import TestView from '@/views/TestView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import AccountSettingsView from '@/views/Settings/AccountSettingsView.vue'
 import ProfileSettingsView from '@/views/Settings/ProfileSettingsView.vue'
+import PreferenceSettingsView from '@/views/Settings/PreferenceSettingsView.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,13 +37,15 @@ const router = createRouter({
     {
       path: '/profile/:userId',
       name: 'profile',
-      component: ProfileView
+      component: ProfileView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/settings',
       name: 'settings',
       component: SettingsView,
       redirect: { name: 'settings-profile' },
+      meta: { requiresAuth: true },
       children: [
         {
           path: 'account',
@@ -52,6 +56,11 @@ const router = createRouter({
           path: 'profile',
           name: 'settings-profile',
           component: ProfileSettingsView
+        },
+        {
+          path: 'preferences',
+          name: 'settings-preferences',
+          component: PreferenceSettingsView
         }
       ]
     },
@@ -59,8 +68,20 @@ const router = createRouter({
       path: '/test',
       name: 'test',
       component: TestView
+    },
+    {
+      path: '/:catchAll(.*)',
+      redirect: { name: 'home' }
     }
   ]
 })
 
+router.beforeEach((to) => {
+  const authStore = useAuthStore()
+  if (to.meta.requiresAuth && !authStore.token) {
+    return {
+      name: 'sign-in'
+    }
+  }
+})
 export default router

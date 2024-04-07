@@ -14,6 +14,11 @@ const topNavActions: SideMenuOption[] = [
     labelKey: 'account',
     icon: 'cog-6-tooth',
     to: { name: 'settings-account' }
+  },
+  {
+    labelKey: 'preferences',
+    icon: 'face-smile',
+    to: { name: 'settings-preferences' }
   }
 ]
 </script>
@@ -30,7 +35,7 @@ const topNavActions: SideMenuOption[] = [
       >
         <SideMenu :actions="topNavActions" />
       </div>
-      <div class="grow max-sm:w-full max-sm:px-4 sm:ml-56">
+      <div class="grow pb-4 max-sm:w-full max-sm:px-4 sm:ml-56">
         <RouterView />
       </div>
     </div>

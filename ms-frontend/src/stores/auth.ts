@@ -16,9 +16,12 @@ export const useAuthStore = defineStore('auth', () => {
   })
 
   const storedUserData = localStorage.getItem('user')
-  if (storedUserData) {
+  const storedToken = sessionStorage.getItem('token')
+  if (storedUserData && storedToken) {
     const parsedUserData = JSON.parse(storedUserData)
+    const parsedToken = JSON.parse(storedToken)
     user.value = new User(parsedUserData)
+    token.value = parsedToken
   }
 
   const signUp = async function (email: string, username: string, password: string) {
@@ -30,6 +33,8 @@ export const useAuthStore = defineStore('auth', () => {
   const signIn = async function (username: string, password: string) {
     return authService.signIn(username, password).then(async (response: string) => {
       token.value = response
+      // Fixme: JWT Token should not be stored in storage, change if refresh token gets implemented
+      sessionStorage.setItem('token', JSON.stringify(response))
       const decodedToken = jwtDecode(response)
       if (typeof decodedToken.sub !== 'string') {
         throw new Error('JWT does not contain user Id.')
@@ -55,11 +60,29 @@ export const useAuthStore = defineStore('auth', () => {
 
   const updateUser = async function (update: UserUpdate) {
     if (!user.value) return Promise.reject(new Error('User is not set.'))
-    return userService.updateUser(user.value.id, update).then((response) => {
+    return userService.updateUser(update).then((response) => {
       user.value = response
       localStorage.setItem('user', JSON.stringify(user.value))
     })
   }
 
-  return { user, signUp, signIn, signOut, updatePassword, updateUser, signedIn, token }
+  const updateProfilePicture = async function (file: File) {
+    if (!user.value) return Promise.reject(new Error('User is not set.'))
+    return userService.updateProfilePicture(file).then((response) => {
+      user.value = response
+      localStorage.setItem('user', JSON.stringify(user.value))
+    })
+  }
+
+  return {
+    user,
+    signUp,
+    signIn,
+    signOut,
+    updatePassword,
+    updateUser,
+    updateProfilePicture,
+    signedIn,
+    token
+  }
 })

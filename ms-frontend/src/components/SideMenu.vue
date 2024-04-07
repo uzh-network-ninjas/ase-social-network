@@ -39,6 +39,11 @@ const isTargetRoute = function (targetRoute: RouteLocationRaw) {
       <li v-for="action in actions" :key="action.labelKey">
         <router-link :to="action.to" class="group outline-none">
           <div
+            v-ripple="{
+              pt: {
+                root: { style: 'transform: scale(0); background: #fff;' }
+              }
+            }"
             :class="[
               'flex gap-4 rounded-lg px-4 py-2 ring-offset-1 group-focus-visible:ring-1',
               isTargetRoute(action.to)

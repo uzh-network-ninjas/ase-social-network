@@ -114,7 +114,7 @@ const updateEmailEnabled = computed<boolean>(() => {
 
 <template>
   <div class="flex w-full flex-col gap-8">
-    <h1 class="text-2xl tracking-widest text-primary">{{ $t('account') }}</h1>
+    <h1 class="text-2xl uppercase tracking-widest text-primary">{{ $t('account') }}</h1>
     <div class="flex flex-col gap-8">
       <div class="w-full border-b border-b-medium-emphasis">
         <h2 class="mb-2 text-xl font-light text-medium-emphasis">{{ $t('change_email') }}</h2>

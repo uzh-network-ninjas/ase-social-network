@@ -3,19 +3,23 @@ import ExclamationCircleIcon from '@/icons/ExclamationCircleIcon.vue'
 import EyeIcon from '@/icons/EyeIcon.vue'
 import EyeSlashIcon from '@/icons/EyeSlashIcon.vue'
 import MagnifyingGlassIcon from '@/icons/MagnifyingGlassIcon.vue'
-import SparklesIcon from '@/icons/SparklesIcon.vue'
-import ArrowLeftEndOnRectangle from '@/icons/ArrowLeftEndOnRectangleIcon.vue'
-import ArrowLeftStartOnRectangle from '@/icons/ArrowLeftStartOnRectangleIcon.vue'
+import ArrowLeftEndOnRectangleIcon from '@/icons/ArrowLeftEndOnRectangleIcon.vue'
+import ArrowLeftStartOnRectangleIcon from '@/icons/ArrowLeftStartOnRectangleIcon.vue'
+import Cog6ToothIcon from '@/icons/Cog6ToothIcon.vue'
+import FriendsIcon from '@/icons/FriendsIcon.vue'
+import UserIcon from '@/icons/UserIcon.vue'
+import ChevronLeftIcon from '@/icons/ChevronLeftIcon.vue'
+import ArrowUpIcon from '@/icons/ArrowUpIcon.vue'
+import ArrowDownIcon from '@/icons/ArrowDownIcon.vue'
 import UserPlusIcon from '@/icons/UserPlusIcon.vue'
+import SparklesIcon from '@/icons/SparklesIcon.vue'
 import ShareIcon from '@/icons/ShareIcon.vue'
 import ThreeDotsIcon from '@/icons/ThreeDotsIcon.vue'
-import MiniChevronDown from '@/icons/MiniChevronDownIcon.vue'
-import UserIcon from '@/icons/UserIcon.vue'
-import Cog6Tooth from '@/icons/Cog6ToothIcon.vue'
-import FriendsIcon from '@/icons/FriendsIcon.vue'
-import ChevronLeft from '@/icons/ChevronLeftIcon.vue'
-import ArrowUp from '@/icons/ArrowUpIcon.vue'
-import ArrowDown from '@/icons/ArrowDownIcon.vue'
+import MiniChevronDownIcon from '@/icons/MiniChevronDownIcon.vue'
+import PhotoIcon from '@/icons/PhotoIcon.vue'
+import FaceSmileIcon from '@/icons/FaceSmileIcon.vue'
+import ArrowUpTrayIcon from '@/icons/ArrowUpTrayIcon.vue'
+import PencilSquareIcon from '@/icons/PencilSquareIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -36,13 +40,16 @@ export type IconType =
   | 'friends'
   | 'cog-6-tooth'
   | 'chevron-left'
+  | 'photo'
+  | 'arrow-up-tray'
+  | 'face-smile'
+  | 'pencil-square'
   | undefined
 
 withDefaults(
   defineProps<{
     icon: IconType
     strokeWidth?: number
-    imageUrl?: string
     size?: number
   }>(),
   {
@@ -82,13 +89,13 @@ defineOptions({
     :strokeWidth="strokeWidth"
     :size="size"
   />
-  <ArrowLeftEndOnRectangle
+  <ArrowLeftEndOnRectangleIcon
     v-else-if="icon == 'arrow-left-end-on-rectangle'"
     v-bind="$attrs"
     :strokeWidth="strokeWidth"
     :size="size"
   />
-  <ArrowLeftStartOnRectangle
+  <ArrowLeftStartOnRectangleIcon
     v-else-if="icon == 'arrow-left-start-on-rectangle'"
     v-bind="$attrs"
     :strokeWidth="strokeWidth"
@@ -101,20 +108,25 @@ defineOptions({
     :strokeWidth="strokeWidth"
     :size="size"
   />
-  <Cog6Tooth
+  <Cog6ToothIcon
     v-else-if="icon == 'cog-6-tooth'"
     v-bind="$attrs"
     :strokeWidth="strokeWidth"
     :size="size"
   />
-  <ChevronLeft
+  <ChevronLeftIcon
     v-else-if="icon == 'chevron-left'"
     v-bind="$attrs"
     :strokeWidth="strokeWidth"
     :size="size"
   />
-  <ArrowUp v-else-if="icon == 'arrow-up'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
-  <ArrowDown
+  <ArrowUpIcon
+    v-else-if="icon == 'arrow-up'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <ArrowDownIcon
     v-else-if="icon == 'arrow-down'"
     v-bind="$attrs"
     :size="size"
@@ -133,8 +145,27 @@ defineOptions({
     :size="size"
     :strokeWidth="strokeWidth"
   />
-  <MiniChevronDown
+  <MiniChevronDownIcon
     v-else-if="icon == 'mini-down'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <PhotoIcon v-else-if="icon == 'photo'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
+  <ArrowUpTrayIcon
+    v-else-if="icon == 'arrow-up-tray'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <FaceSmileIcon
+    v-else-if="icon == 'face-smile'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <PencilSquareIcon
+    v-else-if="icon == 'pencil-square'"
     v-bind="$attrs"
     :size="size"
     :strokeWidth="strokeWidth"
