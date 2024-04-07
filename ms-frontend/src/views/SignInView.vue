@@ -43,7 +43,6 @@ const signIn = function () {
     .signIn(username.value, password.value)
     .then(() => {
       // Navigate to the homepage upon successful login
-      console.log('Logged in')
       router.push({ name: 'home' })
     })
     .catch((error) => {

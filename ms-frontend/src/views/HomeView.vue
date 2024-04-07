@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import InputText from 'primevue/inputtext'
-import InputIcon from 'primevue/inputicon'
-import IconField from 'primevue/iconfield'
-import FloatLabel from 'primevue/floatlabel'
+
 import Button from 'primevue/button'
 import { ref } from 'vue'
-import Checkbox from 'primevue/checkbox'
 import Navbar, { type MenuOption } from '@/components/TopNav.vue'
 import BaseIcon, { type IconType } from '@/icons/BaseIcon.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -17,18 +13,8 @@ const authStore = useAuthStore()
 const router = useRouter()
 
 const signedIn = authStore.signedIn
-console.log('signed in?: ', signedIn)
 const name = authStore.user?.username ?? ''
-console.log('username: ', name)
-const id = authStore.user?.id ?? ''
-const user = ref<User>()
 
-// try {
-//   const userData = await userService.getUser(id)
-//   user.value = userData
-// } catch (error) {
-//   console.error('Error fetching user profile:', error)
-// }
 
 const topNavActions: MenuOption[] = [
   ...(signedIn
@@ -91,7 +77,7 @@ const navigateToProfilePage = (userId: string) => {
     </div>
 
     <!-- Search bar for username -->
-    <div class="flex items-center space-x-2">
+    <div v-if="signedIn" class="flex items-center space-x-2">
       <input
         v-model="searchUsername"
         type="text"

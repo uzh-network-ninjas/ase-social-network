@@ -202,8 +202,6 @@ import { useRouter } from 'vue-router'
 import { userService } from '@/services/userService'
 import { User } from '@/types/User'
 import { reviewService } from '@/services/reviewService'
-import { Review } from '@/types/Review'
-import type { IconFieldPassThroughOptionType } from 'primevue/iconfield'
 
 const router = useRouter()
 
@@ -267,10 +265,10 @@ const topNavActions: MenuOption[] = [
     to: { name: 'sign-in' }
   },
   {
-    labelKey: '',
+    labelKey: 'my_profile',
     icon: 'profile' as IconType,
     imageUrl: profilePicUrl.value,
-    to: '/'
+    to: `/profile/${signedInUser?.id}`
   }
 ]
 
@@ -301,4 +299,5 @@ onMounted(async () => {
     }
   }
 })
+
 </script>
