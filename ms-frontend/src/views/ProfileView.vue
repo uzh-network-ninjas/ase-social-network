@@ -1,33 +1,10 @@
 <template>
   <div>
     <header class="sticky top-0 z-40">
-      <Navbar :actions="topNavActions" iconPos="right" />
+      <SignedInTopNav />
+      <PageHeader label="Profile" />
     </header>
     <main class="flex h-[896px] shrink-0 flex-col items-start self-stretch">
-      <!--Page title and back button-->
-      <div class="flex items-center gap-4 self-stretch p-4">
-        <div class="flex flex-[1_0_0] items-center gap-4">
-          <!--Back button-->
-          <Button text rounded class="h-6 w-6" @click="$router.go(-1)">
-            <template #icon>
-              <BaseIcon icon="back" />
-            </template>
-          </Button>
-
-          <!--Name of the page-->
-          <div
-            class="font-inter text-2xl font-extralight not-italic leading-[normal] text-medium-emphasis"
-          >
-            Profile
-          </div>
-        </div>
-        <Button text rounded class="flex items-center justify-center gap-3 rounded-lg p-1.5">
-          <template #icon>
-            <BaseIcon icon="three-dots" />
-          </template>
-        </Button>
-      </div>
-
       <!--Page-->
       <div class="flex flex-[1_0_0] flex-col items-center gap-8 self-stretch px-0 py-8">
         <!--Profile information-->
@@ -46,7 +23,7 @@
             ></div>
             <!-- Profile picture -->
             <img
-              :src="user?.image ? createObjectURL(user.image) : profilePicUrl"
+              :src="profilePicUrl"
               alt="Profile Picture"
               class="bg-lightgray z-10 h-32 w-32 shrink-0 rounded-[128px] bg-cover bg-center bg-no-repeat"
             />
@@ -118,7 +95,10 @@
             <!--Actions-->
             <div class="flex items-start justify-center gap-8">
               <!--Follow button-->
-              <div class="flex items-center justify-center gap-2 px-4 py-1">
+              <div
+                v-if="userId !== authStore.user?.id"
+                class="flex items-center justify-center gap-2 px-4 py-1"
+              >
                 <Button
                   rounded
                   :label="followButtonText"
@@ -126,7 +106,7 @@
                   @click="toggleFollowOrUnfollow"
                 >
                   <template #icon>
-                    <BaseIcon icon="user-plus" />
+                    <BaseIcon icon="user-plus" :size="5" />
                   </template>
                 </Button>
               </div>
@@ -135,7 +115,7 @@
               <div class="flex items-center justify-center gap-3 px-4 py-1">
                 <Button outlined rounded label="Share" iconPos="left">
                   <template #icon>
-                    <BaseIcon icon="share" />
+                    <BaseIcon icon="share" :size="5" :strokeWidth="1.5" />
                   </template>
                 </Button>
               </div>
@@ -160,7 +140,7 @@
               <!--Sort by-->
               <div class="flex items-center justify-center gap-3 rounded-lg px-0 py-1">
                 <!--Front Icon-->
-                <BaseIcon icon="mini-down" class="h-5 w-5" />
+                <BaseIcon icon="mini-down" />
                 <div class="flex h-6 items-center justify-center gap-2.5">
                   <div
                     class="font-inter text-base font-light not-italic leading-[normal] text-[color:var(--text-medium-emphasis,rgba(0,0,0,0.60))]"
@@ -176,7 +156,7 @@
               </div>
               <!--Direction-->
               <div class="flex items-center justify-center gap-3 rounded-lg px-0 py-1">
-                <BaseIcon icon="arrow-up" class="h-5 w-5" />
+                <BaseIcon icon="arrow-up" :size="5" />
                 <div
                   class="font-inter flex h-6 items-center justify-center gap-2.5 text-base font-light not-italic leading-[normal] text-[color:var(--text-medium-emphasis,rgba(0,0,0,0.60))]"
                 >
@@ -195,13 +175,14 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import Navbar, { type MenuOption } from '@/components/TopNav.vue'
 import Button from 'primevue/button'
-import BaseIcon, { type IconType } from '@/icons/BaseIcon.vue'
+import BaseIcon from '@/icons/BaseIcon.vue'
 import { useRouter } from 'vue-router'
 import { userService } from '@/services/userService'
 import { User } from '@/types/User'
 import { reviewService } from '@/services/reviewService'
+import SignedInTopNav from '@/components/SignedInTopNav.vue'
+import PageHeader from '@/components/PageHeader.vue'
 
 const router = useRouter()
 
@@ -220,10 +201,6 @@ const isFollowed = ref<boolean>()
 const reviewCount = ref<number>(0)
 
 const followers = ref<User[]>([])
-
-const createObjectURL = (file: File) => {
-  return window.URL.createObjectURL(file)
-}
 
 const followButtonText = computed(() => {
   return isFollowed.value ? 'Unfollow' : 'Follow'
@@ -255,23 +232,6 @@ const toggleFollowOrUnfollow = async () => {
   isFollowed.value = !isFollowed.value
 }
 
-const topNavActions: MenuOption[] = [
-  {
-    labelKey: 'sign_out',
-    icon: 'arrow-left-start-on-rectangle' as IconType,
-    before: () => {
-      authStore.signOut()
-    },
-    to: { name: 'sign-in' }
-  },
-  {
-    labelKey: 'my_profile',
-    icon: 'profile' as IconType,
-    imageUrl: profilePicUrl.value,
-    to: `/profile/${signedInUser?.id}`
-  }
-]
-
 // Fetch user profile data on component mount
 onMounted(async () => {
   userId.value = router.currentRoute.value.params.userId as string // Access userId from router
@@ -299,5 +259,4 @@ onMounted(async () => {
     }
   }
 })
-
 </script>

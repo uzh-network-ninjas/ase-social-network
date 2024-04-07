@@ -67,12 +67,14 @@ const toggleShowCurrentPassword = function (): void {
 const updateEmail = function () {
   emailChanged.value = false
   authStore
-    .updateEmail({ email: email.value })
+    .updateUser({ email: email.value })
     .then(() => {
       emailChanged.value = true
     })
     .catch((error) => {
-      // TODO: Handle email already taken error
+      if (error.response?.status === 400) {
+        emailTaken.value = true
+      }
     })
 }
 

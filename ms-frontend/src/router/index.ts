@@ -31,7 +31,7 @@ const router = createRouter({
       name: 'terms-and-conditions',
       redirect: '/'
     },
-    
+
     {
       path: '/profile/:userId',
       name: 'profile',
@@ -62,7 +62,5 @@ const router = createRouter({
     }
   ]
 })
-
-
 
 export default router

@@ -24,13 +24,16 @@ const updateUsernameEnabled = computed<boolean>(() => {
 
 const updateUsername = function () {
   usernameChanged.value = false
+  usernameTaken.value = false
   authStore
-    .updateEmail({ username: username.value })
+    .updateUser({ username: username.value })
     .then(() => {
       usernameChanged.value = true
     })
     .catch((error) => {
-      // TODO: Handle username already taken error
+      if (error.response?.status === 400) {
+        usernameTaken.value = true
+      }
     })
 }
 </script>

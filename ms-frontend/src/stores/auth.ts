@@ -53,7 +53,7 @@ export const useAuthStore = defineStore('auth', () => {
     return authService.updatePassword(currentPassword, newPassword)
   }
 
-  const updateEmail = async function (update: UserUpdate) {
+  const updateUser = async function (update: UserUpdate) {
     if (!user.value) return Promise.reject(new Error('User is not set.'))
     return userService.updateUser(user.value.id, update).then((response) => {
       user.value = response
@@ -61,5 +61,5 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
-  return { user, signUp, signIn, signOut, updatePassword, updateEmail, signedIn, token }
+  return { user, signUp, signIn, signOut, updatePassword, updateUser, signedIn, token }
 })

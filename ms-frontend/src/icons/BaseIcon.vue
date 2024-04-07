@@ -4,20 +4,18 @@ import EyeIcon from '@/icons/EyeIcon.vue'
 import EyeSlashIcon from '@/icons/EyeSlashIcon.vue'
 import MagnifyingGlassIcon from '@/icons/MagnifyingGlassIcon.vue'
 import SparklesIcon from '@/icons/SparklesIcon.vue'
-import ArrowLeftEndOnRectangle from '@/icons/ArrowLeftEndOnRectangle.vue'
-import ArrowLeftStartOnRectangle from '@/icons/ArrowLeftStartOnRectangle.vue'
+import ArrowLeftEndOnRectangle from '@/icons/ArrowLeftEndOnRectangleIcon.vue'
+import ArrowLeftStartOnRectangle from '@/icons/ArrowLeftStartOnRectangleIcon.vue'
 import UserPlusIcon from '@/icons/UserPlusIcon.vue'
 import ShareIcon from '@/icons/ShareIcon.vue'
-import BackIcon from '@/icons/BackIcon.vue'
 import ThreeDotsIcon from '@/icons/ThreeDotsIcon.vue'
-import MiniChevronDown from '@/icons/MiniChevronDown.vue'
-import ProfileIcon from '@/icons/ProfileIcon.vue'
+import MiniChevronDown from '@/icons/MiniChevronDownIcon.vue'
 import UserIcon from '@/icons/UserIcon.vue'
-import Cog6Tooth from '@/icons/Cog6Tooth.vue'
+import Cog6Tooth from '@/icons/Cog6ToothIcon.vue'
 import FriendsIcon from '@/icons/FriendsIcon.vue'
-import ChevronLeft from '@/icons/ChevronLeft.vue'
-import ArrowUp from '@/icons/ArrowUp.vue'
-import ArrowDown from '@/icons/ArrowDown.vue'
+import ChevronLeft from '@/icons/ChevronLeftIcon.vue'
+import ArrowUp from '@/icons/ArrowUpIcon.vue'
+import ArrowDown from '@/icons/ArrowDownIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -32,7 +30,6 @@ export type IconType =
   | 'back'
   | 'three-dots'
   | 'mini-down'
-  | 'profile'
   | 'arrow-up'
   | 'arrow-down'
   | 'user'
@@ -123,16 +120,23 @@ defineOptions({
     :size="size"
     :strokeWidth="strokeWidth"
   />
-  <UserPlusIcon v-else-if="icon == 'user-plus'" v-bind="$attrs"     :size="size"
-                :strokeWidth="strokeWidth"/>
-  <ShareIcon v-else-if="icon == 'share'" v-bind="$attrs"     :size="size"
-             :strokeWidth="strokeWidth"/>
-  <BackIcon v-else-if="icon == 'back'" v-bind="$attrs"     :size="size"
-            :strokeWidth="strokeWidth"/>
-  <ThreeDotsIcon v-else-if="icon == 'three-dots'" v-bind="$attrs"     :size="size"
-                 :strokeWidth="strokeWidth"/>
-  <MiniChevronDown v-else-if="icon == 'mini-down'" v-bind="$attrs"     :size="size"
-                   :strokeWidth="strokeWidth"/>
-  <ProfileIcon v-else-if="icon === 'profile' && imageUrl" v-bind="$attrs" :imageUrl="imageUrl"     :size="size"
-               :strokeWidth="strokeWidth"/>
+  <UserPlusIcon
+    v-else-if="icon == 'user-plus'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <ShareIcon v-else-if="icon == 'share'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
+  <ThreeDotsIcon
+    v-else-if="icon == 'three-dots'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <MiniChevronDown
+    v-else-if="icon == 'mini-down'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
 </template>

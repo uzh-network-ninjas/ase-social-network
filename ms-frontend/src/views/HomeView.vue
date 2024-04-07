@@ -3,13 +3,16 @@ import TopNav, { type MenuOption } from '@/components/TopNav.vue'
 import { type IconType } from '@/icons/BaseIcon.vue'
 import { useAuthStore } from '@/stores/auth'
 import SignedInTopNav from '@/components/SignedInTopNav.vue'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import type { User } from '@/types/User'
+import { userService } from '@/services/userService'
 
 const authStore = useAuthStore()
 const router = useRouter()
 
 const signedIn = authStore.signedIn
 const name = authStore.user?.username ?? ''
-
 
 const topNavActions: MenuOption[] = [
   {
@@ -53,7 +56,7 @@ const navigateToProfilePage = (userId: string) => {
   <main class="m-8">
     <div
       v-if="signedIn"
-      class="text-center text-2xl font-light uppercase tracking-widest text-secondary md:text-start md:text-5xl"
+      class="mb-4 text-center text-2xl font-light uppercase tracking-widest text-secondary md:text-start md:text-5xl"
     >
       Hello, {{ name }}!
       <!--Your id is {{ id }} -->
