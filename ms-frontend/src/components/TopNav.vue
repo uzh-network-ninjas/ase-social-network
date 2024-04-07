@@ -10,6 +10,7 @@ export interface MenuOption {
   iconPos?: 'left' | 'right' | 'top' | 'bottom'
   before?: () => void
   to: RouteLocationRaw
+  imageUrl?: string
 }
 
 withDefaults(
@@ -54,7 +55,11 @@ withDefaults(
           "
         >
           <template #icon>
-            <BaseIcon :icon="action.icon" />
+            <BaseIcon v-if="action.icon !== 'profile'" :icon="action.icon" />
+            <template v-else>
+              <img v-if="action.imageUrl" :src="action.imageUrl" class="h-8 w-8 rounded-full" />
+              <BaseIcon v-else icon="profile" class="h-8 w-8" />
+            </template>
           </template>
         </Button>
       </li>

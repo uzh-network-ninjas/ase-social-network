@@ -18,5 +18,6 @@
   "confirm_password_mismatch": "Passwords do not match.",
   "forgot_password": "Forgot your password?",
   "no_account_yet": "Don't have an account yet?",
-  "invalid_username_or_password": "Invalid username or password."
+  "invalid_username_or_password": "Invalid username or password.",
+  "my_profile": "My profile"
 }
