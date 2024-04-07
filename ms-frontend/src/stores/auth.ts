@@ -42,7 +42,11 @@ export const useAuthStore = defineStore('auth', () => {
       return await userService.getUser(decodedToken.sub).then((response: User) => {
         user.value = response
         localStorage.setItem('user', JSON.stringify(user.value))
-        router.push({ name: 'home' })
+        if (user.value?.preferences.length >= 5) {
+          router.push({ name: 'home' })
+        } else {
+          router.push({ name: 'onboarding' })
+        }
       })
     })
   }

@@ -227,11 +227,11 @@ const signUp = function () {
       </div>
     </div>
   </main>
-  <DecoStrip class="fixed bottom-0 right-1/4 top-0 z-50 max-lg:invisible lg:visible" />
+  <DecoStrip class="fixed bottom-0 left-3/4 top-0 z-50 max-lg:invisible lg:visible" />
 </template>
 
 <style scoped>
 main {
-  height: calc(100vh - 48px);
+  height: calc(100vh - 64px);
 }
 </style>
