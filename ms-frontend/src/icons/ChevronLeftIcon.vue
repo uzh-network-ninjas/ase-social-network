@@ -20,6 +20,6 @@ withDefaults(
     stroke="currentColor"
     :class="`w-${size} h-${size}`"
   >
-    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
   </svg>
 </template>

@@ -1,13 +1,12 @@
 <script setup lang="ts">
-
-import Button from 'primevue/button'
-import { ref } from 'vue'
-import Navbar, { type MenuOption } from '@/components/TopNav.vue'
-import BaseIcon, { type IconType } from '@/icons/BaseIcon.vue'
+import TopNav, { type MenuOption } from '@/components/TopNav.vue'
+import { type IconType } from '@/icons/BaseIcon.vue'
 import { useAuthStore } from '@/stores/auth'
+import SignedInTopNav from '@/components/SignedInTopNav.vue'
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import type { User } from '@/types/User'
 import { userService } from '@/services/userService'
-import { User } from '@/types/User'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -15,30 +14,16 @@ const router = useRouter()
 const signedIn = authStore.signedIn
 const name = authStore.user?.username ?? ''
 
-
 const topNavActions: MenuOption[] = [
-  ...(signedIn
-    ? [
-        {
-          labelKey: 'sign_out',
-          icon: 'arrow-left-start-on-rectangle' as IconType,
-          before: () => {
-            authStore.signOut()
-          },
-          to: { name: 'sign-in' }
-        }
-      ]
-    : [
-        {
-          labelKey: 'sign_up',
-          to: { name: 'sign-up' }
-        },
-        {
-          labelKey: 'sign_in',
-          icon: 'arrow-left-end-on-rectangle' as IconType,
-          to: { name: 'sign-in' }
-        }
-      ])
+  {
+    labelKey: 'sign_up',
+    to: { name: 'sign-up' }
+  },
+  {
+    labelKey: 'sign_in',
+    icon: 'arrow-left-start-on-rectangle' as IconType,
+    to: { name: 'sign-in' }
+  }
 ]
 
 const foundUser = ref<User | null>(null)
@@ -64,13 +49,14 @@ const navigateToProfilePage = (userId: string) => {
 
 <template>
   <header class="sticky top-0 z-40">
-    <Navbar :actions="topNavActions" iconPos="right" />
+    <TopNav v-if="!authStore.signedIn" :actions="topNavActions" iconPos="right" />
+    <SignedInTopNav v-else />
   </header>
 
   <main class="m-8">
     <div
       v-if="signedIn"
-      class="text-center text-2xl font-light uppercase tracking-widest text-secondary md:text-start md:text-5xl"
+      class="mb-4 text-center text-2xl font-light uppercase tracking-widest text-secondary md:text-start md:text-5xl"
     >
       Hello, {{ name }}!
       <!--Your id is {{ id }} -->

@@ -7,6 +7,7 @@ import ripple from '@/presets/ripple'
 import global from '@/presets/global'
 import togglebutton from '@/presets/togglebutton'
 import dropdown from '@/presets/dropdown'
+import menu from '@/presets/menu'
 
 export default {
   global,
@@ -20,5 +21,6 @@ export default {
   button,
   checkbox,
   togglebutton,
-  dropdown
+  dropdown,
+  menu
 }
