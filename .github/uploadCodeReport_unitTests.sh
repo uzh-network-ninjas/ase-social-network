@@ -30,15 +30,18 @@ for service in "${services[@]}"; do
     if [ -f "${REPORTS_DIR}/coverage_${service}.xml" ]; then
 
         # Use the CODECOV_TOKEN and GITHUB_RUN_ID environment variables directly
-        codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml"
+        codecov -t "${CODECOV_TOKEN}" -n "${service}-${GITHUB_RUN_ID}" -F "$service" -f "${REPORTS_DIR}/coverage_${service}.xml" || exit 1
     else
-        echo "No coverage report found for $service."
+        echo "No coverage report found for $service." >&2
     fi
 done
 
+# Check for test failures in the test_results.md
+total_failures=$(awk -F'|' 'BEGIN{sum=0} $4 ~ /[0-9]+/{sum+=$4} END{print sum}' "${REPORTS_DIR}/test_results.md")
 
-
-# Workflow theoretical
-# - Determine which services were changed - for tese run unittests
-    # - If they do, upload the coverage report
-# - Run overall integration tests (do they have coverage?)
+if [ "$total_failures" -gt 0 ]; then
+    echo "Some tests failed. Total failures: ${total_failures}"
+    exit 1
+else
+    echo "All tests passed successfully."
+fi

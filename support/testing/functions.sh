@@ -15,6 +15,7 @@ run_docker_container_python() {
 
     # Ensure the reports directory exists
     mkdir -p "${reports_dir}"
+    initialize_test_results_file "${reports_dir}"
 
     if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* ]]; then
         volume_path="${reports_dir}:/reports"
@@ -35,8 +36,17 @@ run_docker_container_python() {
 
     echo "volume path: ${volume_path}"
 
+    docker build -t "${service_name}_test" -f "${service_name}/Dockerfile.test" "${service_name}/."
     # Run Docker container
-    docker run --rm -v "${volume_path}" "${service_name}_test" pytest --cov="app" --cov-report=xml:/reports/coverage_"${service_name}".xml
+    docker_results=$(docker run --rm -v "${volume_path}" "${service_name}_test" pytest --cov="app" --cov-report=xml:/reports/coverage_"${service_name}".xml)
+
+    passed_tests=$(echo "$docker_results" | grep -Po '\d+(?= passed)' | head -1)
+    failed_tests=$(echo "$docker_results" | grep -Po '\d+(?= failed)' | head -1)
+
+    passed_tests=${passed_tests:-0}
+    failed_tests=${failed_tests:-0}
+
+    echo "| $service_name | $passed_tests | $failed_tests |" >> "${reports_dir}/test_results.md"
 }
 
 # Function to modify the coverage report
@@ -55,6 +65,20 @@ modify_coverage_report_python() {
 run_docker_container_python_without_coverage() {
     local service_name=$1
 
-    # Run Docker container
+    docker build -t "${service_name}_test" -f "${service_name}/Dockerfile.test" "${service_name}/."
+
+    # Run Docker container and execute pytest
     docker run --rm "${service_name}_test" pytest
+}
+
+initialize_test_results_file() {
+    local reports_dir=$1
+    local results_file="${reports_dir}/test_results.md"
+
+    # Check if the file exists
+    if [ ! -f "$results_file" ]; then
+        # File doesn't exist, create it and add headers
+        echo "| Service | Tests Passed | Tests Failed |" > "$results_file"
+        echo "|---------|--------------|--------------|" >> "$results_file"
+    fi
 }

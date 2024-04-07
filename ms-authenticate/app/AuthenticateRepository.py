@@ -34,6 +34,7 @@ class AuthenticateRepository:
 
     async def add_user(self, user: UserRegister) -> UserLogin:
         user_dict = user.model_dump()
+        user_dict["created_at"] = datetime.now()
         result = await self.collection.insert_one(user_dict)
         user_dict['id'] = str(result.inserted_id)
         return UserLogin(**user_dict)

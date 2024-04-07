@@ -20,3 +20,10 @@ pyjwt==2.8.0
 python-multipart
 boto3
 requests
+
+
+# dev testing
+pytest 
+pytest-asyncio
+httpx==0.26.0
+pytest-cov

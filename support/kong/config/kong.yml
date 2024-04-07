@@ -54,3 +54,4 @@ consumers:
   jwt_secrets:
     - key: "ooNKWeo0vijweijrKn234123J93c0qkD"
       secret: "H8WBDhQlcfjoFmIiYymmkRm1y0A2c5WU"
+      algorithm: "HS256"

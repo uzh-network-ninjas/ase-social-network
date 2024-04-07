@@ -2,9 +2,11 @@
 withDefaults(
   defineProps<{
     strokeWidth?: number
+    size?: number
   }>(),
   {
-    strokeWidth: 1
+    strokeWidth: 1,
+    size: 6
   }
 )
 </script>
@@ -16,7 +18,7 @@ withDefaults(
     viewBox="0 0 24 24"
     :stroke-width="strokeWidth"
     stroke="currentColor"
-    class="h-6 w-6"
+    :class="`w-${size} h-${size}`"
   >
     <path
       stroke-linecap="round"

@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+
+  ms-authenticate:
+    build:
+      dockerfile: Dockerfile.dev
+    ports:
+      - "9000:5000" 
+    volumes:
+      - ./ms-authenticate/app:/code/app 
+
+  ms-user:
+    build:
+      dockerfile: Dockerfile.dev
+    ports:
+      - "9002:5002"
+    volumes:
+      - ./ms-user/app:/code/app
+
+  ms-review:
+    build: 
+      dockerfile: Dockerfile.dev
+    ports:
+      - "9001:5001"
+    volumes:
+      - ./ms-review/app:/code/app
+
+  ms-user-db:
+    ports:
+      - "10000:27017"
+
+  ms-review-db:
+    ports:
+      - "10001:27017"
+      
+  ms-frontend:
+    build: 
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./ms-frontend/src:/app/src
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  localstack:
+    container_name: "localstack-main"
+    image: localstack/localstack
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+      - "4510-4559:4510-4559"  # external services port range
+    volumes:
+      - "./volume:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./support/localstack/localstack-setup.sh:/etc/localstack/init/ready.d/script.sh"
+    networks:
+      - ms-net
+
+volumes:
+  ms-user-db-volume:
+  ms-review-db-volume:
+
+networks:
+  ms-net:

@@ -1,0 +1,57 @@
+_format_version: "3.0"
+
+_transform: true
+
+services:
+
+- name: authenticate-service
+  url: http://ms-authenticate:5000
+  routes:
+  - name: authenticate-route
+    paths:
+    - /authenticator
+
+- name: user-service
+  url: http://ms-user:5002
+  routes:
+  - name: user-route
+    paths:
+    - /users
+
+- name: review-service
+  url: http://ms-review:5001
+  routes:
+  - name: review-route
+    paths:
+    - /reviews
+
+- name: frontend-service
+  url: http://ms-frontend:5173
+  routes:
+  - name: frontend-route
+    paths:
+    - /
+
+plugins:
+- name: jwt
+  service: review-service
+  enabled: true
+  config:
+    key_claim_name: kid
+    claims_to_verify:
+    - exp
+- name: jwt
+  service: user-service
+  enabled: true
+  config:
+    key_claim_name: kid
+    claims_to_verify:
+    - exp
+
+
+consumers:
+- username: login_server_issuer
+  jwt_secrets:
+    - key: "${JWT_KONG_KEY}"
+      secret: "${JWT_SECRET}"
+      algorithm: "${JWT_ALGORITHM}"

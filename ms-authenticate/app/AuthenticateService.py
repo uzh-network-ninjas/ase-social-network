@@ -7,16 +7,17 @@ from app.models.UserLogin import UserLogin
 from app.models.UpdateUserPassword import UpdateUserPassword
 from datetime import timedelta, datetime
 import jwt
+import os
 
 
 class AuthenticateService:
     def __init__(self):
         self.auth_repo = AuthenticateRepository()
         self.auth_encryption = {
-            'SECRET_KEY': 'H8WBDhQlcfjoFmIiYymmkRm1y0A2c5WU',
-            'ALGORITHM': 'HS256',
-            'ACCESS_TOKEN_EXPIRE_MINUTES': 300,
-            'KID': 'ooNKWeo0vijweijrKn234123J93c0qkD',
+            'SECRET_KEY': os.getenv("JWT_SECRET", "no_key"),
+            'ALGORITHM': os.getenv("JWT_ALGORITHM", "HS256"),
+            'ACCESS_TOKEN_EXPIRE_MINUTES': os.getenv("JWT_EXPIRE_MINUTES", 3000),
+            'KID': os.getenv("JWT_KONG_KEY", "no_key"),
             'pwd_context': CryptContext(schemes=["bcrypt"], deprecated="auto"),
             'oauth2_scheme': OAuth2PasswordBearer(tokenUrl="token")
         }
@@ -56,13 +57,13 @@ class AuthenticateService:
             raise HTTPException(status_code=404, detail="User not found")
         hashed_user = await self.auth_repo.get_user_by_name_or_email(user)
         if not self.auth_encryption['pwd_context'].verify(user.password, hashed_user.password):
-            raise HTTPException(status_code=404, detail="Invalid password")
+            raise HTTPException(status_code=401, detail="Invalid password")
         return self.generate_token(hashed_user)
 
     async def update_user_password(self, request: Request, update_user_password: UpdateUserPassword):
         hashed_user = await self.auth_repo.get_user_by_id(self.extract_user_id(request))
         if not self.auth_encryption['pwd_context'].verify(update_user_password.curr_password, hashed_user.password):
-            raise HTTPException(status_code=404, detail="Invalid password")
+            raise HTTPException(status_code=401, detail="Invalid password")
         if update_user_password.curr_password == update_user_password.new_password:
             raise HTTPException(status_code=400, detail="The new password must differ from the current one")
         await self.auth_repo.update_user_password(hashed_user.id, self.auth_encryption['pwd_context'].hash(update_user_password.new_password))

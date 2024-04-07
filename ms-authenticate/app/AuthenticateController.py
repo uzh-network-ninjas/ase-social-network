@@ -3,9 +3,21 @@ from app.AuthenticateService import AuthenticateService
 from app.models.UserLogin import UserLogin
 from app.models.UserRegister import UserRegister
 from app.models.UpdateUserPassword import UpdateUserPassword
+import os
 
 app = FastAPI()
 auth_service = AuthenticateService()
+
+# List of required environment variables
+required_env_vars = ["MONGO_URL", "JWT_KONG_KEY", "JWT_SECRET", "JWT_ALGORITHM"]
+
+# Function to check for missing environment variables
+def check_env_vars():
+    missing_vars = [var for var in required_env_vars if var not in os.environ]
+    if missing_vars:
+        raise EnvironmentError(f"Missing environment variables: {', '.join(missing_vars)}")
+
+check_env_vars()
 
 
 @app.post("/user", status_code=status.HTTP_201_CREATED)

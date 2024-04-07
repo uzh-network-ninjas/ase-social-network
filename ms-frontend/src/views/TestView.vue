@@ -9,6 +9,7 @@ import BaseIcon from '@/icons/BaseIcon.vue'
 import InputIcon from 'primevue/inputicon'
 import Button from 'primevue/button'
 import IconField from 'primevue/iconfield'
+import ToggleButton from 'primevue/togglebutton'
 
 const value = ref<string>('')
 const boolValue = ref<boolean>(true)
@@ -22,6 +23,8 @@ const options = ref([
   { name: 'Option 4' },
   { name: 'Option 5' }
 ])
+
+const checked = ref<boolean>(false)
 </script>
 
 <template>
@@ -106,6 +109,30 @@ const options = ref([
     </FloatLabel>
 
     <div class="mt-4 flex w-fit flex-col gap-2">
+      <ToggleButton v-model="checked" onLabel="Ascending" offLabel="Descending">
+        <template #icon="propScope">
+          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" stroke-width="1.5" />
+        </template>
+      </ToggleButton>
+
+      <ToggleButton v-model="checked" onLabel="Ascending" offLabel="Descending" class="border-none">
+        <template #icon="propScope">
+          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" stroke-width="1.5" />
+        </template>
+      </ToggleButton>
+
+      <ToggleButton v-model="checked" onLabel="Ascending" offLabel="Descending" invalid>
+        <template #icon="propScope">
+          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" stroke-width="1.5" />
+        </template>
+      </ToggleButton>
+
+      <ToggleButton v-model="checked" onLabel="Ascending" offLabel="Descending" disabled>
+        <template #icon="propScope">
+          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" stroke-width="1.5" />
+        </template>
+      </ToggleButton>
+
       <Button>Sign In</Button>
       <Button outlined>Hello</Button>
       <Button text>Hello</Button>
