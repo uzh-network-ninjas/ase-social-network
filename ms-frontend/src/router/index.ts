@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import SignUpView from '@/views/SignUpView.vue'
 import HomeView from '@/views/HomeView.vue'
 import SignInView from '@/views/SignInView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 import TestView from '@/views/TestView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import AccountSettingsView from '@/views/Settings/AccountSettingsView.vue'
@@ -30,6 +31,12 @@ const router = createRouter({
       name: 'terms-and-conditions',
       redirect: '/'
     },
+    
+    {
+      path: '/profile/:userId',
+      name: 'profile',
+      component: ProfileView
+    },
     {
       path: '/settings',
       name: 'settings',
@@ -55,5 +62,7 @@ const router = createRouter({
     }
   ]
 })
+
+
 
 export default router

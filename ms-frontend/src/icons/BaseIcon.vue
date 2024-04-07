@@ -6,6 +6,12 @@ import MagnifyingGlassIcon from '@/icons/MagnifyingGlassIcon.vue'
 import SparklesIcon from '@/icons/SparklesIcon.vue'
 import ArrowLeftEndOnRectangle from '@/icons/ArrowLeftEndOnRectangle.vue'
 import ArrowLeftStartOnRectangle from '@/icons/ArrowLeftStartOnRectangle.vue'
+import UserPlusIcon from '@/icons/UserPlusIcon.vue'
+import ShareIcon from '@/icons/ShareIcon.vue'
+import BackIcon from '@/icons/BackIcon.vue'
+import ThreeDotsIcon from '@/icons/ThreeDotsIcon.vue'
+import MiniChevronDown from '@/icons/MiniChevronDown.vue'
+import ProfileIcon from '@/icons/ProfileIcon.vue'
 import UserIcon from '@/icons/UserIcon.vue'
 import Cog6Tooth from '@/icons/Cog6Tooth.vue'
 import FriendsIcon from '@/icons/FriendsIcon.vue'
@@ -21,6 +27,12 @@ export type IconType =
   | 'sparkles'
   | 'arrow-left-end-on-rectangle'
   | 'arrow-left-start-on-rectangle'
+  | 'user-plus'
+  | 'share'
+  | 'back'
+  | 'three-dots'
+  | 'mini-down'
+  | 'profile'
   | 'arrow-up'
   | 'arrow-down'
   | 'user'
@@ -33,6 +45,7 @@ withDefaults(
   defineProps<{
     icon: IconType
     strokeWidth?: number
+    imageUrl?: string
     size?: number
   }>(),
   {
@@ -110,4 +123,16 @@ defineOptions({
     :size="size"
     :strokeWidth="strokeWidth"
   />
+  <UserPlusIcon v-else-if="icon == 'user-plus'" v-bind="$attrs"     :size="size"
+                :strokeWidth="strokeWidth"/>
+  <ShareIcon v-else-if="icon == 'share'" v-bind="$attrs"     :size="size"
+             :strokeWidth="strokeWidth"/>
+  <BackIcon v-else-if="icon == 'back'" v-bind="$attrs"     :size="size"
+            :strokeWidth="strokeWidth"/>
+  <ThreeDotsIcon v-else-if="icon == 'three-dots'" v-bind="$attrs"     :size="size"
+                 :strokeWidth="strokeWidth"/>
+  <MiniChevronDown v-else-if="icon == 'mini-down'" v-bind="$attrs"     :size="size"
+                   :strokeWidth="strokeWidth"/>
+  <ProfileIcon v-else-if="icon === 'profile' && imageUrl" v-bind="$attrs" :imageUrl="imageUrl"     :size="size"
+               :strokeWidth="strokeWidth"/>
 </template>

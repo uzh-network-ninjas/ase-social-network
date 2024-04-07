@@ -1,3 +1,4 @@
+from app.models.DietaryCriteria import DietaryCriteria
 from app.models.UserUpdate import UserUpdate
 from app.models.UserOut import UserOut
 from app.models.UserListOut import UserListOut
@@ -52,7 +53,12 @@ async def follow_user(request: Request, user_id: str) -> UserOut:
     return await us.follow_user_by_id(curr_user_id, user_id)
 
 
-@app.delete("/following/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def unfollow_user(request: Request, user_id: str):
+@app.delete("/following/{user_id}", status_code=status.HTTP_200_OK, response_model=UserOut)
+async def unfollow_user(request: Request, user_id: str) -> UserOut:
     curr_user_id = us.extract_user_id_from_token(request)
-    await us.unfollow_user_by_id(curr_user_id, user_id)
+    return await us.unfollow_user_by_id(curr_user_id, user_id)
+
+
+@app.get("/dietary_criteria/", response_model=DietaryCriteria)
+def get_dietary_criteria() -> DietaryCriteria:
+    return us.get_dietary_criteria()

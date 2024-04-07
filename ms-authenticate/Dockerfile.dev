@@ -9,8 +9,6 @@ ENV PYTHONPATH=/code
 
 
 COPY ./app /code/app
-# you can have tests as well (maybe useful?? when developing)
-COPY ./tests /code/tests 
 
 # Define the default value of the PORT environment variable
 ENV PORT 8080

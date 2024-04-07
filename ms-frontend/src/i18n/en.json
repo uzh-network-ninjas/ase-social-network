@@ -33,5 +33,6 @@
   "email_change_success": "Email changed successfully.",
   "change_username": "Change Username",
   "profile": "Profile",
-  "username_change_success": "Username changed successfully."
+  "username_change_success": "Username changed successfully.",
+  "my_profile": "My profile"
 }

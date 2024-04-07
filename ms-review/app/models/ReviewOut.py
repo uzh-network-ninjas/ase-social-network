@@ -12,4 +12,6 @@ class ReviewOut(BaseModel):
     rating: int
     image: Optional[str] = None
     location: Location
+    like_count: int
+    liked_by_current_user: bool
     created_at: datetime
