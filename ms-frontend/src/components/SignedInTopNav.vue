@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
-import Navbar from '@/components/TopNav.vue'
+import Navbar, { type MenuOption } from '@/components/TopNav.vue'
 import BaseIcon from '@/icons/BaseIcon.vue'
 import Menu from 'primevue/menu'
 import { ref } from 'vue'
@@ -9,11 +9,16 @@ import { useAuthStore } from '@/stores/auth'
 const authStore = useAuthStore()
 
 const menu = ref()
-const items = ref([
+const items = ref<MenuOption[]>([
+  {
+    labelKey: 'profile',
+    icon: 'user',
+    to: { name: 'profile', params: { userId: authStore.user?.id } }
+  },
   {
     labelKey: 'settings',
     icon: 'cog-6-tooth',
-    route: { name: 'settings' }
+    to: { name: 'settings' }
   }
 ])
 
@@ -46,7 +51,7 @@ const toggleNavbarMenu = (event: Event) => {
           </div>
         </template>
         <template #item="{ item }">
-          <router-link class="flex items-center gap-4" :to="item.route">
+          <router-link class="flex items-center gap-4" :to="item.to">
             <BaseIcon :icon="item.icon" />
             <span>{{ $t(item.labelKey) }}</span>
           </router-link>

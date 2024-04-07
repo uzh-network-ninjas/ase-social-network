@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import Dropdown from 'primevue/dropdown'
 import FloatLabel from 'primevue/floatlabel'
-import MiniChevronDown from '@/icons/MiniChevronDown.vue'
+import MiniChevronDown from '@/icons/MiniChevronDownIcon.vue'
 import InputText from 'primevue/inputtext'
 import Checkbox from 'primevue/checkbox'
 import BaseIcon from '@/icons/BaseIcon.vue'
@@ -111,25 +111,25 @@ const checked = ref<boolean>(false)
     <div class="mt-4 flex w-fit flex-col gap-2">
       <ToggleButton v-model="checked" onLabel="Ascending" offLabel="Descending">
         <template #icon="propScope">
-          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" stroke-width="1.5" />
+          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" :stroke-width="1.5" />
         </template>
       </ToggleButton>
 
       <ToggleButton v-model="checked" onLabel="Ascending" offLabel="Descending" class="border-none">
         <template #icon="propScope">
-          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" stroke-width="1.5" />
+          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" :stroke-width="1.5" />
         </template>
       </ToggleButton>
 
       <ToggleButton v-model="checked" onLabel="Ascending" offLabel="Descending" invalid>
         <template #icon="propScope">
-          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" stroke-width="1.5" />
+          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" :stroke-width="1.5" />
         </template>
       </ToggleButton>
 
       <ToggleButton v-model="checked" onLabel="Ascending" offLabel="Descending" disabled>
         <template #icon="propScope">
-          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" stroke-width="1.5" />
+          <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" :stroke-width="1.5" />
         </template>
       </ToggleButton>
 

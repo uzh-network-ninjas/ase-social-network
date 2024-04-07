@@ -12,9 +12,6 @@ import FriendsIcon from '@/icons/FriendsIcon.vue'
 import ChevronLeft from '@/icons/ChevronLeft.vue'
 import ArrowUp from '@/icons/ArrowUp.vue'
 import ArrowDown from '@/icons/ArrowDown.vue'
-import PhotoIcon from '@/icons/PhotoIcon.vue'
-import ArrowUpTray from '@/icons/ArrowUpTray.vue'
-import FaceSmileIcon from '@/icons/FaceSmileIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -24,6 +21,11 @@ export type IconType =
   | 'sparkles'
   | 'arrow-left-end-on-rectangle'
   | 'arrow-left-start-on-rectangle'
+  | 'user-plus'
+  | 'share'
+  | 'back'
+  | 'three-dots'
+  | 'mini-down'
   | 'arrow-up'
   | 'arrow-down'
   | 'user'
@@ -112,6 +114,25 @@ defineOptions({
   <ArrowUp v-else-if="icon == 'arrow-up'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
   <ArrowDown
     v-else-if="icon == 'arrow-down'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <UserPlusIcon
+    v-else-if="icon == 'user-plus'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <ShareIcon v-else-if="icon == 'share'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
+  <ThreeDotsIcon
+    v-else-if="icon == 'three-dots'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <MiniChevronDown
+    v-else-if="icon == 'mini-down'"
     v-bind="$attrs"
     :size="size"
     :strokeWidth="strokeWidth"

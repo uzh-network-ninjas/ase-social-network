@@ -46,14 +46,16 @@ const updateProfilePicture = function () {
 
 const updateUsername = function () {
   usernameChanged.value = false
-  profilePictureChangeFailed.value = false
+  usernameTaken.value = false
   authStore
     .updateUser({ username: username.value })
     .then(() => {
       usernameChanged.value = true
     })
-    .catch(() => {
-      //TODO: Handle username already taken
+    .catch((error) => {
+      if (error.response?.status === 400) {
+        usernameTaken.value = true
+      }
     })
 }
 </script>

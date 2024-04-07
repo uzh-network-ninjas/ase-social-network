@@ -72,7 +72,9 @@ const updateEmail = function () {
       emailChanged.value = true
     })
     .catch((error) => {
-      // TODO: Handle email already taken error
+      if (error.response?.status === 400) {
+        emailTaken.value = true
+      }
     })
 }
 
