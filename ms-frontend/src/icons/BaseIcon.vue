@@ -10,6 +10,9 @@ import UserPlusIcon from '@/icons/UserPlusIcon.vue'
 import ShareIcon from '@/icons/ShareIcon.vue'
 import BackIcon from '@/icons/BackIcon.vue'
 import ThreeDotsIcon from '@/icons/ThreeDotsIcon.vue'
+import MiniChevronDown from '@/icons/MiniChevronDown.vue'
+import ArrowUpIcon from '@/icons/ArrowUpIcon.vue'
+import ProfileIcon from '@/icons/ProfileIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -23,12 +26,16 @@ export type IconType =
   | 'share'
   | 'back'
   | 'three-dots'
+  | 'mini-down'
+  | 'arrow-up'
+  | 'profile'
   | undefined
 
 withDefaults(
   defineProps<{
     icon: IconType
     strokeWidth?: number
+    imageUrl?: string
   }>(),
   {
     strokeWidth: 1
@@ -51,5 +58,9 @@ defineOptions({
   <UserPlusIcon v-else-if="icon == 'user-plus'" v-bind="$attrs" />
   <ShareIcon v-else-if="icon == 'share'" v-bind="$attrs" />
   <BackIcon v-else-if="icon == 'back'" v-bind="$attrs" />
-  <ThreeDotsIcon v-else-if="icon == 'three-dots'" v-bind="$attrs"/>
+  <ThreeDotsIcon v-else-if="icon == 'three-dots'" v-bind="$attrs" />
+  <MiniChevronDown v-else-if="icon == 'mini-down'" v-bind="$attrs" />
+  <ArrowUpIcon v-else-if="icon == 'arrow-up'" v-bind="$attrs" />
+  <ProfileIcon v-else-if="icon === 'profile' && imageUrl" v-bind="$attrs" :imageUrl="imageUrl" />
+  <!-- Conditionally render ProfileIcon with imageUrl -->
 </template>
