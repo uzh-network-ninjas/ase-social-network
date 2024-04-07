@@ -9,7 +9,6 @@ import { computed, ref } from 'vue'
 import BaseIcon from '@/icons/BaseIcon.vue'
 import DecoStrip from '@/components/DecoStrip.vue'
 import { useAuthStore } from '@/stores/auth'
-import router from '@/router'
 
 const authStore = useAuthStore()
 
@@ -39,20 +38,14 @@ const signInEnabled = computed<boolean>(() => {
 const signIn = function () {
   usernameError.value = false
   passwordError.value = false
-  authStore
-    .signIn(username.value, password.value)
-    .then(() => {
-      // Navigate to the homepage upon successful login
-      router.push({ name: 'home' })
-    })
-    .catch((error) => {
-      if (error.response?.status === 404) {
-        // Handle authentication failure (e.g., invalid username or password)
-        usernameError.value = true
-        passwordError.value = true
-        console.log('Login Failed')
-      }
-    })
+  authStore.signIn(username.value, password.value).catch((error) => {
+    if (error.response?.status === 404) {
+      // Handle authentication failure (e.g., invalid username or password)
+      usernameError.value = true
+      passwordError.value = true
+      console.log('Login Failed')
+    }
+  })
 }
 </script>
 
@@ -140,11 +133,11 @@ const signIn = function () {
       </div>
     </div>
   </main>
-  <DecoStrip class="fixed bottom-0 right-1/4 top-0 z-50 max-lg:invisible lg:visible" />
+  <DecoStrip class="fixed bottom-0 left-3/4 top-0 z-50 max-lg:invisible lg:visible" />
 </template>
 
 <style scoped>
 main {
-  height: calc(100vh - 48px);
+  height: calc(100vh - 64px);
 }
 </style>

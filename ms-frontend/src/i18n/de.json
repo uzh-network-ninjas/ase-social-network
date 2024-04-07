@@ -66,5 +66,10 @@
   "chinese": "Chinesisch",
   "korean": "Koreanisch",
   "eritrean": "Eritreisch",
-  "edit": "Bearbeiten"
+  "edit": "Bearbeiten",
+  "next": "Weiter",
+  "select_all_apply": "Wählen alle zutreffenden Optionen aus.",
+  "pick_at_least_five": "Wählen mindestens {amount} weitere Optionen aus, die du magst.",
+  "pick_all_like": "Wählen alle aus die du magst.",
+  "back": "Zurück"
 }
