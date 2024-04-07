@@ -59,6 +59,7 @@ class ReviewService:
     async def get_feed_by_cursor_and_followed_users(self, timestamp_cursor: datetime, user_ids: List[str], user_id: str) -> ReviewListOut:
         if len(user_ids) == 0:
             raise HTTPException(status_code=404, detail="No followed users!")
+        timestamp_cursor = timestamp_cursor if timestamp_cursor else datetime.now()
         page_size = 25
         result = await self.rr.get_feed_by_cursor_and_user_ids(timestamp_cursor, user_ids, page_size)
         if len(result) == 0:
