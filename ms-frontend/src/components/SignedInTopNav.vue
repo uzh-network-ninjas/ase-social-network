@@ -5,6 +5,7 @@ import BaseIcon from '@/icons/BaseIcon.vue'
 import Menu from 'primevue/menu'
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { type IconType } from '@/icons/BaseIcon.vue'
 
 const authStore = useAuthStore()
 
@@ -52,7 +53,7 @@ const toggleNavbarMenu = (event: Event) => {
         </template>
         <template #item="{ item }">
           <router-link class="flex items-center gap-4" :to="item.to">
-            <BaseIcon :icon="item.icon" />
+            <BaseIcon :icon="(item.icon as IconType)" />
             <span>{{ $t(item.labelKey) }}</span>
           </router-link>
         </template>
