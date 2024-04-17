@@ -29,10 +29,14 @@ services:
   ms-user-db:
     ports:
       - "10000:27017"
+    volumes:
+      - ms-user-db-volume:/data/db
 
   ms-review-db:
     ports:
       - "10001:27017"
+    volumes:
+      - ms-review-db-volume:/data/db
       
   ms-frontend:
     build: 

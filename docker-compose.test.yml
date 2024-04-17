@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  ms-authenticate:
+    build:
+      dockerfile: Dockerfile.build
+
+  ms-user:
+    build:
+      dockerfile: Dockerfile.build
+
+  ms-review:
+    build: 
+      dockerfile: Dockerfile.build
+
+  ms-user-db:
+    ports:
+      - "10000:27017"
+
+  ms-review-db:
+    ports:
+      - "10001:27017"
+      
+  ms-frontend:
+    build: 
+      dockerfile: Dockerfile.build
+
+  localstack:
+    container_name: "localstack-main"
+    image: localstack/localstack
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+      - "4510-4559:4510-4559"  # external services port range
+    volumes:
+      # - "./volume:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./support/localstack/localstack-setup.sh:/etc/localstack/init/ready.d/script.sh"
+    # networks:
+    #   - ms-net
+
+  cypress:
+    build: ./support/testing/e2etesting
+    image: cypress/included:latest
+    environment:
+      - CYPRESS_BASE_URL=http://localhost:8000 # to connect to the instance in the "localhost" way
+    working_dir: /e2e
+    volumes:
+      - ./support/testing/e2etesting:/e2e
+    depends_on:
+      - seed 
+    network_mode: "host"
+
+  seed:
+    build: ./support/testing/seed_database/ 
+    depends_on:
+      - ms-user
+      - ms-review
+      - ms-authenticate
+      - ms-frontend
+      - kong
+    environment:
+      - BASE_URL=http://kong:8000
+    networks:
+      - ms-net
+
+# networks:
+  # ms-net:

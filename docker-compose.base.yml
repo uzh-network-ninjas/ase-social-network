@@ -8,7 +8,6 @@ x-aws-config:
   S3_ENDPOINT_URL: ${S3_ENDPOINT_URL}
 
 
-
 services:
   ms-authenticate:
     build: ms-authenticate
@@ -51,8 +50,6 @@ services:
     image: mongo
     environment:
       - MONGO_INITDB_DATABASE=ms_user_db
-    volumes:
-      - ms-user-db-volume:/data/db
     networks:
       - ms-net
 
@@ -60,22 +57,14 @@ services:
     image: mongo
     environment:
       - MONGO_INITDB_DATABASE=ms_review_db
-    volumes:
-      - ms-review-db-volume:/data/db
     networks:
       - ms-net
       
   ms-frontend:
     build: 
       context: ms-frontend
-    environment:
-      - CHOKIDAR_USEPOLLING=true
     networks:
       - ms-net
-
-volumes:
-  ms-user-db-volume:
-  ms-review-db-volume:
 
 networks:
   ms-net:
