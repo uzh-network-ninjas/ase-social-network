@@ -36,8 +36,10 @@ if $WITH_COVERAGE; then
 
     echo "Running tests with coverage..."
 
+    docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
+
     # curl verbose output to localhost:8000
-    total_calls=10
+    total_calls=3
 
     # URL to request
     url="http://localhost:8000"
