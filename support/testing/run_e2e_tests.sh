@@ -38,32 +38,32 @@ if $WITH_COVERAGE; then
 
     docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 
-    # curl verbose output to localhost:8000
-    total_calls=3
+    # # curl verbose output to localhost:8000
+    # total_calls=3
 
-    # URL to request
-    url="http://localhost:8000"
+    # # URL to request
+    # url="http://localhost:8000"
 
-    # Loop for a total of 10 calls
-    for ((i=1; i<=total_calls; i++))
-    do
-    echo "Making call $i to $url"
-    # Use curl with the -v option for verbose output
-    curl -v $url
+    # # Loop for a total of 10 calls
+    # for ((i=1; i<=total_calls; i++))
+    # do
+    # echo "Making call $i to $url"
+    # # Use curl with the -v option for verbose output
+    # curl -v $url
     
-    # Check if it is not the last iteration to avoid an unnecessary sleep
-    if [ $i -lt $total_calls ]; then
-        echo "Sleeping for 10 seconds..."
-        sleep 10
-    fi
-    done
+    # # Check if it is not the last iteration to avoid an unnecessary sleep
+    # if [ $i -lt $total_calls ]; then
+    #     echo "Sleeping for 10 seconds..."
+    #     sleep 10
+    # fi
+    # done
 
-    echo "done"
+    # echo "done"
 
-    # MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
-    # cypress/included:latest \
-    # --config baseUrl=http://localhost:8000  \
-    # --reporter-options "toConsole=true" | tee $REPORT_FILE
+    MSYS_NO_PATHCONV=1 docker run --network ms-net -v $volume_path -w "/app" \
+    cypress/included:latest \
+    --config baseUrl=http://kong:8000  \
+    --reporter-options "toConsole=true" | tee $REPORT_FILE
 
     if [ -s $REPORT_FILE ]; then
         # Print everything after "Run Finished"
