@@ -35,7 +35,7 @@ run_e2e_tests() {
     echo "Starting all services..."
 
     # execute this -> from the main script
-    # ./init.sh test
+    $script_dir/init.sh test
     if $WITH_COVERAGE; then
         echo "running e2e tests with coverage"
         $script_dir/support/testing/run_e2e_tests.sh "${REPORTS_DIR}" --with-coverage
@@ -44,6 +44,7 @@ run_e2e_tests() {
     fi
 
     echo "taking down infrastructure"
+    $script_dir/down.sh
 }
 
 # Parse command-line options

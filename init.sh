@@ -74,4 +74,4 @@ case $ENVIRONMENT in
     ;;
 esac
 
-echo $ENVIRONMENT > ./last_environment.txt
+echo $ENVIRONMENT > ./.last_environment

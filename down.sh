@@ -3,9 +3,8 @@
 if [ ! -f /last_environment.txt ]; then
     echo "No environment information found. Using dev as defail argument."
     ENVIRONMENT=dev
-fi
 else
-    ENVIRONMENT=$(cat ./last_environment.txt)
+    ENVIRONMENT=$(cat ./.last_environment)
     
 fi
 

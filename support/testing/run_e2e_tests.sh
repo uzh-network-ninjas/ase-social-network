@@ -35,21 +35,21 @@ if $WITH_COVERAGE; then
     mkdir -p "${REPORTS_DIR}"
 
     echo "Running tests with coverage..."
-    docker run --network host -v $volume_path  \
-    cypress/included:latest   \
-    --config baseUrl=http://localhost:8000   \
-    --reporter-options "toConsole=true" > $REPORT_FILE 
+    docker run --network host -v $volume_path \
+    cypress/included:latest \
+    --config baseUrl=http://localhost:8000 \
+    --reporter-options "toConsole=true" | tee $REPORT_FILE
 
     if [ -s $REPORT_FILE ]; then
         # Print everything after "Run Finished"
-        convert_cypress_to_MD.sh $REPORT_FILE $GITHUB_REPORT_FILE
+        $script_dir/convert_cypress_to_MD.sh $REPORT_FILE $GITHUB_REPORT_FILE
     else
         echo "No output found or file is empty."
     fi
 
     # find out if $GITHUB_REPORT_FILE has string x of x failed 
     if grep -q "failed" $GITHUB_REPORT_FILE; then
-        echo "Tests failed please check the CI pipeline for more details
+        echo "Tests failed please check the CI pipeline for more details"
         exit 1
     else
         echo "Tests passed"
