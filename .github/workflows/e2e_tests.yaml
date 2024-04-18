@@ -1,4 +1,4 @@
-name: Run Integration tests for the repository
+name: Run E2E tests for the repository
 
 on:
   pull_request:
@@ -36,7 +36,7 @@ jobs:
     - name: Run E2E Tests
       if: steps.check_skip_flag.outputs.skip == 'false'
       run: |
-        bash ./run_tests.sh --integration-tests --with-coverage
+        bash ./run_tests.sh --e2e-tests --with-coverage
 
     - name: Comment on PR if E2E Tests are Skipped
       if: steps.check_skip_flag.outputs.skip == 'true'
