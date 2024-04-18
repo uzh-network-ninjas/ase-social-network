@@ -34,6 +34,8 @@ run_e2e_tests() {
     # Start all services with Docker Compose
     echo "Starting all services..."
 
+    # copy .env.example to .env
+    cp .env.example .env
     # execute this -> from the main script
     $script_dir/init.sh test
     if $WITH_COVERAGE; then
