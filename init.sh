@@ -33,7 +33,7 @@ parse_args() {
 
 # Function to start the Docker environment
 start_docker() {
-  docker network create ms-net
+  # docker network create ms-net
   if $BUILD_FLAG; then
     echo "Building Docker images..."
     docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.dev.yml -f docker-compose.kong.yml build
@@ -43,7 +43,7 @@ start_docker() {
 }
 
 start_test() {
-  docker network create ms-net
+  # docker network create ms-net
   if $BUILD_FLAG; then
     echo "Building Docker images..."
     docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.test.yml -f docker-compose.kong.yml build

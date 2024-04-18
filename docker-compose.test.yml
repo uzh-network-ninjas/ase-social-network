@@ -59,11 +59,10 @@ services:
       - ms-frontend
       - kong
     environment:
-      - BASE_URL=http://kong:8000
-    networks:
-      - ms-net
+      - BASE_URL=http://127.0.0.1:8000
+    network_mode: "host"
+
 
 networks:
   ms-net:
-    external: true
     name: ms-net
