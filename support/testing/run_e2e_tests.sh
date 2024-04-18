@@ -35,9 +35,9 @@ if $WITH_COVERAGE; then
     mkdir -p "${REPORTS_DIR}"
 
     echo "Running tests with coverage..."
-    MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
+    MSYS_NO_PATHCONV=1 docker run --network ms-net -v $volume_path -w "/app" \
     cypress/included:latest \
-    --config baseUrl=http://localhost:8000  \
+    --config baseUrl=http://kong:8000  \
     --reporter-options "toConsole=true" | tee $REPORT_FILE
 
     if [ -s $REPORT_FILE ]; then
@@ -57,8 +57,8 @@ if $WITH_COVERAGE; then
 
 else
     echo "Running tests without coverage..."
-    MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path  -w "/app" \
+    MSYS_NO_PATHCONV=1 docker run --network ms-net -v $volume_path  -w "/app" \
     cypress/included:latest   \
-    --config baseUrl=http://localhost:8000  
+    --config baseUrl=http://kong:8000  
 fi
 

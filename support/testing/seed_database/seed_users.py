@@ -24,7 +24,7 @@ while True:
 preferences_list = ["Fast Food", "Fusion", "Street Food", "French", "Spanish", "Italian", "Greek", 
                     "Portuguese", "Norwegian", "German", "Czech", "Turkish", "Japanese", 
                     "Indian", "Chinese", "Korean", "Eritrean"]
-restrictions_list = ["Vegetarian", "Vegan", "lactose_intolerant", "Ovo", "Pescetarian", 
+restrictions_list = ["Vegetarian", "Vegan", "Lactose Intolerant", "Ovo", "Pescetarian", 
                      "Pollo", "Halal", "Kosher"]
 
 # Function to create users and update their preferences

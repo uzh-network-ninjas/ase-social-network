@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -f /last_environment.txt ]; then
+if [ ! -f /.last_environment ]; then
     echo "No environment information found. Using dev as defail argument."
     ENVIRONMENT=dev
 else

@@ -63,5 +63,5 @@ services:
     networks:
       - ms-net
 
-# networks:
-  # ms-net:
+networks:
+  ms-net:
