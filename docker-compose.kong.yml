@@ -19,10 +19,6 @@ volumes:
       type: tmpfs
       device: tmpfs
 
-networks:
-  ms-net:
-    external: false
-
 services:
   # kong-migrations:
   #   image: "${KONG_DOCKER_TAG:-kong:latest}"
@@ -123,3 +119,8 @@ services:
   #     - ms-net
   #   volumes:
   #     - kong_data:/var/lib/postgresql/data
+
+networks:
+  ms-net:
+    external: true
+    name: ms-net

@@ -67,3 +67,5 @@ volumes:
 
 networks:
   ms-net:
+    external: true
+    name: ms-net
