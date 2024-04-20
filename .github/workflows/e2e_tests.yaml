@@ -11,17 +11,17 @@ permissions:
 jobs:
   e2e_test:
     runs-on: ubuntu-latest
-    services:
-      docker:
-        image: docker:latest
-        options: --privileged
-        ports:
-          - 2375:2375
+    # services:
+    #   docker:
+    #     image: docker:latest
+    #     options: --privileged
+    #     ports:
+    #       - 2375:2375
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v3
     
     - name: Check for Skip E2E Test Flag in Commit Message
       id: check_skip_flag
