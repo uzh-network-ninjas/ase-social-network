@@ -38,11 +38,11 @@ if $WITH_COVERAGE; then
 
     docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 
-    # # curl verbose output to localhost:8000
+    # # curl verbose output to localhost:8010
     # total_calls=3
 
     # # URL to request
-    # url="http://localhost:8000"
+    # url="http://localhost:8010"
 
     # # Loop for a total of 10 calls
     # for ((i=1; i<=total_calls; i++))
@@ -62,7 +62,7 @@ if $WITH_COVERAGE; then
 
     MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
     cypress/included:latest \
-    --config baseUrl=http://localhost:8000  \
+    --config baseUrl=http://localhost:8010  \
     --reporter-options "toConsole=true" | tee $REPORT_FILE
 
     if [ -s $REPORT_FILE ]; then
@@ -84,6 +84,6 @@ else
     echo "Running tests without coverage..."
     MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path  -w "/app" \
     cypress/included:latest   \
-    --config baseUrl=http://localhost:8000  
+    --config baseUrl=http://localhost:8010  
 fi
 

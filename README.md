@@ -28,7 +28,7 @@
 
 ## User registration flow
 - Register as a user with password via 
-- then Issue a token via /token - Accepts username and password in FormData (can be changed) - (`http://localhost:8000/authenticator/token`)
+- then Issue a token via /token - Accepts username and password in FormData (can be changed) - (`http://localhost:8010/authenticator/token`)
 - this issues a JSON Web Token (JWT) that can be used to authenticate requests to the protected endpoints
 
 

@@ -5,7 +5,7 @@ import time
 
 # Define the base URL and headers for requests
 # get base URL from enviroment varables
-base_url = os.getenv('BASE_URL') or "http://localhost:8000"
+base_url = os.getenv('BASE_URL') or "http://localhost:8010"
 headers = {'Content-Type': 'application/json'}
 
 print("such testing is currently working only with docker compose")
