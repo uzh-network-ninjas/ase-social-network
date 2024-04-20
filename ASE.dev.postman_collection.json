@@ -1207,7 +1207,7 @@
 		},
 		{
 			"key": "endpoint",
-			"value": "localhost:8010",
+			"value": "localhost:8000",
 			"type": "string"
 		},
 		{

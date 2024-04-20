@@ -42,7 +42,7 @@ services:
   #   build: ./support/testing/e2etesting
   #   image: cypress/included:latest
   #   environment:
-  #     - CYPRESS_BASE_URL=http://localhost:8010 # to connect to the instance in the "localhost" way
+  #     - CYPRESS_BASE_URL=http://localhost:8000 # to connect to the instance in the "localhost" way
   #   working_dir: /e2e
   #   volumes:
   #     - ./support/testing/e2etesting:/e2e
@@ -59,7 +59,7 @@ services:
       - ms-frontend
       - kong
     environment:
-      - BASE_URL=http://localhost:8010
+      - BASE_URL=http://localhost:8000
     network_mode: "host"
 
 
