@@ -63,20 +63,20 @@ if $WITH_COVERAGE; then
     netstat -lt
 
     # get proper name by grep "kong"
-    NAME= $(docker ps --format '{{.Names}}' | grep "kong")
+    NAME=$(docker ps --format '{{.Names}}' | grep "kong")
     docker logs $NAME
 
-    # MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
-    # cypress/included:latest \
-    # --config baseUrl=http://localhost:8000  \
-    # --reporter-options "toConsole=true" | tee $REPORT_FILE
+    MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
+    cypress/included:latest \
+    --config baseUrl=http://localhost:8000  \
+    --reporter-options "toConsole=true" | tee $REPORT_FILE
 
-    # if [ -s $REPORT_FILE ]; then
-    #     # Print everything after "Run Finished"
-    #     $script_dir/convert_cypress_to_MD.sh $REPORT_FILE $GITHUB_REPORT_FILE
-    # else
-    #     echo "No output found or file is empty."
-    # fi
+    if [ -s $REPORT_FILE ]; then
+        # Print everything after "Run Finished"
+        $script_dir/convert_cypress_to_MD.sh $REPORT_FILE $GITHUB_REPORT_FILE
+    else
+        echo "No output found or file is empty."
+    fi
 
     # # find out if $GITHUB_REPORT_FILE has string x of x failed 
     # if grep -q "failed" $GITHUB_REPORT_FILE; then
