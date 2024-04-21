@@ -49,7 +49,7 @@ if $WITH_COVERAGE; then
     do
     echo "Making call $i to $url"
     # Use curl with the -v option for verbose output
-    curl -v $url
+    curl -v -I  $url
     
     # Check if it is not the last iteration to avoid an unnecessary sleep
     if [ $i -lt $total_calls ]; then
