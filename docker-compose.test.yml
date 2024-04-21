@@ -1,40 +1,40 @@
 version: '3.8'
 
 services:
-  ms-authenticate:
-    build:
-      dockerfile: Dockerfile.build
+  # ms-authenticate:
+  #   build:
+  #     dockerfile: Dockerfile.build
 
-  ms-user:
-    build:
-      dockerfile: Dockerfile.build
+  # ms-user:
+  #   build:
+  #     dockerfile: Dockerfile.build
 
-  ms-review:
-    build: 
-      dockerfile: Dockerfile.build
+  # ms-review:
+  #   build: 
+  #     dockerfile: Dockerfile.build
 
-  ms-user-db:
-    ports:
-      - "10000:27017"
+  # ms-user-db:
+  #   ports:
+  #     - "10000:27017"
 
-  ms-review-db:
-    ports:
-      - "10001:27017"
+  # ms-review-db:
+  #   ports:
+  #     - "10001:27017"
       
   ms-frontend:
     build: 
       dockerfile: Dockerfile.build
 
-  localstack:
-    container_name: "localstack-main"
-    image: localstack/localstack
-    ports:
-      - "4566:4566"            # LocalStack Gateway
-      - "4510-4559:4510-4559"  # external services port range
-    volumes:
-      # - "./volume:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./support/localstack/localstack-setup.sh:/etc/localstack/init/ready.d/script.sh"
+  # localstack:
+  #   container_name: "localstack-main"
+  #   image: localstack/localstack
+  #   ports:
+  #     - "4566:4566"            # LocalStack Gateway
+  #     - "4510-4559:4510-4559"  # external services port range
+  #   volumes:
+  #     # - "./volume:/var/lib/localstack"
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+  #     - "./support/localstack/localstack-setup.sh:/etc/localstack/init/ready.d/script.sh"
     # networks:
     #   - ms-net
 
@@ -50,17 +50,17 @@ services:
   #     - seed 
   #   network_mode: "host"
 
-  seed:
-    build: ./support/testing/seed_database/ 
-    depends_on:
-      - ms-user
-      - ms-review
-      - ms-authenticate
-      - ms-frontend
-      - kong
-    environment:
-      - BASE_URL=http://localhost:8000
-    network_mode: "host"
+  # seed:
+  #   build: ./support/testing/seed_database/ 
+  #   depends_on:
+  #     - ms-user
+  #     - ms-review
+  #     - ms-authenticate
+  #     - ms-frontend
+  #     - kong
+  #   environment:
+  #     - BASE_URL=http://localhost:8000
+  #   network_mode: "host"
 
 
 networks:

@@ -9,56 +9,56 @@ x-aws-config:
 
 
 services:
-  ms-authenticate:
-    build: ms-authenticate
-    environment:
-      - PORT=5000
-      - MONGO_URL=mongodb://ms-user-db:27017/ms_user_db
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_KONG_KEY=${JWT_KONG_KEY}
-      - JWT_ALGORITHM=${JWT_ALGORITHM}
-    depends_on:
-      - ms-user-db
-    networks:
-      - ms-net
+  # ms-authenticate:
+  #   build: ms-authenticate
+  #   environment:
+  #     - PORT=5000
+  #     - MONGO_URL=mongodb://ms-user-db:27017/ms_user_db
+  #     - JWT_SECRET=${JWT_SECRET}
+  #     - JWT_KONG_KEY=${JWT_KONG_KEY}
+  #     - JWT_ALGORITHM=${JWT_ALGORITHM}
+  #   depends_on:
+  #     - ms-user-db
+  #   networks:
+  #     - ms-net
       
-  ms-user:
-    build: ms-user
-    environment:
-      <<: *aws-env
-      PORT: 5002
-      MONGO_URL: mongodb://ms-user-db:27017/ms_user_db
+  # ms-user:
+  #   build: ms-user
+  #   environment:
+  #     <<: *aws-env
+  #     PORT: 5002
+  #     MONGO_URL: mongodb://ms-user-db:27017/ms_user_db
 
-    depends_on:
-      - ms-user-db
-    networks:
-      - ms-net
+  #   depends_on:
+  #     - ms-user-db
+  #   networks:
+  #     - ms-net
 
-  ms-review:
-    build: ms-review
-    environment:
-      <<: *aws-env
-      PORT: 5001
-      MONGO_URL: mongodb://ms-review-db:27017/ms_review_db
+  # ms-review:
+  #   build: ms-review
+  #   environment:
+  #     <<: *aws-env
+  #     PORT: 5001
+  #     MONGO_URL: mongodb://ms-review-db:27017/ms_review_db
 
-    depends_on:
-      - ms-review-db
-    networks:
-      - ms-net
+  #   depends_on:
+  #     - ms-review-db
+  #   networks:
+  #     - ms-net
 
-  ms-user-db:
-    image: mongo
-    environment:
-      - MONGO_INITDB_DATABASE=ms_user_db
-    networks:
-      - ms-net
+  # ms-user-db:
+  #   image: mongo
+  #   environment:
+  #     - MONGO_INITDB_DATABASE=ms_user_db
+  #   networks:
+  #     - ms-net
 
-  ms-review-db:
-    image: mongo
-    environment:
-      - MONGO_INITDB_DATABASE=ms_review_db
-    networks:
-      - ms-net
+  # ms-review-db:
+  #   image: mongo
+  #   environment:
+  #     - MONGO_INITDB_DATABASE=ms_review_db
+  #   networks:
+  #     - ms-net
       
   ms-frontend:
     build: 

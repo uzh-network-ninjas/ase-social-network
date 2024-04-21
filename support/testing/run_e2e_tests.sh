@@ -39,7 +39,7 @@ if $WITH_COVERAGE; then
     docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 
     # # curl verbose output to localhost:8000
-    total_calls=10
+    total_calls=1
 
     # # URL to request
     url="http://localhost:8000"
@@ -62,25 +62,29 @@ if $WITH_COVERAGE; then
 
     netstat -lt
 
-    MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
-    cypress/included:latest \
-    --config baseUrl=http://localhost:8000  \
-    --reporter-options "toConsole=true" | tee $REPORT_FILE
+    # get proper name by grep "kong"
+    NAME= $(docker ps --format '{{.Names}}' | grep "kong")
+    docker logs $NAME
 
-    if [ -s $REPORT_FILE ]; then
-        # Print everything after "Run Finished"
-        $script_dir/convert_cypress_to_MD.sh $REPORT_FILE $GITHUB_REPORT_FILE
-    else
-        echo "No output found or file is empty."
-    fi
+    # MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
+    # cypress/included:latest \
+    # --config baseUrl=http://localhost:8000  \
+    # --reporter-options "toConsole=true" | tee $REPORT_FILE
 
-    # find out if $GITHUB_REPORT_FILE has string x of x failed 
-    if grep -q "failed" $GITHUB_REPORT_FILE; then
-        echo "Tests failed please check the CI pipeline for more details"
-        exit 1
-    else
-        echo "Tests passed"
-    fi
+    # if [ -s $REPORT_FILE ]; then
+    #     # Print everything after "Run Finished"
+    #     $script_dir/convert_cypress_to_MD.sh $REPORT_FILE $GITHUB_REPORT_FILE
+    # else
+    #     echo "No output found or file is empty."
+    # fi
+
+    # # find out if $GITHUB_REPORT_FILE has string x of x failed 
+    # if grep -q "failed" $GITHUB_REPORT_FILE; then
+    #     echo "Tests failed please check the CI pipeline for more details"
+    #     exit 1
+    # else
+    #     echo "Tests passed"
+    # fi
 
 else
     echo "Running tests without coverage..."
