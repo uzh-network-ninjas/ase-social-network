@@ -20,6 +20,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    # lets just hope that kong gets 1000:1000 as the user:group 
+    - name: Set Permissions for Mounted Volumes
+      run: |
+        sudo chown -R 1000:1000 ./support/kong/config
+        sudo chmod -R 777 ./support/kong/config
+
     # - name: Set up Docker Buildx
     #   uses: docker/setup-buildx-action@v3
     
