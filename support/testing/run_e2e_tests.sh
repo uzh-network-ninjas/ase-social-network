@@ -39,7 +39,7 @@ if $WITH_COVERAGE; then
     docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 
     # # curl verbose output to localhost:8000
-    # total_calls=10
+    total_calls=10
 
     # # URL to request
     url="http://0.0.0.0:8000"
