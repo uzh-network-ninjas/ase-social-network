@@ -1,0 +1,63 @@
+name: Run E2E tests for the repository
+
+on:
+  pull_request:
+    branches:
+      ['main']
+
+permissions: 
+   pull-requests: write 
+
+jobs:
+  e2e_test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # lets just hope that kong gets 1000:1000 as the user:group 
+    - name: Set Permissions for Mounted Volumes
+      run: |
+        sudo chown -R 1000:1000 ./support/kong/config
+        sudo chmod -R 777 ./support/kong/config
+    
+    - name: Check for Skip E2E Test Flag in Commit Message
+      id: check_skip_flag
+      run: |
+        commit_message=$(jq -r ".pull_request.title" "$GITHUB_EVENT_PATH")
+        if [[ $commit_message == *"--without-e2e-test"* ]]; then
+          echo "::set-output name=skip::true"
+        else
+          echo "::set-output name=skip::false"
+        fi
+
+    - name: Run E2E Tests
+      if: steps.check_skip_flag.outputs.skip == 'false'
+      run: |
+        bash ./run_tests.sh --e2e-tests --with-coverage
+
+    - name: Comment on PR if E2E Tests are Skipped
+      if: steps.check_skip_flag.outputs.skip == 'true'
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          :warning: E2E tests were skipped based on the commit message flag.
+        comment_tag: comment_skip
+
+
+    
+    - name: Load Test Results
+      if: steps.check_skip_flag.outputs.skip == 'false' && always()
+      id: load-results
+      run: |
+        echo "TEST_RESULTS<<EOF" >> $GITHUB_ENV
+        cat ./reports/e2e_test_results.md >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+    
+    - name: Comment PR
+      if: steps.check_skip_flag.outputs.skip == 'false' && always()
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          ## Test Results
+          ${{ env.TEST_RESULTS }}
+        comment_tag: test_results

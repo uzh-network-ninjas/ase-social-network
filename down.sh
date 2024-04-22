@@ -1,9 +1,18 @@
 #!/bin/bash
 
-# Function to stop Docker environment
+if [ ! -f ./.last_environment ]; then
+    echo "No environment information found. Using dev as defail argument."
+    ENVIRONMENT=dev
+else
+    ENVIRONMENT=$(cat ./.last_environment)
+    
+fi
+
+
 stop_docker() {
-  docker compose -f docker-compose.base.yml -f docker-compose.dev.yml -f docker-compose.kong.yml down
+    echo "Taking down the Docker Compose environment for $ENVIRONMENT..."
+    docker compose -f docker-compose.base.yml -f docker-compose.$ENVIRONMENT.yml -f docker-compose.kong.yml down
 }
 
-echo "Taking down the Docker Compose environment..."
+# Stop the environment
 stop_docker

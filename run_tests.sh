@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Usage: ./run_tests.sh [--with-coverage] [--unit-tests <microservice-name> | --unit-tests '*'] [--integration-tests]
-# Default behavior runs both unit and integration tests for all services without coverage if no flags are provided.
+# Usage: ./run_tests.sh [--with-coverage] [--unit-tests <microservice-name> | --unit-tests '*'] [--e2e-tests]
+# Default behavior runs both unit and e2e tests for all services without coverage if no flags are provided.
 
 # Initialize variables
 WITH_COVERAGE=false
 RUN_UNIT_TESTS=false
-RUN_INTEGRATION_TESTS=false
+RUN_E2E_TESTS=false
 
 UNIT_TEST_SERVICE_SPECIFIED=false
 UNIT_TEST_SERVICES=() # This will be populated based on the --unit-tests option
@@ -28,14 +28,25 @@ run_unit_tests_for_service() {
     fi
 }
 
-# Function to run integration tests
-run_integration_tests() {
-    echo "Running integration tests"
+# Function to run e2e tests
+run_e2e_tests() {
+    echo "Running e2e tests"
+    # Start all services with Docker Compose
+    echo "Starting all services..."
+
+    # copy .env.example to .env
+    cp .env.example .env
+    # execute this -> from the main script
+    $script_dir/init.sh test
     if $WITH_COVERAGE; then
-        echo "No tests implemented yet --with-coverage"
+        echo "running e2e tests with coverage"
+        $script_dir/support/testing/run_e2e_tests.sh "${REPORTS_DIR}" --with-coverage
     else
-        echo "No tests implemented yet"
+        $script_dir/support/testing/run_e2e_tests.sh
     fi
+
+    echo "taking down infrastructure"
+    $script_dir/down.sh
 }
 
 # Parse command-line options
@@ -54,12 +65,12 @@ while [[ "$#" -gt 0 ]]; do
             fi
             shift
             ;;
-        --integration-tests)
-            RUN_INTEGRATION_TESTS=true
+        --e2e-tests)
+            RUN_E2E_TESTS=true
             shift
             ;;
         -h|--help)
-            echo "Usage: $0 [--with-coverage] [--unit-tests <microservice-name> | --unit-tests '*'] [--integration-tests]"
+            echo "Usage: $0 [--with-coverage] [--unit-tests <microservice-name> | --unit-tests '*'] [--e2e-tests]"
             exit 0
             ;;
         *) # Unknown option
@@ -69,10 +80,10 @@ while [[ "$#" -gt 0 ]]; do
     esac
 done
 
-# Default to running both unit and integration tests if neither option is specified
-if ! $UNIT_TEST_SERVICE_SPECIFIED && ! $RUN_INTEGRATION_TESTS; then
+# Default to running both unit and e2e tests if neither option is specified
+if ! $UNIT_TEST_SERVICE_SPECIFIED && ! $RUN_E2E_TESTS; then
     RUN_UNIT_TESTS=true
-    RUN_INTEGRATION_TESTS=true
+    RUN_E2E_TESTS=true
     UNIT_TEST_SERVICES=("${services[@]}") # Default to all services if none specified
 fi
 
@@ -91,7 +102,7 @@ if $RUN_UNIT_TESTS; then
     fi
 fi
 
-# Execute integration tests if specified
-if $RUN_INTEGRATION_TESTS; then
-    run_integration_tests
+# Execute e2e tests if specified
+if $RUN_E2E_TESTS; then
+    run_e2e_tests
 fi
