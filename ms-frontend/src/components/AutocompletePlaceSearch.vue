@@ -10,9 +10,7 @@ import { autocompleteService } from '@/utils/useGoogleMaps'
 const router = useRouter()
 const route = useRoute()
 
-const emit = defineEmits<{
-  (e: 'search', query: string, placeId: string | undefined): void
-}>()
+const emit = defineEmits<(e: 'search', query: string, placeId: string | undefined) => void>()
 
 const autocomplete = ref<string>(route.query.query as string)
 const items = ref<google.maps.places.QueryAutocompletePrediction[] | null>(null)
@@ -46,31 +44,31 @@ const getPreviousUnMarkedSegment = function (
   if (index <= 0) {
     return ''
   }
-  const offset = option.structured_formatting.main_text_matched_substrings[index - 1].offset
-  const length = option.structured_formatting.main_text_matched_substrings[index - 1].length
-  const startIndex = option.structured_formatting.main_text_matched_substrings[index].offset
+  const offset = option.structured_formatting['main_text_matched_substrings'][index - 1].offset
+  const length = option.structured_formatting['main_text_matched_substrings'][index - 1].length
+  const startIndex = option.structured_formatting['main_text_matched_substrings'][index].offset
 
-  return option.structured_formatting.main_text.slice(offset + length, startIndex)
+  return option.structured_formatting['main_text'].slice(offset + length, startIndex)
 }
 
 const getLastUnmarkedSegment = function (
   option: google.maps.places.AutocompletePrediction,
   lastMatch: google.maps.places.PredictionSubstring
 ) {
-  return option.structured_formatting.main_text.slice(lastMatch.offset + lastMatch.length)
+  return option.structured_formatting['main_text'].slice(lastMatch.offset + lastMatch.length)
 }
 
 const getCurrentMarkedSegment = function (
   option: google.maps.places.AutocompletePrediction,
   match: google.maps.places.PredictionSubstring
 ) {
-  return option.structured_formatting.main_text.slice(match.offset, match.length)
+  return option.structured_formatting['main_text'].slice(match.offset, match.length)
 }
 
 const getPredictionSubString = function (
   option: google.maps.places.AutocompletePrediction
 ): google.maps.places.PredictionSubstring[] {
-  return option.structured_formatting.main_text_matched_substrings
+  return option.structured_formatting['main_text_matched_substrings']
 }
 
 const onUpdate = function (value: any) {
@@ -148,5 +146,3 @@ const onEnter = function () {
     </InputIcon>
   </IconField>
 </template>
-
-<style scoped></style>

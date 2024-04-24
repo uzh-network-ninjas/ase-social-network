@@ -33,9 +33,9 @@ const fetchingPosition = ref<boolean>(false)
 const fetchingPositionSupported = 'navigator' in window && 'geolocation' in navigator
 
 onMounted(async () => {
-  await loader.importLibrary('maps').then(({ Map }) => {
+  await loader.importLibrary('maps').then(() => {
     if (mapDiv.value) {
-      map.value = new Map(mapDiv.value as HTMLElement, {
+      map.value = new google.maps.Map(mapDiv.value as HTMLElement, {
         center: centerPos.value,
         zoom: 15,
         fullscreenControl: false,
@@ -98,7 +98,7 @@ watch([mapBounds, lastPos, lastZoom], () => {
   }
 
   positionChanged.value =
-    !map.value?.getBounds()?.contains(lastPos.value!) || map.value?.getZoom() != lastZoom.value
+    !map.value?.getBounds()?.contains(lastPos.value) || map.value?.getZoom() != lastZoom.value
 })
 
 const clearMarker = function () {

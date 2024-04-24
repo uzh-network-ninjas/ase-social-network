@@ -213,5 +213,3 @@ const search = (event: any) => {
     </div>
   </main>
 </template>
-
-<style scoped></style>

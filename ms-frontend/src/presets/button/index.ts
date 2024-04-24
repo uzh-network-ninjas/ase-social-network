@@ -52,7 +52,7 @@ export default {
       { 'ring-medium-emphasis': props.outlined || props.text },
 
       { 'bg-primary': !props.outlined && !props.text && !props.link },
-      { 'bg-background': props.outlined || props.outlined || props.link },
+      { 'bg-background': props.outlined || props.link },
 
       { 'text-contrast': !props.outlined && !props.text && !props.link },
       { 'text-medium-emphasis': (props.outlined || props.text) && !context.disabled },

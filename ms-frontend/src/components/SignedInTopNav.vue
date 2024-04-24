@@ -10,9 +10,7 @@ import AutocompletePlaceSearch from '@/components/AutocompletePlaceSearch.vue'
 
 const authStore = useAuthStore()
 
-const emit = defineEmits<{
-  (e: 'search', query: string, placeId: string | undefined): void
-}>()
+const emit = defineEmits<(e: 'search', query: string, placeId: string | undefined) => void>()
 
 const menu = ref()
 const items = ref<MenuOption[]>([
