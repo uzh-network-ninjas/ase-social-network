@@ -10,11 +10,13 @@ export default {
   }) => ({
     class: [
       'px-4',
-      'py-3',
-      'border',
+      props.variant == 'filled' ? 'py-2' : 'py-3',
+      { border: props.variant != 'filled' },
       'rounded-lg',
       'text-base',
+      'font-light',
       'outline-none',
+      { 'bg-selection-indicator/5': props.variant == 'filled' },
 
       { 'focus-visible:border-primary': !props.invalid && !context.disabled },
 

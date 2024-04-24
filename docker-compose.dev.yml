@@ -45,8 +45,10 @@ services:
       - "5173:5173"
     volumes:
       - ./ms-frontend/src:/app/src
-    environment:
+    environment: # Only variables prefixed with VITE_ are exposed to the client.
       - CHOKIDAR_USEPOLLING=true
+      - VITE_GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - VITE_GOOGLE_API_MAP_ID=${GOOGLE_API_MAP_ID}
 
   localstack:
     container_name: "localstack-main"

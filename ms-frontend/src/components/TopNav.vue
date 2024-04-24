@@ -27,7 +27,7 @@ withDefaults(
 <template>
   <nav class="bg-background">
     <ul class="flex h-16 items-center gap-4 px-4 py-2">
-      <li class="grow">
+      <li>
         <router-link
           class="flex w-fit items-center gap-2 rounded-lg text-primary outline-none ring-primary ring-offset-1 focus-visible:ring-1"
           :to="{ name: 'home' }"
@@ -39,10 +39,11 @@ withDefaults(
         </router-link>
       </li>
       <slot name="center">
+        <li class="grow" aria-hidden="true"></li>
         <li
           v-for="action in actions"
           :key="`${action.labelKey}:${action.to}`"
-          class="flex items-center gap-2 text-primary"
+          class="flex items-center justify-end gap-2 text-primary"
         >
           <Button
             text

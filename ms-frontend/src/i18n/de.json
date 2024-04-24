@@ -71,5 +71,6 @@
   "select_all_apply": "Wählen alle zutreffenden Optionen aus.",
   "pick_at_least_five": "Wählen mindestens {amount} weitere Optionen aus, die du magst.",
   "pick_all_like": "Wählen alle aus die du magst.",
-  "back": "Zurück"
+  "back": "Zurück",
+  "search_place": "Ort suchen..."
 }
