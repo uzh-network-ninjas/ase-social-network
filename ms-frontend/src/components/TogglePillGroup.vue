@@ -11,9 +11,7 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string[]): void
-}>()
+const emit = defineEmits<(e: 'update:modelValue', value: string[]) => void>()
 
 const onSelectOption = function (option: string) {
   const index = props.modelValue.indexOf(option)
@@ -39,5 +37,3 @@ const onSelectOption = function (option: string) {
     />
   </div>
 </template>
-
-<style scoped></style>

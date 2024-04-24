@@ -6,8 +6,11 @@ import Menu from 'primevue/menu'
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { type IconType } from '@/icons/BaseIcon.vue'
+import AutocompletePlaceSearch from '@/components/AutocompletePlaceSearch.vue'
 
 const authStore = useAuthStore()
+
+const emit = defineEmits<(e: 'search', query: string, placeId: string | undefined) => void>()
 
 const menu = ref()
 const items = ref<MenuOption[]>([
@@ -26,10 +29,17 @@ const items = ref<MenuOption[]>([
 const toggleNavbarMenu = (event: Event) => {
   menu.value.toggle(event)
 }
+
+const onSearch = function (query: string, placeId: string | undefined) {
+  emit('search', query, placeId)
+}
 </script>
 
 <template>
   <Navbar>
+    <template #center>
+      <AutocompletePlaceSearch @search="onSearch" />
+    </template>
     <template #end>
       <Button
         outlined
