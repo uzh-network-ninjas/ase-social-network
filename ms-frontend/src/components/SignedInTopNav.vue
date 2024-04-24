@@ -53,7 +53,7 @@ const toggleNavbarMenu = (event: Event) => {
         </template>
         <template #item="{ item }">
           <router-link class="flex items-center gap-4" :to="item.to">
-            <BaseIcon :icon="(item.icon as IconType)" />
+            <BaseIcon :icon="item.icon as IconType" />
             <span>{{ $t(item.labelKey) }}</span>
           </router-link>
         </template>
