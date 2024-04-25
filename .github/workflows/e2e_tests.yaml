@@ -58,6 +58,6 @@ jobs:
       uses: thollander/actions-comment-pull-request@v2
       with:
         message: |
-          ## Test Results
+          ## E2E Test Results
           ${{ env.TEST_RESULTS }}
-        comment_tag: test_results
+        comment_tag: e2e_test_results
