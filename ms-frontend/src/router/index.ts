@@ -10,6 +10,7 @@ import ProfileSettingsView from '@/views/Settings/ProfileSettingsView.vue'
 import PreferenceSettingsView from '@/views/Settings/PreferenceSettingsView.vue'
 import { useAuthStore } from '@/stores/auth'
 import OnboardingView from '@/views/OnboardingView.vue'
+import MapView from '@/views/MapView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,13 +72,20 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/map',
+      name: 'map',
+      component: MapView,
+      props: (route) => ({ query: route.query.query, placeId: route.query.placeId }),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/test',
       name: 'test',
       component: TestView
     },
     {
       path: '/:catchAll(.*)',
-      redirect: { name: 'test' }
+      redirect: { name: 'home' }
     }
   ]
 })

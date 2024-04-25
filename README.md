@@ -1,15 +1,21 @@
 ## Setup
 - You need to have docker installed with docker-compose
-- simply run `.init.sh` to setup everything (works in Cygwin for example)
-- otherwise run and `docker-compose -f docker-compose.base.yml  -f docker-compose.dev.yml -f docker-compose.support.yml up` to start local development
+- setup yout `.env`, by `cp .env.example .env` and adapt your secrets
+- simply run `./init.sh` to setup everything (works in Cygwin for example)
+- otherwise run and `docker compose -f docker-compose.base.yml -f docker-compose.dev.yml -f docker-compose.support.yml up` to start local development
 - each microservice should have 'swagger' available under `/docs` endpoint (one must access direct the endpoint of each microservice)
 - Kongo admin available at `http://localhost:8002/`
+- turn off the infrastrucure `./down.sh`
 - Main app running at `http://localhost:8000/`
 
-## what does `.init.sh` do?
+## what does `./init.sh` do?
 - it will create a docker network
-- it will launch `docker-compose.yml` file, with all microservices
-- it will launch `docker-compose.kong.yml` file, with kong gateway
+- it will launch `docker-compose.base.yml` file, with all microservices and database structure
+- it will launch `docker-compose.support.yml` file, nessesary infrastructure like kong, grafana, loki
+- it will launch `docker-compose.dev.yml` file with exposure of the development ports
+
+- You have option to add flag `-b`
+  - this will trigger additional build of all docker compose files (useful mainly when adding new pip dependencies) 
 
 # How to create new microservice?
 - create new folder in the main repo
@@ -20,12 +26,6 @@
 ## current Setup
 - Python development can be done freely in folder, because it runs with volume connected and --refresh flag
 - Kongo must be added manually or just whole setup must be done
-
-
-## TODO 
-- create development docker compose
-- create a function that extracts user UUID from a token - and reuse this function in all microservices
-
 
 ## User registration flow
 - Register as a user with password via 

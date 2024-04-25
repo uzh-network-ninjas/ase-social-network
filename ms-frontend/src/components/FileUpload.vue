@@ -9,9 +9,7 @@ const props = defineProps<{
   modelValue: File | null
 }>()
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', file: File | null): void
-}>()
+const emit = defineEmits<(e: 'update:modelValue', file: File | null) => void>()
 
 defineExpose<{
   result: string
@@ -86,7 +84,7 @@ const dragleave = function () {
           ]"
         >
           <template v-if="result">
-            <img :src="result" alt="uploaded profile picture" class="max-h-48 max-w-64" />
+            <img :src="result" alt="uploaded profile picture" class="max-h-48 max-w-64" /><!-- //NOSONAR Web:S6851 Can't remove 'picture' because name is 'profile picture' -->
             <span class="text-center">
               {{ isDragging ? $t('release_to_replace_upload') : $t('drag_drop_replace_upload') }}
             </span>
@@ -107,5 +105,3 @@ const dragleave = function () {
     </Button>
   </div>
 </template>
-
-<style scoped></style>

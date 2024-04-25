@@ -18,6 +18,10 @@ export default {
         '[&>*:first-child]:pr-10': props.iconPosition === 'right',
         '[&>*:first-child]:pl-10': props.iconPosition === 'left'
       },
+      {
+        '[&>div:first-child>*:first-child]:pr-10': props.iconPosition === 'right',
+        '[&>div:first-child>*:first-child]:pl-10': props.iconPosition === 'left'
+      },
       '[&>*:last-child]:has-[.wrapper-info-disabled]:text-disabled',
       '[&>*:last-child]:has-[.wrapper-info-invalid]:text-error'
     ]

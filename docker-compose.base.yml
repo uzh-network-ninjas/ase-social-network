@@ -72,6 +72,9 @@ services:
   ms-frontend:
     build: 
       context: ms-frontend
+    environment: # Only variables prefixed with VITE_ are exposed to the client.
+      - VITE_GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - VITE_GOOGLE_API_MAP_ID=${GOOGLE_API_MAP_ID}
     networks:
       - ms-net
 
