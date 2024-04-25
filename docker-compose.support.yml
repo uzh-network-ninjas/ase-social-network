@@ -18,31 +18,9 @@ volumes:
     driver_opts:
       type: tmpfs
       device: tmpfs
+  grafana_data: 
 
 services:
-  # kong-migrations:
-  #   image: "${KONG_DOCKER_TAG:-kong:latest}"
-  #   command: kong migrations bootstrap
-  #   profiles: [ "database" ]
-  #   depends_on:
-  #     - db
-  #   environment:
-  #     <<: *kong-env
-  #   networks:
-  #     - ms-net
-  #   restart: on-failure
-
-  # kong-migrations-up:
-  #   image: "${KONG_DOCKER_TAG:-kong:latest}"
-  #   command: kong migrations up && kong migrations finish
-  #   profiles: [ "database" ]
-  #   depends_on:
-  #     - db
-  #   environment:
-  #     <<: *kong-env
-  #   networks:
-  #     - ms-net
-  #   restart: on-failure
 
   kong:
     image: "${KONG_DOCKER_TAG:-kong:latest}"
@@ -97,33 +75,24 @@ services:
       - no-new-privileges
     entrypoint: /opt/kong/custom-entrypoint.sh
 
-  # db:
-  #   image: postgres:9.5
-  #   profiles: [ "database" ]
-  #   environment:
-  #     POSTGRES_DB: ${KONG_PG_DATABASE:-kong}
-  #     POSTGRES_USER: ${KONG_PG_USER:-kong}
-  #     POSTGRES_PASSWORD: ${KONG_PG_PASSWORD:-password}
-  #   healthcheck:
-  #     test:
-  #       [
-  #         "CMD",
-  #         "pg_isready",
-  #         "-d",
-  #         "${KONG_PG_DATABASE:-kong}",
-  #         "-U",
-  #         "${KONG_PG_USER:-kong}"
-  #       ]
-  #     interval: 30s
-  #     timeout: 30s
-  #     retries: 3
-  #   restart: on-failure
-  #   stdin_open: true
-  #   tty: true
-  #   networks:
-  #     - ms-net
-  #   volumes:
-  #     - kong_data:/var/lib/postgresql/data
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    networks:
+      - ms-net
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - loki
+    volumes:
+      # - grafana_data:/var/lib/grafana
+      - ./support/grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - ms-net
 
 networks:
   ms-net:

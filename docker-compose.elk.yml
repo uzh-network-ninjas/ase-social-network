@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  test:
+    build: test
+    ports:
+      - "8000:80"
+    volumes:
+      - ./test:/code
+    depends_on:
+      - loki
+    environment:
+      - LOKI_ENDPOINT=http://loki:3100/loki/api/v1/push
+      - APP_NAME={services_name}
+      - LOG_LEVEL=DEBUG
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - loki
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  grafana_data:

@@ -36,20 +36,20 @@ start_docker() {
   # docker network create ms-net
   if $BUILD_FLAG; then
     echo "Building Docker images..."
-    docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.dev.yml -f docker-compose.kong.yml build
+    docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.dev.yml -f docker-compose.support.yml build
   fi
   echo "Starting Docker containers in development environment..."
-  docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.dev.yml -f docker-compose.kong.yml up -d
+  docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.dev.yml -f docker-compose.support.yml up -d
 }
 
 start_test() {
   # docker network create ms-net
   if $BUILD_FLAG; then
     echo "Building Docker images..."
-    docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.test.yml -f docker-compose.kong.yml build
+    docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.test.yml -f docker-compose.support.yml build
   fi
   echo "Starting Docker containers in test environment..."
-  docker compose --env-file .env -f docker-compose.kong.yml -f docker-compose.base.yml -f docker-compose.test.yml up -d
+  docker compose --env-file .env -f docker-compose.support.yml -f docker-compose.base.yml -f docker-compose.test.yml up -d
 }
 
 # Parse command line arguments

@@ -1,9 +1,10 @@
 ## Setup
 - You need to have docker installed with docker-compose
 - simply run `.init.sh` to setup everything (works in Cygwin for example)
-- otherwise run and `docker-compose -f docker-compose.yml -f docker-compose.kong.yml up` to start local development
+- otherwise run and `docker-compose -f docker-compose.base.yml  -f docker-compose.dev.yml -f docker-compose.support.yml up` to start local development
 - each microservice should have 'swagger' available under `/docs` endpoint (one must access direct the endpoint of each microservice)
 - Kongo admin available at `http://localhost:8002/`
+- Main app running at `http://localhost:8000/`
 
 ## what does `.init.sh` do?
 - it will create a docker network

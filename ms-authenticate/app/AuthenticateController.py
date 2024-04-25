@@ -4,6 +4,7 @@ from app.models.UserLogin import UserLogin
 from app.models.UserRegister import UserRegister
 from app.models.UpdateUserPassword import UpdateUserPassword
 import os
+from app.logging_config import logger
 
 app = FastAPI()
 auth_service = AuthenticateService()
