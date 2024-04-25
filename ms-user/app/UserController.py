@@ -4,6 +4,7 @@ from app.models.UserOut import UserOut
 from app.models.UserListOut import UserListOut
 from app.UserService import UserService
 from fastapi import FastAPI, Request, UploadFile, status
+from app.logging_config import logger
 
 app = FastAPI()
 us = UserService()

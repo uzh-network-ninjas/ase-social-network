@@ -7,6 +7,7 @@ from app.ReviewService import ReviewService
 from datetime import datetime
 from fastapi import FastAPI, Request, UploadFile, Form
 from typing import List, Annotated
+from app.logging_config import logger
 
 app = FastAPI()
 rs = ReviewService()

@@ -11,7 +11,7 @@ fi
 
 stop_docker() {
     echo "Taking down the Docker Compose environment for $ENVIRONMENT..."
-    docker compose -f docker-compose.base.yml -f docker-compose.$ENVIRONMENT.yml -f docker-compose.kong.yml down
+    docker compose -f docker-compose.base.yml -f docker-compose.$ENVIRONMENT.yml -f docker-compose.support.yml down
 }
 
 # Stop the environment
