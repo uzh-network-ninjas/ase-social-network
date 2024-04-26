@@ -13,6 +13,7 @@ UNIT_TEST_SERVICES=() # This will be populated based on the --unit-tests option
 
 # Source the microservices from services.conf
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+echo $script_dir
 source "$script_dir/support/testable_services.conf"
 REPORTS_DIR=$script_dir"/reports"
 
@@ -22,9 +23,9 @@ run_unit_tests_for_service() {
     echo "Running unit tests for $service_name"
     
     if $WITH_COVERAGE; then
-        $script_dir/"$service_name"/test.sh "${REPORTS_DIR}" --with-coverage
+        "$script_dir"/"$service_name"/test.sh "${REPORTS_DIR}" --with-coverage
     else
-        $script_dir/"$service_name"/test.sh
+        "$script_dir"/"$service_name"/test.sh
     fi
 }
 
