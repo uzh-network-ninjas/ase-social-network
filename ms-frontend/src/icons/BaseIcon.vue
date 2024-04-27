@@ -26,6 +26,13 @@ import PlusIcon from '@/icons/PlusIcon.vue'
 import MinusIcon from '@/icons/MinusIcon.vue'
 import MyLocationIcon from '@/icons/MyLocationIcon.vue'
 import ProgressActivityIcon from '@/icons/ProgressActivityIcon.vue'
+import GlobeAltIcon from '@/icons/GlobeAltIcon.vue'
+import ClipboardDocumentIcon from '@/icons/ClipboardDocumentIcon.vue'
+import ArrowTopRightOnSquareIcon from '@/icons/ArrowTopRightOnSquareIcon.vue'
+import StarIcon from '@/icons/StarIcon.vue'
+import StarSolidIcon from '@/icons/StarSolidIcon.vue'
+import PhoneIcon from '@/icons/PhoneIcon.vue'
+import MiniChevronLeftIcon from '@/icons/MiniChevronLeftIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -56,6 +63,13 @@ export type IconType =
   | 'minus'
   | 'my-location'
   | 'progress-activity'
+  | 'globe-alt'
+  | 'clipboard-document'
+  | 'arrow-top-right-on-square'
+  | 'star'
+  | 'star-solid'
+  | 'phone'
+  | 'mini-chevron-left'
   | undefined
 
 withDefaults(
@@ -199,6 +213,38 @@ defineOptions({
   />
   <ProgressActivityIcon
     v-else-if="icon == 'progress-activity'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <GlobeAltIcon
+    v-else-if="icon == 'globe-alt'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <ClipboardDocumentIcon
+    v-else-if="icon == 'clipboard-document'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <ArrowTopRightOnSquareIcon
+    v-else-if="icon == 'arrow-top-right-on-square'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <StarIcon v-else-if="icon == 'star'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
+  <StarSolidIcon
+    v-else-if="icon == 'star-solid'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <PhoneIcon v-else-if="icon == 'phone'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
+  <MiniChevronLeftIcon
+    v-else-if="icon == 'mini-chevron-left'"
     v-bind="$attrs"
     :size="size"
     :strokeWidth="strokeWidth"
