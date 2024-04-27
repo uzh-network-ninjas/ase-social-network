@@ -20,6 +20,8 @@ import PhotoIcon from '@/icons/PhotoIcon.vue'
 import FaceSmileIcon from '@/icons/FaceSmileIcon.vue'
 import ArrowUpTrayIcon from '@/icons/ArrowUpTrayIcon.vue'
 import PencilSquareIcon from '@/icons/PencilSquareIcon.vue'
+import StarIcon from '@/icons/StarIcon.vue'
+import UploadIcon from '@/icons/UploadIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -44,6 +46,8 @@ export type IconType =
   | 'arrow-up-tray'
   | 'face-smile'
   | 'pencil-square'
+  | 'star'
+  | 'upload'
   | undefined
 
 withDefaults(
@@ -169,5 +173,17 @@ defineOptions({
     v-bind="$attrs"
     :size="size"
     :strokeWidth="strokeWidth"
+  />
+  <StarIcon
+    v-if="icon == 'star'"
+    v-bind="$attrs"
+    :strokeWidth="strokeWidth"
+    :size="size"
+  />
+  <UploadIcon
+    v-if="icon == 'upload'"
+    v-bind="$attrs"
+    :strokeWidth="strokeWidth"
+    :size="size"
   />
 </template>

@@ -75,5 +75,7 @@
   "select_all_apply": "Select all that apply.",
   "pick_at_least_five": "Pick at least {amount} more that you like.",
   "pick_all_like": "Pick all that you like.",
-  "back": "Back"
+  "back": "Back",
+  "share_experience": "Share details of your experience",
+  "upload_images": "Upload images"
 }
