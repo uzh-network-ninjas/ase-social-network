@@ -45,13 +45,22 @@ class ReviewRepository:
         return await self.collection.find({"user_id": user_id}).sort("created_at", -1).to_list(length=None)
 
 
-    async def get_reviews_by_locations_and_usernames(self, location_ids: List[str], usernames: List[str]) -> List[ReviewOut]:
-        query = {}
-        if location_ids is not None:
-            query["location.id"] = {"$in": location_ids}
-        if usernames is not None:
-            query["username"] = {"$in": usernames}
+    async def get_reviews_by_location_and_user_ids(self, location_id: str, user_ids: List[str]) -> List[ReviewOut]:
+        query = {
+            "user_id": {"$in": user_ids},
+            "location.id": {"$eq": location_id}
+        }
         return await self.collection.find(query).sort("created_at", -1).to_list(length=None)
+
+    async def get_location_ids_by_user_ids(self, user_ids: List[str]) -> List[str]:
+        query = {"user_id": {"$in": user_ids}}
+        pipeline = [
+            {"$match": query},
+            {"$group": {"_id": "$location.id"}},
+            {"$project": {"location_id": "$_id", "_id": 0}}
+        ]
+        cursor = self.collection.aggregate(pipeline)
+        return [doc["location_id"] async for doc in cursor]
 
 
     async def like_review_by_id(self, review_id: str, user_id: str) -> UpdateResult:
