@@ -2,8 +2,10 @@ import boto3
 import jwt
 import os
 
+from app.models.LocationIDs import LocationIDs
 from app.models.ReviewCreate import ReviewCreate
 from app.models.ReviewListOut import ReviewListOut
+from app.models.ReviewListFilteredOut import ReviewListFilteredOut, LocationReviews
 from app.models.ReviewOut import ReviewOut
 from app.models.ReviewCreateImage import ReviewCreateImage
 from app.ReviewRepository import ReviewRepository
@@ -56,7 +58,7 @@ class ReviewService:
         return ReviewOut(**result)
 
 
-    async def get_feed_by_cursor_and_followed_users(self, timestamp_cursor: datetime, user_ids: List[str], user_id: str) -> ReviewListOut:
+    async def get_feed_by_cursor(self, timestamp_cursor: datetime, user_ids: List[str], user_id: str) -> ReviewListOut:
         if len(user_ids) == 0:
             raise HTTPException(status_code=404, detail="No followed users!")
         timestamp_cursor = timestamp_cursor if timestamp_cursor else datetime.now()
@@ -80,14 +82,29 @@ class ReviewService:
         return ReviewListOut(reviews=result)
 
 
-    async def get_reviews_by_locations_and_usernames(self, location_ids: List[str], usernames: List[str], user_id: str) -> ReviewListOut:
-        result = await self.rr.get_reviews_by_locations_and_usernames(location_ids, usernames)
-        if not result:
+    async def get_reviews_by_locations(self, location_ids: LocationIDs, user_ids: List[str], user_id: str) -> ReviewListFilteredOut:
+        if len(user_ids) == 0:
+            raise HTTPException(status_code=404, detail="No followed users!")
+        location_ids = location_ids.model_dump()["location_ids"]
+        location_reviews = []
+        if location_ids is None:
+            location_ids = await self.rr.get_location_ids_by_user_ids(user_ids)
+            if len(location_ids) == 0:
+                raise HTTPException(status_code=404, detail="No reviews from the followed users!")
+        for location_id in location_ids:
+            result = await self.rr.get_reviews_by_location_and_user_ids(location_id, user_ids)
+            if not result:
+                continue
+            rating_avg = 0
+            for review in result:
+                review["id"] = str(review["_id"])
+                review["liked_by_current_user"] = user_id in review["liked_by"]
+                rating_avg += review["rating"]
+            rating_avg /= len(result)
+            location_reviews.append(LocationReviews(location_id=location_id, average_rating=rating_avg, reviews=result))
+        if len(location_reviews) == 0:
             raise HTTPException(status_code=404, detail="No reviews for this location and user combination!")
-        for review in result:
-            review["id"] = str(review["_id"])
-            review["liked_by_current_user"] = user_id in review["liked_by"]
-        return ReviewListOut(reviews=result)
+        return ReviewListFilteredOut(location_reviews=location_reviews)
 
 
     async def like_review_by_id(self, review_id: str, user_id: str) -> ReviewOut:
