@@ -85,12 +85,13 @@ class ReviewService:
     async def get_reviews_by_locations(self, location_ids: LocationIDs, user_ids: List[str], user_id: str) -> ReviewListFilteredOut:
         if len(user_ids) == 0:
             raise HTTPException(status_code=404, detail="No followed users!")
-        location_ids = location_ids.model_dump()["location_ids"]
         location_reviews = []
         if location_ids is None:
             location_ids = await self.rr.get_location_ids_by_user_ids(user_ids)
             if len(location_ids) == 0:
                 raise HTTPException(status_code=404, detail="No reviews from the followed users!")
+        else:
+            location_ids = location_ids.model_dump()["location_ids"]
         for location_id in location_ids:
             result = await self.rr.get_reviews_by_location_and_user_ids(location_id, user_ids)
             if not result:
