@@ -7,17 +7,23 @@ x-aws-config:
   AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
   S3_ENDPOINT_URL: ${S3_ENDPOINT_URL}
 
+x-log-config:
+  &log-env
+  LOKI_ENDPOINT: http://loki:3100/loki/api/v1/push
+  LOG_LEVEL: ${LOG_LEVEL:-DEBUG}
 
 
 services:
   ms-authenticate:
     build: ms-authenticate
     environment:
-      - PORT=5000
-      - MONGO_URL=mongodb://ms-user-db:27017/ms_user_db
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_KONG_KEY=${JWT_KONG_KEY}
-      - JWT_ALGORITHM=${JWT_ALGORITHM}
+      <<: [*aws-env, *log-env]
+      PORT: 5000
+      MONGO_URL: mongodb://ms-user-db:27017/ms_user_db
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_KONG_KEY: ${JWT_KONG_KEY}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      APP_NAME: ms-authenticate
     depends_on:
       - ms-user-db
     networks:
@@ -26,9 +32,10 @@ services:
   ms-user:
     build: ms-user
     environment:
-      <<: *aws-env
+      <<: [*aws-env, *log-env]
       PORT: 5002
       MONGO_URL: mongodb://ms-user-db:27017/ms_user_db
+      APP_NAME: ms-user
 
     depends_on:
       - ms-user-db
@@ -38,9 +45,10 @@ services:
   ms-review:
     build: ms-review
     environment:
-      <<: *aws-env
+      <<: [*aws-env, *log-env]
       PORT: 5001
       MONGO_URL: mongodb://ms-review-db:27017/ms_review_db
+      APP_NAME: ms-review
 
     depends_on:
       - ms-review-db
@@ -51,8 +59,6 @@ services:
     image: mongo
     environment:
       - MONGO_INITDB_DATABASE=ms_user_db
-    volumes:
-      - ms-user-db-volume:/data/db
     networks:
       - ms-net
 
@@ -60,22 +66,18 @@ services:
     image: mongo
     environment:
       - MONGO_INITDB_DATABASE=ms_review_db
-    volumes:
-      - ms-review-db-volume:/data/db
     networks:
       - ms-net
       
   ms-frontend:
     build: 
       context: ms-frontend
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+    environment: # Only variables prefixed with VITE_ are exposed to the client.
+      - VITE_GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - VITE_GOOGLE_API_MAP_ID=${GOOGLE_API_MAP_ID}
     networks:
       - ms-net
 
-volumes:
-  ms-user-db-volume:
-  ms-review-db-volume:
-
 networks:
   ms-net:
+    name: ms-net

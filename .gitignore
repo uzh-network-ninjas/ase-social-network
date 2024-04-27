@@ -2,3 +2,4 @@
 reports
 volume
 .env
+.last_environment

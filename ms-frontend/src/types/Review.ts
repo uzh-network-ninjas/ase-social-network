@@ -1,42 +1,36 @@
+import { Location } from '@/types/Location'
+
 export class Review {
-  review_id: string
+  id: string
+  userId: string
+  username: string
   text: string
   rating: number
-  image?: File | null
-  location: {
-    id: string
-    name: string
-    coordinates: {
-      x: string
-      y: string
-    }
-  }
+  location: Location
+  image?: string
+  createdAt: Date
 
   constructor(data: {
-    review_id: string
+    id: string
+    user_id: string
+    username: string
     text: string
     rating: number
     location: {
       id: string
       name: string
-      coordinates: {
-        x: string
-        y: string 
-      } 
+      type: string
     }
-    image: File | null
+    image?: string
+    created_at: string
   }) {
-    this.review_id = data.review_id
+    this.id = data.id
+    this.userId = data.user_id
+    this.username = data.username
     this.text = data.text
     this.rating = data.rating
-    this.location = {
-      id: data.location.id, // Corrected from location.id
-      name: data.location.name, // Corrected from location.name
-      coordinates: {
-        x: data.location.coordinates.x, // Corrected from location.coordinates.x
-        y: data.location.coordinates.y // Corrected from location.coordinates.y
-      }
-    };
+    this.location = new Location(data.location)
     this.image = data.image
+    this.createdAt = new Date(Date.parse(data.created_at))
   }
 }

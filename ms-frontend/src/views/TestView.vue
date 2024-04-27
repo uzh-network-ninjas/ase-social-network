@@ -10,6 +10,7 @@ import InputIcon from 'primevue/inputicon'
 import Button from 'primevue/button'
 import IconField from 'primevue/iconfield'
 import ToggleButton from 'primevue/togglebutton'
+import AutoComplete from 'primevue/autocomplete'
 
 const value = ref<string>('')
 const boolValue = ref<boolean>(true)
@@ -25,6 +26,13 @@ const options = ref([
 ])
 
 const checked = ref<boolean>(false)
+
+const autocomplete = ref<string>('')
+const items = ref<string[]>([])
+
+const search = (event: any) => {
+  items.value = [...Array(10).keys()].map((item) => event.query + '-' + item)
+}
 </script>
 
 <template>
@@ -109,6 +117,26 @@ const checked = ref<boolean>(false)
     </FloatLabel>
 
     <div class="mt-4 flex w-fit flex-col gap-2">
+      <AutoComplete v-model="autocomplete" :suggestions="items" @complete="search"></AutoComplete>
+      <AutoComplete
+        v-model="autocomplete"
+        :suggestions="items"
+        @complete="search"
+        variant="filled"
+      ></AutoComplete>
+      <AutoComplete
+        v-model="autocomplete"
+        :suggestions="items"
+        @complete="search"
+        disabled
+      ></AutoComplete>
+      <AutoComplete
+        v-model="autocomplete"
+        :suggestions="items"
+        @complete="search"
+        invalid
+      ></AutoComplete>
+
       <ToggleButton v-model="checked" onLabel="Ascending" offLabel="Descending">
         <template #icon="propScope">
           <BaseIcon :icon="propScope.value ? 'arrow-up' : 'arrow-down'" :stroke-width="1.5" />
@@ -185,5 +213,3 @@ const checked = ref<boolean>(false)
     </div>
   </main>
 </template>
-
-<style scoped></style>

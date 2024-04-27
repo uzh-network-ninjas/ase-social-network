@@ -90,7 +90,7 @@ const updatePassword = function () {
       confirmNewPassword.value = ''
     })
     .catch((error) => {
-      if (error.response?.status === 404) {
+      if (error.response?.status === 401) {
         currentPasswordWrong.value = true
       } else if (error.response?.status === 400) {
         newPasswordIdentical.value = true
@@ -101,6 +101,7 @@ const updatePassword = function () {
 const updatePasswordEnabled = computed<boolean>(() => {
   return (
     !confirmNewPasswordMismatch.value &&
+    !newPasswordIdentical.value &&
     newPassword.value !== '' &&
     confirmNewPassword.value !== '' &&
     currentPassword.value !== ''

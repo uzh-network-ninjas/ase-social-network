@@ -29,10 +29,14 @@ services:
   ms-user-db:
     ports:
       - "10000:27017"
+    volumes:
+      - ms-user-db-volume:/data/db
 
   ms-review-db:
     ports:
       - "10001:27017"
+    volumes:
+      - ms-review-db-volume:/data/db
       
   ms-frontend:
     build: 
@@ -41,8 +45,10 @@ services:
       - "5173:5173"
     volumes:
       - ./ms-frontend/src:/app/src
-    environment:
+    environment: # Only variables prefixed with VITE_ are exposed to the client.
       - CHOKIDAR_USEPOLLING=true
+      - VITE_GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - VITE_GOOGLE_API_MAP_ID=${GOOGLE_API_MAP_ID}
 
   localstack:
     container_name: "localstack-main"
@@ -53,7 +59,7 @@ services:
     volumes:
       - "./volume:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./support/localstack/localstack-setup.sh:/etc/localstack/init/ready.d/script.sh"
+      - "./support/localstack/localstack-setup.sh:/etc/localstack/init/ready.d/init-aws.sh"
     networks:
       - ms-net
 
@@ -63,3 +69,4 @@ volumes:
 
 networks:
   ms-net:
+    name: ms-net

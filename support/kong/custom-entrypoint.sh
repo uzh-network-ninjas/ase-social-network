@@ -7,6 +7,9 @@ OUTPUT_PATH="/opt/kong/config/kong.yml"
 # Ensure the script fails if any commands fail
 set -e
 
+# chown kong:kong /opt/kong/config
+# chmod 755 /opt/kong/config
+
 # Make a copy of the template to preserve the original
 cp $TEMPLATE_PATH $OUTPUT_PATH
 

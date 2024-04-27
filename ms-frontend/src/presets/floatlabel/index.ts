@@ -1,7 +1,7 @@
 export default {
   root: {
     class: [
-      'block relative',
+      'block relative font-light',
       '[&>input]:w-full',
 
       // Base Appearance
