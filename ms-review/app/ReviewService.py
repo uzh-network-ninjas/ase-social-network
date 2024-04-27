@@ -15,8 +15,8 @@ from typing import List
 
 
 class ReviewService:
-    def __init__(self):
-        self.rr = ReviewRepository()
+    def __init__(self, review_repository: ReviewRepository):
+        self.rr = review_repository
 
 
     async def create_review(self, review: ReviewCreate, user_id: str, username: str) -> ReviewOut:
