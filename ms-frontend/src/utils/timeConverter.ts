@@ -20,13 +20,13 @@ export const TimeConverter = {
 
     let key = ''
     let value: number | undefined
-    for (let i = 0; i < time_formats.length; ++i) {
-      if (absSeconds < time_formats[i].cap) {
-        value = Math.floor(absSeconds / time_formats[i].unit)
+    for (const time_format of time_formats) {
+      if (absSeconds < time_format.cap) {
+        value = Math.floor(absSeconds / time_format.unit)
         if (value < 2) {
-          key += time_formats[i].singularKey
+          key += time_format.singularKey
         } else {
-          key += time_formats[i].pluralKey
+          key += time_format.pluralKey
         }
         break
       }

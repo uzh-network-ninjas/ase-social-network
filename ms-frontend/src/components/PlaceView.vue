@@ -13,9 +13,7 @@ const props = defineProps<{
   open: boolean
 }>()
 
-defineEmits<{
-  (e: 'update:open', value: boolean): void
-}>()
+defineEmits<(e: 'update:open', value: boolean) => void>()
 
 const container = ref<HTMLElement>()
 const reviews = ref<Review[]>([])
