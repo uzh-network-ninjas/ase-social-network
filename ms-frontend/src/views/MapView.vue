@@ -4,6 +4,7 @@ import { onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
 import { loader, MarkerLibraryType } from '@/utils/useGoogleMaps'
 import Button from 'primevue/button'
 import BaseIcon from '@/icons/BaseIcon.vue'
+import PlaceView from '@/components/PlaceView.vue'
 
 const props = defineProps<{
   query?: string
@@ -25,6 +26,7 @@ const lastZoom = ref<number | undefined>(undefined)
 const markerList = ref<google.maps.marker.AdvancedMarkerElement[]>([])
 
 let mapBoundsWatcher: google.maps.MapsEventListener
+let mapMarkerWatcher: google.maps.MapsEventListener
 const mapBoundsInitialized = ref<boolean>(false)
 const mapBounds = ref<google.maps.LatLngBounds>()
 
@@ -46,6 +48,12 @@ onMounted(async () => {
       })
 
       mapBoundsWatcher = google.maps.event.addListener(map.value, 'bounds_changed', setMapBounds)
+      mapMarkerWatcher = google.maps.event.addListener(map.value, 'click', (event: any) => {
+        if ('placeId' in event) {
+          event.stop()
+          getPlaceDetails(event.placeId)
+        }
+      })
     }
   })
 
@@ -62,6 +70,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   google.maps.event.removeListener(mapBoundsWatcher)
+  google.maps.event.removeListener(mapMarkerWatcher)
 })
 
 const setMapBounds = function () {
@@ -71,24 +80,20 @@ const setMapBounds = function () {
   }
 }
 
-const onSearchUpdated = function (query: string, placeId: string | undefined) {
+const onSearch = function (query: string | undefined, placeId: string | undefined) {
   if (mapInitialized.value && mapBoundsInitialized.value) {
     if (placeId) {
       getPlaceLocation(placeId)
+      getPlaceDetails(placeId)
     } else if (query) {
       querySearch(query, false)
+      place.value = null
     }
   }
 }
 
 watch([mapInitialized, mapBoundsInitialized], () => {
-  if (mapInitialized.value && mapBoundsInitialized.value) {
-    if (props.placeId) {
-      getPlaceLocation(props.placeId)
-    } else if (props.query) {
-      querySearch(props.query, false)
-    }
-  }
+  onSearch(props.query, props.placeId)
 })
 
 watch([mapBounds, lastPos, lastZoom], () => {
@@ -112,11 +117,52 @@ const clearMarker = function () {
 const getPlaceLocation = function (placeId: string) {
   let request = {
     placeId: placeId,
-    fields: ['name', 'geometry', 'icon']
+    fields: ['place_id', 'name', 'geometry', 'icon']
   }
 
   clearMarker()
   placesService.getDetails(request, callback)
+}
+
+const place = ref<google.maps.places.PlaceResult | null>(null)
+const placeInfoOpen = ref<boolean>(false)
+
+const getPlaceDetails = function (placeId: string) {
+  if (place.value?.place_id === placeId) {
+    placeInfoOpen.value = true
+    return
+  }
+  place.value = null
+
+  let request = {
+    placeId: placeId,
+    fields: [
+      'place_id',
+      'name',
+      'user_ratings_total',
+      'price_level',
+      'rating',
+      'photos',
+      'formatted_phone_number',
+      'formatted_address',
+      'website',
+      'type',
+      'editorial_summary'
+    ]
+  }
+
+  placesService.getDetails(
+    request,
+    (
+      result: google.maps.places.PlaceResult | null,
+      status: google.maps.places.PlacesServiceStatus
+    ) => {
+      if (status == google.maps.places.PlacesServiceStatus.OK && result) {
+        place.value = result
+        placeInfoOpen.value = true
+      }
+    }
+  )
 }
 
 const querySearch = function (query: string, restrictBounds: boolean) {
@@ -181,6 +227,17 @@ const createMarker = function (place: google.maps.places.PlaceResult) {
     title: place.name
   })
   markerList.value.push(marker)
+
+  // Add a click listener for each marker, and set up the info window.
+  marker.addListener('click', () => {
+    if (place.place_id) {
+      getPlaceDetails(place.place_id)
+      markerList.value.forEach((m) => {
+        ;(m.content as HTMLElement).style.transform =
+          marker == m ? 'scale(125%) translate(0, -12.5%)' : 'translate(0, 0)'
+      })
+    }
+  })
 }
 
 const onZoom = function (value: number) {
@@ -199,12 +256,12 @@ const centerOnPosition = function () {
 
 <template>
   <header class="sticky top-0 z-20 border-b">
-    <SignedInTopNav @search="onSearchUpdated" />
+    <SignedInTopNav @search="onSearch" />
   </header>
 
   <main>
     <div class="relative flex h-full w-full flex-row overflow-hidden">
-      <div class="flex w-64 flex-col self-stretch">
+      <div class="flex w-0 flex-col self-stretch">
         <div class="h-16 self-stretch border-b">
           <!-- List Header -->
         </div>
@@ -213,8 +270,9 @@ const centerOnPosition = function () {
         </div>
       </div>
       <div class="relative grow self-stretch">
-        <div ref="mapDiv" class="h-full w-full outline-none"></div>
+        <div id="map" ref="mapDiv" class="h-full w-full outline-none"></div>
         <div class="pointer-events-none absolute bottom-0 left-0 right-0 top-0 flex p-2">
+          <PlaceView v-model:open="placeInfoOpen" :place="place" />
           <div class="flex grow flex-col gap-2">
             <div class="flex w-full">
               <!-- Map Filter -->
@@ -289,6 +347,12 @@ const centerOnPosition = function () {
     </div>
   </main>
 </template>
+
+<style>
+#map iframe + div {
+  border: none !important;
+}
+</style>
 
 <style scoped>
 main {
