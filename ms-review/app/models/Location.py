@@ -9,4 +9,5 @@ class Coordinates(BaseModel):
 class Location(BaseModel):
     id: str
     name: str
+    type: str
     coordinates: Coordinates
