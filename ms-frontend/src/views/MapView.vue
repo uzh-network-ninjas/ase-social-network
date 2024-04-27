@@ -34,6 +34,9 @@ const positionChanged = ref<boolean>(false)
 const fetchingPosition = ref<boolean>(false)
 const fetchingPositionSupported = 'navigator' in window && 'geolocation' in navigator
 
+const place = ref<google.maps.places.PlaceResult | null>(null)
+const placeInfoOpen = ref<boolean>(false)
+
 onMounted(async () => {
   await loader.importLibrary('maps').then(() => {
     if (mapDiv.value) {
@@ -88,6 +91,7 @@ const onSearch = function (query: string | undefined, placeId: string | undefine
     } else if (query) {
       querySearch(query, false)
       place.value = null
+      placeInfoOpen.value = false
     }
   }
 }
@@ -123,9 +127,6 @@ const getPlaceLocation = function (placeId: string) {
   clearMarker()
   placesService.getDetails(request, callback)
 }
-
-const place = ref<google.maps.places.PlaceResult | null>(null)
-const placeInfoOpen = ref<boolean>(false)
 
 const getPlaceDetails = function (placeId: string) {
   if (place.value?.place_id === placeId) {
