@@ -1,52 +1,219 @@
 import pytest
 from unittest.mock import patch
-from datetime import datetime
+from app.AuthenticateService import AuthenticateService
+from app.models.UserRegister import UserRegister
+from app.models.UserLogin import UserLogin
+from app.models.UpdateUserPassword import UpdateUserPassword
+from fastapi import HTTPException, Request
 
 # Assuming test_user_data is a dictionary that represents the user data you expect to return
-test_user_data = {
-    "id": "unique_user_id",
-    "username": "testuser",
-    "email": "testuser@example.com",
-    "created_at": datetime.now().isoformat(),
-    "updated_at": None
+test_user = {
+    "id": "test_user_id",
+    "username": "test_user",
+    "email": "test_user@example.com",
+    "password": "test_password"
 }
-access_token = "fake_token123"
+test_access_token = "test_access_token"
 
+auth_service = AuthenticateService()
+hashed_user = {
+    "id": "test_user_id",
+    "username": "test_user",
+    "email": "test_user@example.com",
+    "password": auth_service.auth_encryption['pwd_context'].hash("test_password")
+}
+
+dummy_request = Request({
+    "type": "http",
+    "method": "PATCH",
+    "url": "http://testserver/",
+    "headers": {},
+})
+
+
+##########################################
+#               Controller               #
+##########################################
 @pytest.mark.asyncio
 @patch('app.AuthenticateService.AuthenticateService.register_user')
 @patch('app.AuthenticateService.AuthenticateService.login_user')
-async def test_user_registration(mock_login_user, mock_register_user,  test_app):
+async def test_controller_user_registration_success(mock_login_user, mock_register_user,  test_app):
     # Configure the mock to return your test user data when called
-    mock_register_user.return_value = test_user_data
-    mock_login_user.return_value = access_token
-
+    mock_register_user.return_value = test_user
+    mock_login_user.return_value = test_access_token
     # Perform the test registration request
     response = test_app.post("/user", json={
-        "username": "testuser",
-        "email": "testuser@example.com",
-        "password": "strongpassword123",
-        "preferences": ["pref1", "pref2"],
-        "created_at": datetime.now().isoformat(),
-        "updated_at": None
+        "username": "test_user",
+        "email": "test_user@example.com",
+        "password": "test_password"
     })
-
-    # assert response.status_code == 201
-    # assert response.json() == test_user_data
     assert response.status_code == 201
-    assert response.json() == {"access_token": access_token, "token_type": "bearer"}
+    assert response.json() == {"access_token": test_access_token, "token_type": "bearer"}
 
 
 @pytest.mark.asyncio
 @patch('app.AuthenticateService.AuthenticateService.login_user')
-async def test_user_login(mock_login_user, test_app):
+async def test_controller_user_login_success(mock_login_user, test_app):
     # Configure the mock to return your fake token response when called
-    mock_login_user.return_value = access_token
-
+    mock_login_user.return_value = test_access_token
     # Perform the test login request
     response = test_app.post("/token", json={
-        "username": "testuser",
-        "password": "strongpassword123"
+        "username": "test_user",
+        "password": "test_password"
     })
-
     assert response.status_code == 201
-    assert response.json() == {"access_token": access_token, "token_type": "bearer"}
+    assert response.json() == {"access_token": test_access_token, "token_type": "bearer"}
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateService.AuthenticateService.update_user_password')
+async def test_controller_update_user_password_success(mock_update_user_password, test_app):
+    response = test_app.patch("/password", json={
+        "curr_password": "test_password",
+        "new_password": "new_test_password"
+    })
+    assert response.status_code == 204
+
+
+##########################################
+#                Service                 #
+##########################################
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateRepository.AuthenticateRepository.username_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.user_email_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.add_user')
+async def test_service_user_registration_success(mock_add_user, mock_user_email_exists, mock_username_exists):
+    mock_username_exists.return_value = False
+    mock_user_email_exists.return_value = False
+    mock_add_user.return_value = UserLogin(**test_user)
+    registered_user = await auth_service.register_user(UserRegister(**test_user))
+    assert test_user.get('username') == registered_user.username
+    assert test_user.get('email') == registered_user.email
+    assert test_user.get('password') == registered_user.password
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateRepository.AuthenticateRepository.username_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.user_email_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.add_user')
+async def test_service_user_registration_username_already_exists(mock_add_user, mock_user_email_exists, mock_username_exists):
+    mock_username_exists.return_value = True
+    mock_user_email_exists.return_value = False
+    mock_add_user.return_value = UserLogin(**test_user)
+    with pytest.raises(HTTPException) as e:
+        await auth_service.register_user(UserRegister(**test_user))
+    assert e.value.status_code == 409
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateRepository.AuthenticateRepository.username_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.user_email_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.add_user')
+async def test_service_user_registration_user_email_already_exists(mock_add_user, mock_user_email_exists, mock_username_exists):
+    mock_username_exists.return_value = False
+    mock_user_email_exists.return_value = True
+    mock_add_user.return_value = UserLogin(**test_user)
+    with pytest.raises(HTTPException) as e:
+        await auth_service.register_user(UserRegister(**test_user))
+    assert e.value.status_code == 409
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateRepository.AuthenticateRepository.user_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.get_user_by_name_or_email')
+async def test_service_user_login_username_success(mock_get_user_by_name_or_email, mock_user_exists):
+    mock_user_exists.return_value = True
+    mock_get_user_by_name_or_email.return_value = UserLogin(**hashed_user)
+    curr_user = {
+        "username": "test_user",
+        "password": "test_password"
+    }
+    token = await auth_service.login_user(UserLogin(**curr_user))
+    assert token
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateRepository.AuthenticateRepository.user_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.get_user_by_name_or_email')
+async def test_service_user_login_email_success(mock_get_user_by_name_or_email, mock_user_exists):
+    mock_user_exists.return_value = True
+    mock_get_user_by_name_or_email.return_value = UserLogin(**hashed_user)
+    curr_user = {
+        "email": "test_user@example.com",
+        "password": "test_password"
+    }
+    token = await auth_service.login_user(UserLogin(**curr_user))
+    assert token
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateRepository.AuthenticateRepository.user_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.get_user_by_name_or_email')
+async def test_service_user_login_user_does_not_exist(mock_get_user_by_name_or_email, mock_user_exists):
+    mock_user_exists.return_value = False
+    mock_get_user_by_name_or_email.return_value = UserLogin(**hashed_user)
+    with pytest.raises(HTTPException) as e:
+        await auth_service.login_user(UserLogin(**test_user))
+    assert e.value.status_code == 404
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateRepository.AuthenticateRepository.user_exists')
+@patch('app.AuthenticateRepository.AuthenticateRepository.get_user_by_name_or_email')
+async def test_service_user_login_wrong_password(mock_get_user_by_name_or_email, mock_user_exists):
+    mock_user_exists.return_value = True
+    mock_get_user_by_name_or_email.return_value = UserLogin(**hashed_user)
+    curr_user = {
+        "email": "test_user@example.com",
+        "password": "wrong_test_password"
+    }
+    with pytest.raises(HTTPException) as e:
+        await auth_service.login_user(UserLogin(**curr_user))
+    assert e.value.status_code == 401
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateService.AuthenticateService.extract_user_id')
+@patch('app.AuthenticateRepository.AuthenticateRepository.get_user_by_id')
+@patch('app.AuthenticateRepository.AuthenticateRepository.update_user_password')
+async def test_service_update_user_password_success(mock_update_user_password, mock_get_user_by_id, mock_extract_user_id):
+    mock_get_user_by_id.return_value = UserLogin(**hashed_user)
+    mock_extract_user_id.return_value = "test_user_id"
+    curr_update_password = {
+        "curr_password": "test_password",
+        "new_password": "new_test_password"
+    }
+    await auth_service.update_user_password(dummy_request, UpdateUserPassword(**curr_update_password))
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateService.AuthenticateService.extract_user_id')
+@patch('app.AuthenticateRepository.AuthenticateRepository.get_user_by_id')
+@patch('app.AuthenticateRepository.AuthenticateRepository.update_user_password')
+async def test_service_update_user_password_wrong_password(mock_update_user_password, mock_get_user_by_id, mock_extract_user_id):
+    mock_get_user_by_id.return_value = UserLogin(**hashed_user)
+    mock_extract_user_id.return_value = "test_user_id"
+    curr_update_password = {
+        "curr_password": "wrong_test_password",
+        "new_password": "new_test_password"
+    }
+    with pytest.raises(HTTPException) as e:
+        await auth_service.update_user_password(dummy_request, UpdateUserPassword(**curr_update_password))
+    assert e.value.status_code == 401
+
+
+@pytest.mark.asyncio
+@patch('app.AuthenticateService.AuthenticateService.extract_user_id')
+@patch('app.AuthenticateRepository.AuthenticateRepository.get_user_by_id')
+@patch('app.AuthenticateRepository.AuthenticateRepository.update_user_password')
+async def test_service_update_user_password_same_password(mock_update_user_password, mock_get_user_by_id, mock_extract_user_id):
+    mock_get_user_by_id.return_value = UserLogin(**hashed_user)
+    mock_extract_user_id.return_value = "test_user_id"
+    curr_update_password = {
+        "curr_password": "test_password",
+        "new_password": "test_password"
+    }
+    with pytest.raises(HTTPException) as e:
+        await auth_service.update_user_password(dummy_request, UpdateUserPassword(**curr_update_password))
+    assert e.value.status_code == 400
