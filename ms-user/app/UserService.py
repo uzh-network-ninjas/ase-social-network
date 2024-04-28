@@ -11,6 +11,7 @@ from app.models.UserListOut import UserListOut
 from app.UserRepository import UserRepository
 from fastapi import HTTPException, Request, UploadFile
 
+
 class UserService:
     def __init__(self):
         self.ur = UserRepository()
@@ -35,8 +36,8 @@ class UserService:
         username = await self.ur.get_user_by_username(updated_user.username)
         email = await self.ur.get_user_by_email(updated_user.email)
         detail = (f"Username already taken: {updated_user.username}!" if username else "") \
-            + (" " if username and email else "") \
-            + (f"Email already taken: {updated_user.email}!" if email else "")
+                 + (" " if username and email else "") \
+                 + (f"Email already taken: {updated_user.email}!" if email else "")
         if detail:
             raise HTTPException(status_code=400, detail=detail)
         preferences = [preference for preference in updated_user.preferences if preference not in Preferences]
@@ -120,7 +121,6 @@ class UserService:
         payload = jwt.decode(token, options={"verify_signature": False})
         user_id = payload["sub"]
         return user_id
-
 
     @staticmethod
     def get_dietary_criteria() -> DietaryCriteria:

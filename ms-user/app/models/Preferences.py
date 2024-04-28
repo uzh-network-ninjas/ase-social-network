@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Preferences(Enum):
     FAST_FOOD = "Fast Food"
     FUSION = "Fusion"

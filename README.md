@@ -34,7 +34,7 @@
 
 
 ## helpful information during development
-- if you add pip packages, you must build container with `--no-cache` flag, because otherwise will not install new packages
+- if you add pip packages, you must build container with `--no-cache` flag, because otherwise will not install new packages `docker compose -f docker-compose.base.yml -f docker-compose.dev.yml build --no-cache`
 - if you change kong settings in kong.yml, you must SSH into kong container and run `kong reload` to apply changes
 
 ## testing

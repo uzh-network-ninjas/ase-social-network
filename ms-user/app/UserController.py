@@ -60,6 +60,6 @@ async def unfollow_user(request: Request, user_id: str) -> UserOut:
     return await us.unfollow_user_by_id(curr_user_id, user_id)
 
 
-@app.get("/dietary_criteria/", response_model=DietaryCriteria)
+@app.get("/dietary_criteria/", status_code=status.HTTP_200_OK, response_model=DietaryCriteria)
 def get_dietary_criteria() -> DietaryCriteria:
     return us.get_dietary_criteria()
