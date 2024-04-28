@@ -185,7 +185,7 @@ const getReviews = function () {
         <PlaceReview v-for="review in reviews" :key="review.id" :userId="review.userId" :username="review.username"
           :text="review.text" :rating="review.rating" :locationId="review.location.id"
           :locationName="review.location.name" :locationType="review.location.type" :createdAt="review.createdAt"
-          :image="undefined" />
+          :image="review.image" />
         <div v-if="reviews.length === 0" class="w-full px-2 py-4 text-center">
           <span class="font-light text-medium-emphasis">{{ $t('no_reviews_for_place') }}</span>
         </div>

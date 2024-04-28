@@ -66,7 +66,7 @@ const getUserProfilePicture = function () {
               class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full"
             >
               <img
-                :src="`${baseUrl}${userProfilePicture}`"
+                :src="`${baseUrl}/ms-user/${userProfilePicture}`"
                 class="h-full w-full object-cover"
                 alt="of user"
               />
@@ -108,7 +108,7 @@ const getUserProfilePicture = function () {
       <span class="text-justify font-light text-medium-emphasis">{{ text }}</span>
     </div>
     <div v-if="image" class="w-full">
-      <img :src="image" class="w-full object-cover" alt="of review place" />
+      <img :src="`${baseUrl}/ms-review/${image}`" class="w-full object-cover" alt="of review place" />
     </div>
   </div>
 </template>
