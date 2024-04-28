@@ -49,6 +49,11 @@ test_user_update = {
     "updated_at": datetime.now().isoformat()
 }
 
+test_dietary = {
+    "preferences": ["Fast Food", "Fusion"],
+    "restrictions": ["Vegetarian", "Vegan"]
+}
+
 
 @pytest.mark.asyncio
 @patch('app.UserService.UserService.get_user_by_id')
@@ -106,10 +111,8 @@ async def test_controller_delete_user_success(mock_delete_user_by_id, mock_jwt_d
 
 
 @pytest.mark.asyncio
-@patch('jwt.decode')
 @patch('app.UserService.UserService.get_following_users_by_id')
-async def test_controller_get_following_users_success(mock_get_following_users_by_id, mock_jwt_decode, test_app):
-    mock_jwt_decode.return_value = {"sub": test_user_id}
+async def test_controller_get_following_users_success(mock_get_following_users_by_id, test_app):
     mock_get_following_users_by_id.return_value = test_follow
     response = test_app.get(f"/{test_user_id}/following")
     assert response.status_code == 200
@@ -117,10 +120,8 @@ async def test_controller_get_following_users_success(mock_get_following_users_b
 
 
 @pytest.mark.asyncio
-@patch('jwt.decode')
 @patch('app.UserService.UserService.get_user_followers_by_id')
-async def test_controller_get_user_followers_success(mock_get_user_followers_by_id, mock_jwt_decode, test_app):
-    mock_jwt_decode.return_value = {"sub": test_user_id}
+async def test_controller_get_user_followers_success(mock_get_user_followers_by_id, test_app):
     mock_get_user_followers_by_id.return_value = test_follow
     response = test_app.get(f"/{test_user_id}/followers")
     assert response.status_code == 200
@@ -147,3 +148,12 @@ async def test_controller_unfollow_user_success(mock_unfollow_user_by_id, mock_j
     response = test_app.delete(f"/following/{test_user_id}", headers=test_headers)
     assert response.status_code == 200
     assert response.json() == test_user
+
+
+@pytest.mark.asyncio
+@patch('app.UserService.UserService.get_dietary_criteria')
+async def test_controller_get_dietary_criteria_success(mock_get_dietary_criteria, test_app):
+    mock_get_dietary_criteria.return_value = test_dietary
+    response = test_app.get("/dietary_criteria/")
+    assert response.status_code == 200
+    assert response.json() == test_dietary
