@@ -69,26 +69,30 @@ async def test_create_review(mock_create_review, mock_extract_username, mock_ext
     assert test_review_out_model(**response.json())
 
 @pytest.mark.asyncio
+@patch('app.ReviewService.ReviewService.validate_object_id', return_value=None)
 @patch('app.ReviewService.ReviewService.extract_user_id_from_token', return_value=USER_ID)
 @patch('app.ReviewService.ReviewService.append_review_image_by_id', return_value=MOCK_REVIEW_RESPONSE_DATA)
-async def test_append_review_image(mock_append_review_image, mock_extract_user_id, test_app, test_review_out_model):
+async def test_append_review_image(mock_append_review_image, mock_extract_user_id, mock_validate_object_id, test_app, test_review_out_model):
     with open("/code/tests/assets/test_image.jpg", "rb") as f:
         response = test_app.patch('/image', data={"review_id": REVIEW_ID}, files={"image": ("test_image.jpg", f, "image/jpeg")})
 
     mock_append_review_image.assert_called_once()
     mock_extract_user_id.assert_called_once()
+    mock_validate_object_id.assert_called_once()
     assert response.status_code == 200
     assert response.json() == MOCK_REVIEW_RESPONSE_DATA
     assert test_review_out_model(**response.json())
 
 @pytest.mark.asyncio
+@patch('app.ReviewService.ReviewService.validate_object_id', return_value=None)
 @patch('app.ReviewService.ReviewService.extract_user_id_from_token', return_value=USER_ID)
 @patch('app.ReviewService.ReviewService.get_review_by_id', return_value=MOCK_REVIEW_RESPONSE_DATA)
-async def test_get_review(mock_get_review, mock_extract_user_id, test_app, test_review_out_model):
+async def test_get_review(mock_get_review, mock_extract_user_id, mock_validate_object_id, test_app, test_review_out_model):
     response = test_app.get(f"/{REVIEW_ID}")
 
     mock_get_review.assert_called_once_with(REVIEW_ID, USER_ID)
     mock_extract_user_id.assert_called_once()
+    mock_validate_object_id.assert_called_once()
     assert response.status_code == 200
     assert response.json() == MOCK_REVIEW_RESPONSE_DATA
     assert test_review_out_model(**response.json())
@@ -112,13 +116,15 @@ async def test_get_feed(mock_get_feed, mock_request, mock_extract_user_id, test_
     assert test_review_list_out_model(**response.json())
 
 @pytest.mark.asyncio
+@patch('app.ReviewService.ReviewService.validate_object_id', return_value=None)
 @patch('app.ReviewService.ReviewService.extract_user_id_from_token', return_value=USER_ID)
 @patch('app.ReviewService.ReviewService.get_reviews_by_user_id', return_value=MOCK_REVIEW_LIST_RESPONSE_DATA)
-async def test_get_reviews_from_user(mock_get_reviews, mock_extract_user_id, test_app, test_review_list_out_model):
+async def test_get_reviews_from_user(mock_get_reviews, mock_extract_user_id, mock_validate_object_id, test_app, test_review_list_out_model):
     response = test_app.get("/users/?user_id=22221")
 
     mock_get_reviews.assert_called_once_with("22221", USER_ID)
     mock_extract_user_id.assert_called_once()
+    mock_validate_object_id.assert_called_once()
     assert response.status_code == 200
     assert response.json() == MOCK_REVIEW_LIST_RESPONSE_DATA
     assert test_review_list_out_model(**response.json())
@@ -140,25 +146,29 @@ async def test_get_filtered_reviews(mock_get_reviews, mock_requests_get, mock_ex
     assert test_review_list_filtered_out_model(**response.json())
 
 @pytest.mark.asyncio
+@patch('app.ReviewService.ReviewService.validate_object_id', return_value=None)
 @patch('app.ReviewService.ReviewService.extract_user_id_from_token', return_value=USER_ID)
 @patch('app.ReviewService.ReviewService.like_review_by_id', return_value=MOCK_REVIEW_RESPONSE_DATA)
-async def test_like_review(mock_like_review, mock_extract_user_id, test_app, test_review_out_model):
+async def test_like_review(mock_like_review, mock_extract_user_id, mock_validate_object_id, test_app, test_review_out_model):
     response = test_app.patch(f"/{REVIEW_ID}/likes")
 
     mock_like_review.assert_called_once_with(REVIEW_ID, USER_ID)
     mock_extract_user_id.assert_called_once()
+    mock_validate_object_id.assert_called_once()
     assert response.status_code == 200
     assert response.json() == MOCK_REVIEW_RESPONSE_DATA
     assert test_review_out_model(**response.json())
 
 @pytest.mark.asyncio
+@patch('app.ReviewService.ReviewService.validate_object_id', return_value=None)
 @patch('app.ReviewService.ReviewService.extract_user_id_from_token', return_value=USER_ID)
 @patch('app.ReviewService.ReviewService.unlike_review_by_id', return_value=MOCK_REVIEW_RESPONSE_DATA)
-async def test_unlike_review(mock_unlike_review, mock_extract_user_id, test_app, test_review_out_model):
+async def test_unlike_review(mock_unlike_review, mock_extract_user_id, mock_validate_object_id, test_app, test_review_out_model):
     response = test_app.delete(f"/{REVIEW_ID}/likes")
 
     mock_unlike_review.assert_called_once_with(REVIEW_ID, USER_ID)
     mock_extract_user_id.assert_called_once()
+    mock_validate_object_id.assert_called_once()
     assert response.status_code == 200
     assert response.json() == MOCK_REVIEW_RESPONSE_DATA
     assert test_review_out_model(**response.json())
