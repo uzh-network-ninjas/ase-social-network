@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from app.AuthenticateService import AuthenticateService
 from app.models.UserRegister import UserRegister
 from app.models.UserLogin import UserLogin
@@ -27,6 +27,15 @@ dummy_request = Request({
     "url": "http://testserver/",
     "headers": {},
 })
+
+
+@patch("jwt.decode", return_value={"sub": "test_user_id"})
+def test_service_extract_user_id(mock_jwt_decode):
+    mock_request = MagicMock(spec=Request)
+    mock_request.headers.get.return_value = "Bearer mock_token"
+    user_id = auth_service.extract_user_id(mock_request)
+    mock_jwt_decode.assert_called_once_with("mock_token", options={"verify_signature": False})
+    assert user_id == "test_user_id"
 
 
 @pytest.mark.asyncio
