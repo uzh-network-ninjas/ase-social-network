@@ -34,6 +34,7 @@ import StarSolidIcon from '@/icons/StarSolidIcon.vue'
 import PhoneIcon from '@/icons/PhoneIcon.vue'
 import MiniChevronLeftIcon from '@/icons/MiniChevronLeftIcon.vue'
 import MapIcon from '@/icons/MapIcon.vue'
+import ListBulletIcon from '@/icons/ListBulletIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -72,6 +73,7 @@ export type IconType =
   | 'phone'
   | 'mini-chevron-left'
   | 'map'
+  | 'list-bullet'
   | undefined
 
 withDefaults(
@@ -252,4 +254,10 @@ defineOptions({
     :strokeWidth="strokeWidth"
   />
   <MapIcon v-else-if="icon == 'map'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
+  <ListBulletIcon
+    v-else-if="icon == 'list-bullet'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
 </template>

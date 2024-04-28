@@ -24,12 +24,9 @@
             <!-- Profile picture -->
             <img
               :src="profilePicUrl"
-              alt="Profile Picture"
+              alt="of user"
               class="bg-lightgray z-10 h-32 w-32 shrink-0 rounded-[128px] bg-cover bg-center bg-no-repeat"
             />
-
-            <!-- <img :src="profilePicUrl" alt="Profile Picture"
-                            class="w-32 h-32 shrink-0 rounded-[128px] bg-cover bg-no-repeat bg-center bg-lightgray z-10" /> -->
           </div>
 
           <!--Information-->
@@ -174,7 +171,29 @@
                 </div>
               </div>
             </div>
-            <div class="h-px self-stretch bg-medium-emphasis opacity-30"></div>
+            <div class="h-px self-stretch">
+              <div class="flex flex-col items-center divide-y px-8">
+                <PlaceReview
+                  v-for="review in reviews"
+                  :header="'PLACE'"
+                  :key="review.id"
+                  :userId="review.userId"
+                  :username="review.username"
+                  :text="review.text"
+                  :rating="review.rating"
+                  :locationId="review.location.id"
+                  :locationName="review.location.name"
+                  :locationType="review.location.type"
+                  :createdAt="review.createdAt"
+                  :image="review.image"
+                />
+                <div v-if="reviews.length === 0" class="w-full px-2 py-4 text-center">
+                  <span class="font-light text-medium-emphasis">{{
+                    $t('no_reviews_for_place')
+                  }}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -183,49 +202,93 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import Button from 'primevue/button'
 import BaseIcon from '@/icons/BaseIcon.vue'
-import { useRouter } from 'vue-router'
 import { userService } from '@/services/userService'
 import { User } from '@/types/User'
-import { reviewService } from '@/services/reviewService'
+import { Review } from '@/types/Review'
 import SignedInTopNav from '@/components/SignedInTopNav.vue'
 import PageHeader from '@/components/PageHeader.vue'
+import PlaceReview from '@/components/PlaceReview.vue'
+import { reviewService } from '@/services/reviewService'
 
-const router = useRouter()
+const baseUrl = import.meta.env.VITE_PICTURE_BASE_URL
+
+const props = defineProps<{
+  userId: string
+}>()
 
 const authStore = useAuthStore()
-const signedInUser = authStore.user
 
-const userId = ref<string>('')
 const user = ref<User>()
 
-const profilePicUrl = ref<string>(
-  'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
-)
+const profilePicUrl = computed<string>(() => {
+  if (user.value?.image) {
+    return `${baseUrl}/ms-user/${user.value.image}`
+  } else {
+    return 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
+  }
+})
 
 const isFollowed = ref<boolean>()
 const reviewCount = ref<number>(0)
-const followers = ref<User[]>([])
+const reviews = ref<Review[]>([])
 
 // // Review data
 // const placeName = ref<string>('Placeholder Name')
 // const placeType = ref<string>('Placeholder Type')
 // const placeRating = ref<number>(3)
 
+// Fetch user profile data on component mount
+onMounted(() => {
+  getUserData()
+  getReviews()
+})
+// Fetch user profile data on userId change
+watch(
+  () => props.userId,
+  () => {
+    getUserData()
+    getReviews()
+  }
+)
+
+const getUserData = async () => {
+  try {
+    user.value = await userService.getUser(props.userId)
+    isFollowed.value = user.value?.followers.some((follower) => {
+      return follower === authStore.user?.id
+    })
+  } catch (error) {
+    console.error('Error fetching user profile:', error)
+  }
+}
+
 const followButtonText = computed(() => {
   return isFollowed.value ? 'Unfollow' : 'Follow'
 })
 
+const getReviews = async () => {
+  try {
+    reviews.value = await reviewService.getUserReviews(props.userId)
+    console.log(reviews.value)
+  } catch (error: any) {
+    if (error.response.status == 404) {
+      reviews.value = []
+    } else console.error('Error fetching user reviews:', error)
+  }
+}
+
 // Function to toggle follow status
 const toggleFollowOrUnfollow = async () => {
   // If not followed yet, follow
-  if (isFollowed.value == false) {
+
+  if (!isFollowed.value) {
     try {
-      if (userId.value) {
-        await userService.followUser(userId.value)
+      if (props.userId) {
+        await userService.followUser(props.userId)
       }
     } catch (error) {
       console.error('Error following user:', error)
@@ -234,26 +297,13 @@ const toggleFollowOrUnfollow = async () => {
   //If already following, unfollow
   else {
     try {
-      if (userId.value) {
-        await userService.unfollowUser(userId.value)
+      if (props.userId) {
+        await userService.unfollowUser(props.userId)
       }
     } catch (error) {
       console.error('Error unfollowing user:', error)
     }
   }
-
-  isFollowed.value = !isFollowed.value
+  await getUserData()
 }
-
-// Fetch user profile data on component mount
-onMounted(async () => {
-  userId.value = router.currentRoute.value.params.userId as string // Access userId from router
-  try {
-    user.value = await userService.getUser(userId.value)
-    followers.value = await userService.getUserFollowers(userId.value)
-    isFollowed.value = followers.value.some((follower) => follower.id === signedInUser?.id)
-  } catch (error) {
-    console.error('Error fetching user profile:', error)
-  }
-})
 </script>

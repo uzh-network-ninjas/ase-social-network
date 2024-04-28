@@ -96,9 +96,9 @@
             </div>
           </div>
 
+          <div class="w-full font-light text-error text-right" v-if="uploadFailed"> Failed to create review </div>
           <!-- Divider -->
           <div class="h-px shrink-0 self-stretch bg-medium-emphasis opacity-60"></div>
-
           <!-- Footer -->
           <div class="flex items-start justify-end self-stretch">
             <!-- Cancel button -->
@@ -136,12 +136,14 @@ const rating = ref<number>(0)
 const reviewText = ref<string>('')
 const ratingValid = ref<boolean>(false)
 const textValid = ref<boolean>(false)
+const uploadFailed = ref<boolean>(false)
+
 
 const props = defineProps<{
   location: Location
 }>()
 
-const emit = defineEmits(['closeModal'])
+const emit = defineEmits(['closeModal', 'uploadSuccess'])
 
 const reviewPicture = ref<File | null>(null)
 
@@ -184,14 +186,16 @@ const checkInputValidity = () => {
 const createReview = async () => {
   if (checkInputValidity()) {
     try {
+      uploadFailed.value = false
       // Call createReview method from reviewService
       await reviewService
         .createReview(reviewText.value, rating.value, props.location)
         .then((response: Review) => {
           updateReviewImage(response.id)
         })
-      emit('closeModal')
+      emit('uploadSuccess')
     } catch (error) {
+      uploadFailed.value = true
       console.error('Error creating review:', error)
     }
   }

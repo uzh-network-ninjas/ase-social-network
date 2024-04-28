@@ -16,7 +16,7 @@ const searchTerm = ref<string>('')
 const searchResults = ref<User[]>([])
 const noUserFound = ref<boolean>(false)
 
-const searchTermTimeout = ref<number>()
+const searchTermTimeout = ref<ReturnType<typeof setTimeout>>()
 
 watch(searchTerm, () => {
   if (searchTermTimeout.value) {

@@ -22,6 +22,7 @@ const reviews = ref<Review[]>([])
 const average_rating = ref<number>(0.0)
 const showCreateModal = ref<boolean>(false)
 const location = ref<Location | null>()
+const uploadSuccess = ref<boolean>(false)
 
 watch(
   () => [props.place],
@@ -31,6 +32,12 @@ watch(
     updateLocation()
   }
 )
+
+const onCreateSuccess = function () {
+  closeCreateModal()
+  uploadSuccess.value = true
+}
+
 
 const updateLocation = function () {
   if (props.place?.['place_id']) {
@@ -50,6 +57,8 @@ const updateLocation = function () {
 
 const openCreateModal = function () {
   showCreateModal.value = true
+  uploadSuccess.value = false
+  console.log("peep")
 }
 
 const closeCreateModal = function () {
@@ -242,10 +251,12 @@ const getReviews = function () {
       <div class="flex flex-col items-center gap-4 px-2 py-4">
         <h2 class="text-xl uppercase tracking-[6px] text-medium-emphasis">Reviews</h2>
         <Button class="w-full" rounded :label="$t('create_review')" @click="openCreateModal()" />
+        <div class="w-full font-light text-secondary text-center" v-if="uploadSuccess"> Review created successfully </div>
         <CreateReviewModal
           v-if="showCreateModal && location"
           v-model:location="location"
           @closeModal="closeCreateModal"
+          @uploadSuccess = "onCreateSuccess"
         />
       </div>
       <div class="flex flex-col items-center divide-y">

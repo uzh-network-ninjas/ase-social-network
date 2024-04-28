@@ -51,6 +51,8 @@ const placeResultList = ref<PlaceResultData[]>([])
 const place = ref<google.maps.places.PlaceResult | null>(null)
 const placeInfoOpen = ref<boolean>(false)
 
+const showList = ref<boolean>(true)
+
 const listSortOptions = [
   { name: 'dropdown_selection_rating' },
   { name: 'dropdown_selection_rating_gm' },
@@ -326,6 +328,8 @@ const onClickPlaceItem = function (placeResult: google.maps.places.PlaceResult) 
       ;(m.content as HTMLElement).style.transform =
         key == placeId ? 'scale(125%) translate(0, -12.5%)' : 'translate(0, 0)'
     })
+    console.log('HELLO')
+    showList.value = false
   }
 }
 
@@ -344,18 +348,34 @@ const placeResultListSorted = computed(() => {
   })
 })
 
-const sortPlaceResultByRating = function (a: PlaceResultData, b: PlaceResultData, ascending: boolean) : number {
+const sortPlaceResultByRating = function (
+  a: PlaceResultData,
+  b: PlaceResultData,
+  ascending: boolean
+): number {
   return ascending ? a.average_rating - b.average_rating : b.average_rating - a.average_rating
 }
-const sortPlaceResultByRatingGoogleMaps = function (a: PlaceResultData, b: PlaceResultData, ascending: boolean) : number {
+const sortPlaceResultByRatingGoogleMaps = function (
+  a: PlaceResultData,
+  b: PlaceResultData,
+  ascending: boolean
+): number {
   return ascending
     ? (a.place.rating ?? 0) - (b.place.rating ?? 0)
     : (b.place.rating ?? 0) - (a.place.rating ?? 0)
 }
-const sortPlaceResultByReviews = function (a: PlaceResultData, b: PlaceResultData, ascending: boolean) : number {
+const sortPlaceResultByReviews = function (
+  a: PlaceResultData,
+  b: PlaceResultData,
+  ascending: boolean
+): number {
   return ascending ? a.total_reviews - b.total_reviews : b.total_reviews - a.total_reviews
 }
-const sortPlaceResultByReviewsGoogleMaps = function (a: PlaceResultData, b: PlaceResultData, ascending: boolean) : number {
+const sortPlaceResultByReviewsGoogleMaps = function (
+  a: PlaceResultData,
+  b: PlaceResultData,
+  ascending: boolean
+): number {
   return ascending
     ? (a.place.user_ratings_total ?? 0) - (b.place.user_ratings_total ?? 0)
     : (b.place.user_ratings_total ?? 0) - (a.place.user_ratings_total ?? 0)
@@ -368,11 +388,12 @@ const sortPlaceResultByReviewsGoogleMaps = function (a: PlaceResultData, b: Plac
   </header>
 
   <main>
-    <div class="relative flex h-full w-full flex-row overflow-hidden">
+    <div class="relative flex h-full w-full overflow-hidden">
       <div
         :class="[
-          'flex h-full flex-col self-stretch',
-          placeResultList.length > 1 ? 'w-[22rem]' : 'w-0'
+          'relative flex h-full flex-col self-stretch max-sm:absolute max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:top-0 max-sm:w-full',
+          placeResultList.length > 1 ? 'w-[22rem]' : 'w-0',
+          showList && placeResultList.length > 1 ? '' : 'max-sm:invisible'
         ]"
       >
         <div
@@ -385,13 +406,12 @@ const sortPlaceResultByReviewsGoogleMaps = function (a: PlaceResultData, b: Plac
             class="border-none !p-0 text-sm"
           >
             <template #value="slotProps">
-              <span class="text-sm">{{ $t('dropdown_sort_by')}}</span
+              <span class="text-sm">{{ $t('dropdown_sort_by') }}</span
               ><span class="text-sm text-primary">{{ $t(slotProps.value.name) }}</span>
             </template>
             <template #option="slotProps">
-              <span class="text-sm">{{ $t('dropdown_sort_by')}}</span
+              <span class="text-sm">{{ $t('dropdown_sort_by') }}</span
               ><span class="text-sm text-primary">{{ $t(slotProps.option.name) }}</span>
-
             </template>
             <template #dropdownicon>
               <MiniChevronDown class="!h-5 !w-5" />
@@ -428,12 +448,39 @@ const sortPlaceResultByReviewsGoogleMaps = function (a: PlaceResultData, b: Plac
             ]"
           />
         </div>
+        <div class="absolute bottom-4 right-4">
+          <Button
+            :label="$t('view_map')"
+            rounded
+            outlined
+            @click="showList = false"
+            class="sm:invisible"
+          >
+            <template #icon>
+              <BaseIcon icon="map" :size="5" />
+            </template>
+          </Button>
+        </div>
       </div>
-      <div class="relative grow self-stretch">
+      <div
+        :class="[
+          'relative grow self-stretch max-sm:absolute max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:top-0',
+          showList && placeResultList.length > 1 ? 'max-sm:invisible' : ''
+        ]"
+      >
         <div id="map" ref="mapDiv" class="h-full w-full outline-none"></div>
-        <div class="pointer-events-none absolute bottom-0 left-0 right-0 top-0 flex p-2">
-          <PlaceView v-model:open="placeInfoOpen" :place="place" />
-          <div class="flex grow flex-col gap-2">
+        <div class="pointer-events-none absolute bottom-0 left-0 right-0 top-0 flex gap-2 p-2">
+          <PlaceView
+            v-model:open="placeInfoOpen"
+            :place="place"
+            class="max-lg:grow max-sm:w-full"
+          />
+          <div
+            :class="[
+              'flex flex-col gap-2 overflow-hidden lg:grow',
+              placeInfoOpen ? 'max-xl:max-w-0' : 'grow'
+            ]"
+          >
             <div class="flex w-full">
               <!-- Map Filter -->
             </div>
@@ -459,7 +506,13 @@ const sortPlaceResultByReviewsGoogleMaps = function (a: PlaceResultData, b: Plac
               </Button>
             </div>
           </div>
-          <div class="flex w-fit flex-col justify-end gap-2 self-stretch">
+          <div
+            :class="[
+              'flex w-fit flex-col items-end justify-end gap-2 self-stretch justify-self-end sm:pb-4 ',
+              placeInfoOpen ? 'max-lg:grow max-md:max-w-0 max-md:overflow-hidden' : '',
+              placeResultList.length > 1 ? 'pb-14' : 'pb-4'
+            ]"
+          >
             <Button
               v-if="fetchingPositionSupported"
               outlined
@@ -479,7 +532,7 @@ const sortPlaceResultByReviewsGoogleMaps = function (a: PlaceResultData, b: Plac
                 />
               </template>
             </Button>
-            <div class="group flex flex-col pb-4">
+            <div class="group flex flex-col">
               <Button
                 outlined
                 rounded
@@ -502,6 +555,20 @@ const sortPlaceResultByReviewsGoogleMaps = function (a: PlaceResultData, b: Plac
               </Button>
             </div>
           </div>
+          <Button
+            :label="$t('view_list')"
+            rounded
+            outlined
+            @click="showList = true"
+            :class="[
+              'pointer-events-auto !absolute bottom-6 right-2 h-fit sm:invisible',
+              placeResultList.length > 1 ? '' : 'invisible'
+            ]"
+          >
+            <template #icon>
+              <BaseIcon icon="list-bullet" :size="5" />
+            </template>
+          </Button>
         </div>
       </div>
     </div>

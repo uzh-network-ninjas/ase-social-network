@@ -70,7 +70,7 @@ const updateUsername = function () {
         </h2>
       </div>
       <div class="relative">
-        <FileUpload v-model="profilePicture"> </FileUpload>
+        <FileUpload v-model="profilePicture" class="max-w-[600px]"> </FileUpload>
       </div>
       <Button
         class="sm:w-fit"
