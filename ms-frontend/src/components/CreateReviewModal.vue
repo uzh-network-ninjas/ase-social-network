@@ -1,6 +1,6 @@
 <template>
     <!-- Modal -->
-    <div class="fixed inset-0 flex items-center justify-center bg-medium-emphasis px-4 pt-20 ">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-medium-emphasis px-4 pt-20 ">
         <div
             class="w-full max-w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl my-auto rounded-lg overflow-y-auto">
             <div class="modal-content">
