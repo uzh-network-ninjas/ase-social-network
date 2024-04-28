@@ -11,7 +11,9 @@ const time_formats = [
 
 export const TimeConverter = {
   humanReadable: function (date: Date): { key: string; value: number | undefined } {
-    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000)
+    const seconds =
+      Math.floor((new Date().getTime() - date.getTime()) / 1000) +
+      new Date().getTimezoneOffset() * 60
     if (seconds == 0) {
       return { key: 'just_now', value: undefined }
     }
