@@ -87,18 +87,21 @@ async def test_append_review_image_by_id(mock_boto3_client, review_service):
     assert result == ReviewOut(**MOCK_REVIEW_RESPONSE_DATA)
 
 @pytest.mark.asyncio
+@patch("app.logging_config.logger.error", return_value=None)
 @patch("boto3.client")
-async def test_append_review_image_by_id_corrupt_image(mock_boto3_client, review_service):
+async def test_append_review_image_by_id_corrupt_image(mock_boto3_client, mock_logger_error, review_service):
     mock_boto3_client.return_value = MagicMock()
     mock_image = MagicMock(spec=UploadFile)
 
     with pytest.raises(HTTPException) as e:
         await review_service.append_review_image_by_id(REVIEW_ID, mock_image, USER_ID)
+    mock_logger_error.assert_called_once()
     assert e.value.status_code == 400
 
 @pytest.mark.asyncio
+@patch("app.logging_config.logger.error", return_value=None)
 @patch("boto3.client")
-async def test_append_review_image_by_id_faulty_boto(mock_boto3_client, review_service):
+async def test_append_review_image_by_id_faulty_boto(mock_boto3_client, mock_logger_error, review_service):
     mock_boto3_client.return_value = None
     mock_image = MagicMock(spec=UploadFile)
     mock_image.filename = IMAGE_FILENAME
@@ -106,6 +109,7 @@ async def test_append_review_image_by_id_faulty_boto(mock_boto3_client, review_s
 
     with pytest.raises(HTTPException) as e:
         await review_service.append_review_image_by_id(REVIEW_ID, mock_image, USER_ID)
+    mock_logger_error.assert_called_once()
     assert e.value.status_code == 400
 
 @pytest.mark.asyncio
@@ -296,7 +300,9 @@ def test_extract_payload_from_token(mock_jwt_decode, review_service):
     mock_jwt_decode.assert_called_once_with("test_token", options={"verify_signature": False})
     assert payload == {"sub": USER_ID, "username": USER_NAME}
 
-def test_validate_object_id_invalid_id(review_service):
+@patch("app.logging_config.logger.error", return_value=None)
+def test_validate_object_id_invalid_id(mock_logger_error, review_service):
     with pytest.raises(HTTPException) as e:
         review_service.validate_object_id("invalid_id")
+    mock_logger_error.assert_called_once()
     assert e.value.status_code == 422
