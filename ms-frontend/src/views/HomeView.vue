@@ -38,6 +38,7 @@ const sideNavActions: SideMenuOption[] = [
     <TopNav v-if="!authStore.signedIn" :actions="topNavActions" iconPos="right" />
     <SignedInTopNav v-else />
     <div
+      v-if="authStore.signedIn"
       class="z-40 bg-white py-3 max-sm:border-b max-sm:border-b-medium-emphasis max-sm:px-2 sm:px-4"
     >
       <h1 class="ml-8 text-2xl font-extralight text-medium-emphasis">Home</h1>
@@ -45,15 +46,18 @@ const sideNavActions: SideMenuOption[] = [
   </header>
 
   <main class="sm:mx-8 sm:my-4">
-    <div class="relative flex w-full flex-col gap-8">
-      <div
-        class="w-48 max-sm:w-full max-sm:border-b max-sm:border-b-medium-emphasis max-sm:px-4 max-sm:py-4 sm:fixed sm:z-30"
-      >
-        <SideMenu :actions="sideNavActions" />
+    <template v-if="authStore.signedIn">
+      <div class="relative flex w-full flex-col gap-8">
+        <div
+          class="w-48 max-sm:w-full max-sm:border-b max-sm:border-b-medium-emphasis max-sm:px-4 max-sm:py-4 sm:fixed sm:z-30"
+        >
+          <SideMenu :actions="sideNavActions" />
+        </div>
+        <div class="grow pb-4 max-sm:w-full max-sm:px-4 sm:ml-56">
+          <!-- FEED -->
+        </div>
       </div>
-      <div class="grow pb-4 max-sm:w-full max-sm:px-4 sm:ml-56">
-        <!-- FEED -->
-      </div>
-    </div>
+    </template>
+
   </main>
 </template>
