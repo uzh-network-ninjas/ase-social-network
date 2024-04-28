@@ -5,7 +5,7 @@ import { Location } from '@/types/Location'
 
 export const reviewService = {
   async createReview(text: string, rating: number, location: Location) {
-    await apiClient.post('/reviews', {
+    const response = await apiClient.post('/reviews', {
       text: text,
       rating: rating,
       location: {
@@ -18,6 +18,7 @@ export const reviewService = {
         }
       }
     })
+    return new Review(response.data)
   },
     async appendReviewImage(reviewId: string, file: File) {
     const formData = new FormData()

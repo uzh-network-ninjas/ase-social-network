@@ -148,7 +148,8 @@ const getPlaceDetails = function (placeId: string) {
       'formatted_address',
       'website',
       'type',
-      'editorial_summary'
+      'editorial_summary',
+      'geometry'
     ]
   }
 

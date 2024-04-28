@@ -40,8 +40,6 @@ const updateLocation = function (){
       name: props.place?.['name'],
       type: props.place?.['types'][0],
       coordinates: {
-        x: "0",
-        y: "0"
         x: props.place?.["geometry"].location.lat() ?? 0,
         y: props.place?.["geometry"].location.lng() ?? 0
       }
