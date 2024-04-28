@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, watchEffect} from 'vue'
+import { ref, watch} from 'vue'
 import BaseIcon from '@/icons/BaseIcon.vue'
 import Button from 'primevue/button'
 import PlaceReview from '@/components/PlaceReview.vue'
@@ -35,15 +35,19 @@ watch(
 
 
 const updateLocation = function (){
-  location.value = new Location({
-      id: props.place?.['place_id'],
-      name: props.place?.['name'],
-      type: props.place?.['types'][0],
+  if (props.place && props.place['place_id']) {
+    location.value = new Location({
+      id: props.place['place_id'],
+      name: props.place['name'] ?? 'NO NAME',
+      type: props.place['types']?.[0]?.replace(/_/g, ' ') ?? '',
       coordinates: {
-        x: props.place?.["geometry"].location.lat() ?? 0,
-        y: props.place?.["geometry"].location.lng() ?? 0
+        x: props.place['geometry']?.location?.lat().toString() ?? '0',
+        y: props.place['geometry']?.location?.lng().toString() ?? '0'
       }
     })
+  } else {
+    location.value = undefined
+  }
 }
 
 
