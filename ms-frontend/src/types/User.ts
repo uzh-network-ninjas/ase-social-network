@@ -5,8 +5,8 @@ export class User {
   email: string
   preferences: string[]
   restrictions: string[]
-  followers: User[]
-  following: User[]
+  followers: string[]
+  following: string[]
 
   constructor(data: {
     id: string
@@ -15,8 +15,8 @@ export class User {
     email: string
     preferences: string[]
     restrictions: string[]
-    followers: User[]
-    following: User[]
+    followers: string[]
+    following: string[]
   }) {
     this.id = data.id
     this.image = data.image

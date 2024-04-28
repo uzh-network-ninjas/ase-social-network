@@ -121,7 +121,9 @@
   "dropdown_selection_rating": "Rating",
   "dropdown_selection_rating_gm": "Rating (GM)",
   "dropdown_selection_reviews": "Reviews",
-  "dropdown_selection_reviews_gm": "Reviews (GM)"
+  "dropdown_selection_reviews_gm": "Reviews (GM)",
+  "view_map": "View Map",
+  "view_list": "View List",
   "map": "Map",
   "search_user": "Search User",
   "no_user_found": "There exists no user with that name."

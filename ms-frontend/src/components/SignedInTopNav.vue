@@ -46,7 +46,7 @@ const onSearch = function (query: string, placeId: string | undefined) {
       <Button
         outlined
         rounded
-        :class="['!rounded-full', authStore.user?.image ? 'border-none !p-0' : '']"
+        :class="['min-h-8 min-w-8 !rounded-full', authStore.user?.image ? 'border-none !p-0' : '']"
         @click="toggleNavbarMenu"
         aria-haspopup="true"
         aria-controls="overlay_menu"

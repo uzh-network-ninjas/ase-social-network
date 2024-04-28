@@ -115,7 +115,9 @@
   "dropdown_selection_rating": "Bewertung",
   "dropdown_selection_rating_gm": "Bewertung (GM)",
   "dropdown_selection_reviews": "Rezensionen",
-  "dropdown_selection_reviews_gm": "Rezensionen (GM)"
+  "dropdown_selection_reviews_gm": "Rezensionen (GM)",
+  "view_map": "Karte anzeigen",
+  "view_list": "Liste anzeigen",
   "map": "Karte",
   "search_user": "Benutzer suchen",
   "no_user_found": "Es existiert kein Benutzer mit diesem Namen."
