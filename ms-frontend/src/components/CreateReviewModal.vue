@@ -175,33 +175,27 @@ const checkInputValidity = () => {
 // }
 
 const createReview = async () => {
-    if (checkInputValidity()) {
-        try {
-            // Call createReview method from reviewService
-            await reviewService.createReview(reviewText.value, rating.value, props.location)
-            emit('closeModal')
-            
-        } catch (error) {
-            console.error('Error creating review:', error)
-        }
+  if (checkInputValidity()) {
+    try {
+      // Call createReview method from reviewService
+      await reviewService.createReview(reviewText.value, rating.value, props.location).then((response: Review) => {
+        updateReviewImage(response.id)
+      })
+      emit('closeModal')
+    } catch (error) {
+      console.error('Error creating review:', error)
     }
+  }
 }
 
-// const updateReviewImage = async () => {
-
-//     const myReviews = ref<Review[]>()
-//     try {
-//         myReviews.value = await reviewService.getUserReviews(myId)
-//     } catch (error) {
-//         console.error('Error accessing the created reviews:', error)
-//     }
-
-//     try {
-//         await reviewService.updateReviewImage(myReviews.value?.[0].review_id, reviewPicture)
-//     } catch (error) {
-//         console.error('Error updating review image:', error)
-//     }
-// }
+const updateReviewImage = async (reviewId: string) => {
+    if(reviewPicture.value === null) return
+    try {
+        await reviewService.appendReviewImage(reviewId, reviewPicture.value)
+    } catch (error) {
+        console.error('Error updating review image:', error)
+    }
+}
 
 
 </script>
