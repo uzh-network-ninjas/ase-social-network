@@ -108,7 +108,11 @@ const getUserProfilePicture = function () {
       <span class="text-justify font-light text-medium-emphasis">{{ text }}</span>
     </div>
     <div v-if="image" class="w-full">
-      <img :src="`${baseUrl}/ms-review/${image}`" class="w-full object-cover" alt="of review place" />
+      <img
+        :src="`${baseUrl}/ms-review/${image}`"
+        class="w-full object-cover"
+        alt="of review place"
+      />
     </div>
   </div>
 </template>
