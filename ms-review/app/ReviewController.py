@@ -41,6 +41,7 @@ async def append_review_image(request: Request, review_id: Annotated[str, Form()
     :param image: The image that will be appended.
     :return: The updated review with the appended image.
     """
+    rs.validate_object_id(review_id)
     user_id = rs.extract_user_id_from_token(request)
     return await rs.append_review_image_by_id(review_id, image, user_id)
 
@@ -53,6 +54,7 @@ async def get_review(request: Request, review_id: str) -> ReviewOut:
     :param review_id: The ID of the review to retrieve.
     :return: The retrieved review.
     """
+    rs.validate_object_id(review_id)
     user_id = rs.extract_user_id_from_token(request)
     return await rs.get_review_by_id(review_id, user_id)
 
@@ -78,6 +80,7 @@ async def get_reviews_from_user(request: Request, user_id: str) -> ReviewListOut
     :param user_id: The ID of the user for the requested reviews.
     :return: A list of reviews created by the user.
     """
+    rs.validate_object_id(user_id)
     extracted_user_id = rs.extract_user_id_from_token(request)
     return await rs.get_reviews_by_user_id(user_id, extracted_user_id)
 
@@ -108,6 +111,7 @@ async def like_review(request: Request, review_id: str) -> ReviewOut:
     :param review_id: The ID of the review to like.
     :return: The updated review with the added like.
     """
+    rs.validate_object_id(review_id)
     user_id = rs.extract_user_id_from_token(request)
     return await rs.like_review_by_id(review_id, user_id)
 
@@ -120,5 +124,6 @@ async def unlike_review(request: Request, review_id: str) -> ReviewOut:
     :param review_id: ID of the review to unlike.
     :return: The updated review without the like.
     """
+    rs.validate_object_id(review_id)
     user_id = rs.extract_user_id_from_token(request)
     return await rs.unlike_review_by_id(review_id, user_id)

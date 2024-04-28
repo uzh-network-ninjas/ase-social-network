@@ -10,6 +10,7 @@ from app.models.ReviewListFilteredOut import ReviewListFilteredOut, LocationRevi
 from app.models.ReviewOut import ReviewOut
 from app.models.ReviewCreateImage import ReviewCreateImage
 from app.ReviewRepository import ReviewRepository
+from bson import ObjectId
 from datetime import datetime
 from fastapi import HTTPException, Request, UploadFile
 from typing import List
@@ -44,6 +45,7 @@ class ReviewService:
         :raise HTTPException(400): If the image could not be uploaded to s3.
         :raise HTTPException(400): If the database could not update the image reference.
         """
+
         bucket_name = "ms-review"
         s3_folder = "review-images"
         s3_client = boto3.client(
@@ -181,7 +183,7 @@ class ReviewService:
         :param review_id: The ID of the review to unlike.
         :param user_id: The ID of the user unliking a review.
         :return: The updated review with the removed like.
-        :raise HTTPException(404): If the review does not exist.
+        :raise ReviewNotFoundException: If the review does not exist.
         :raise HTTPException(400): If the user has already unliked the review.
         :raise HTTPException(400): If the database could not update the like count.
         """
@@ -217,3 +219,16 @@ class ReviewService:
         bearer = request.headers.get("Authorization")
         token = bearer.split(" ")[1]
         return jwt.decode(token, options={"verify_signature": False})
+
+    @staticmethod
+    def validate_object_id(object_id: str) -> None:
+        """Validates the objectId.
+
+        :param object_id: The objectId to test.
+        :raise HTTPException(422): If the objectId is invalid.
+        """
+        try:
+            ObjectId(object_id)
+        except Exception as e:
+            logger.error(f"An invalid objectId has been provided: {object_id}")
+            raise HTTPException(status_code=422, detail=f"{e}")

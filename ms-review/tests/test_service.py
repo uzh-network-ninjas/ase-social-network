@@ -295,3 +295,8 @@ def test_extract_payload_from_token(mock_jwt_decode, review_service):
 
     mock_jwt_decode.assert_called_once_with("test_token", options={"verify_signature": False})
     assert payload == {"sub": USER_ID, "username": USER_NAME}
+
+def test_validate_object_id_invalid_id(review_service):
+    with pytest.raises(HTTPException) as e:
+        review_service.validate_object_id("invalid_id")
+    assert e.value.status_code == 422
