@@ -55,7 +55,7 @@ const getLastUnmarkedSegment = function (
   option: google.maps.places.AutocompletePrediction,
   lastMatch: google.maps.places.PredictionSubstring
 ) {
-  return option.structured_formatting['main_text'].slice(lastMatch.offset + lastMatch.length + 1)
+  return option.structured_formatting['main_text'].slice(lastMatch.offset + lastMatch.length)
 }
 
 const getCurrentMarkedSegment = function (
@@ -82,6 +82,7 @@ const onUpdate = function (value: any) {
 }
 
 const onEnter = function () {
+  router.push({ name: 'map', query: { query: autocomplete.value } })
   emit('search', autocomplete.value, undefined)
 }
 </script>
@@ -114,13 +115,13 @@ const onEnter = function () {
               v-for="(match, index) in getPredictionSubString(option)"
               :key="`${match.offset}-${match.length}`"
             >
-              <span v-if="index > 0">{{ getPreviousUnMarkedSegment(option, index) }}</span>
-              <span class="font-medium">{{ getCurrentMarkedSegment(option, match) }}</span>
-              <span v-if="index == getPredictionSubString(option).length - 1">{{
+              <span v-if="index > 0" class="whitespace-pre-wrap">{{ getPreviousUnMarkedSegment(option, index) }}</span>
+              <span class="whitespace-pre-wrap font-medium">{{ getCurrentMarkedSegment(option, match) }}</span>
+              <span class="whitespace-pre-wrap" v-if="index == getPredictionSubString(option).length - 1">{{
                 getLastUnmarkedSegment(option, match)
               }}</span>
             </template>
-            <span :class="{ 'ml-1 text-sm': option.place_id }">
+            <span :class="['ml-1 whitespace-pre-wrap',option.place_id ?  'text-sm' : '' ]">
               {{
                 (option as google.maps.places.AutocompletePrediction)['structured_formatting'][
                   'secondary_text'
