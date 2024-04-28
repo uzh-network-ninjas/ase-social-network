@@ -36,36 +36,17 @@
                             </div>
                             <!-- Rating -->
                             <div class="flex w-[152px] h-6 items-start gap-2 relative">
-                                <Button text rounded @click="submitRating(1)">
-                                    <template #icon>
-                                        <BaseIcon icon="star" :fill="rating >= 1 ? '#B1BF41' : 'none'"
-                                            class="w-6 h-6 shrink-0 " />
-                                    </template>
-                                </Button>
-                                <Button text rounded @click="submitRating(2)">
-                                    <template #icon>
-                                        <BaseIcon icon="star" :fill="rating >= 2 ? '#B1BF41' : 'none'"
-                                            class="w-6 h-6 shrink-0 " />
-                                    </template>
-                                </Button>
-                                <Button text rounded @click="submitRating(3)">
-                                    <template #icon>
-                                        <BaseIcon icon="star" :fill="rating >= 3 ? '#B1BF41' : 'none'"
-                                            class="w-6 h-6 shrink-0 " />
-                                    </template>
-                                </Button>
-                                <Button text rounded @click="submitRating(4)">
-                                    <template #icon>
-                                        <BaseIcon icon="star" :fill="rating >= 4 ? '#B1BF41' : 'none'"
-                                            class="w-6 h-6 shrink-0 " />
-                                    </template>
-                                </Button>
-                                <Button text rounded @click="submitRating(5)">
-                                    <template #icon>
-                                        <BaseIcon icon="star" :fill="rating >= 5 ? '#B1BF41' : 'none'"
-                                            class="w-6 h-6 shrink-0 " />
-                                    </template>
-                                </Button>
+                <Button v-for="i in 5" :key="`star-button-${i}`" text rounded @click="submitRating(i)">
+                  <template #icon>
+                    <BaseIcon
+                      :icon="rating >= i ? 'star-solid' : 'star'"
+                      :class="[
+                        'h-6 w-6 shrink-0',
+                        rating >= i ? 'text-primary' : 'text-medium-emphasis'
+                      ]"
+                    />
+                  </template>
+                </Button>
                                 <!-- Error message for rating -->
                                 <div v-if="!ratingValid"
                                     class="text-error text-[10px] not-italic font-light leading-[normal] font-inter absolute bottom-[-20px]">
