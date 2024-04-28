@@ -5,7 +5,7 @@
             class="w-full max-w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl my-auto rounded-lg overflow-y-auto">
             <div class="modal-content">
                 <!-- Review page -->
-                <div class="flex w-[508px] h-[614px] flex-col items-center gap-4 shrink-0 p-4 rounded-lg bg-white
+                <div class="flex h-[614px] flex-col items-center gap-4 shrink-0 p-4 rounded-lg bg-white
                     h-[500px] overflow-y-auto">
 
                     <!-- Place description -->
