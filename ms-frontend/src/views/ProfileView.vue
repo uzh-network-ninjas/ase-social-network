@@ -207,10 +207,13 @@ const profilePicUrl = ref<string>(
 )
 
 const isFollowed = ref<boolean>()
-
 const reviewCount = ref<number>(0)
-
 const followers = ref<User[]>([])
+
+// // Review data
+// const placeName = ref<string>('Placeholder Name')
+// const placeType = ref<string>('Placeholder Type')
+// const placeRating = ref<number>(3)
 
 const followButtonText = computed(() => {
   return isFollowed.value ? 'Unfollow' : 'Follow'
@@ -251,22 +254,6 @@ onMounted(async () => {
     isFollowed.value = followers.value.some((follower) => follower.id === signedInUser?.id)
   } catch (error) {
     console.error('Error fetching user profile:', error)
-  }
-
-  if (user?.value?.username) {
-    try {
-      const reviews = await reviewService.getUserReviews(user?.value?.username)
-      reviewCount.value = reviews.length
-    } catch (error: any) {
-      // Check if the error is a 404 error
-      if (error.response && error.response.status === 404) {
-        // If it's a 404 error, don't show it in the console and set reviewCount to 0
-        reviewCount.value = 0
-      } else {
-        // If it's any other error, log it to the console
-        console.error('Error fetching user reviews:', error)
-      }
-    }
   }
 })
 </script>

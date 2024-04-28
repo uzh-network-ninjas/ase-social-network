@@ -5,7 +5,7 @@ from typing import List
 
 class LocationReviews(BaseModel):
     location_id: str
-    average_rating: int
+    average_rating: float
     reviews: List[ReviewOut]
 
 

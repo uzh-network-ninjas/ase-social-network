@@ -6,13 +6,14 @@ from app.models.ReviewListOut import ReviewListOut
 from app.models.ReviewListFilteredOut import ReviewListFilteredOut
 from app.models.ReviewOut import ReviewOut
 from app.ReviewService import ReviewService
+from app.ReviewRepository import ReviewRepository
 from datetime import datetime
 from fastapi import FastAPI, Request, UploadFile, Form
 from typing import Annotated
 from app.logging_config import logger
 
 app = FastAPI()
-rs = ReviewService()
+rs = ReviewService(ReviewRepository())
 
 
 @app.post("/", response_model=ReviewOut)
