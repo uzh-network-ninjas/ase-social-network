@@ -265,7 +265,7 @@ async def test_unlike_review_by_id_update_issue(review_service):
             update_result.raw_result = {"updatedExisting": False}
             mock_unlike_review.return_value = update_result
             with pytest.raises(HTTPException) as e:
-                await review_service.like_review_by_id(REVIEW_ID, USER_ID)
+                await review_service.unlike_review_by_id(REVIEW_ID, USER_ID)
             assert e.value.status_code == 400
 
 @patch("app.ReviewService.ReviewService.extract_payload_from_token", return_value={"sub": USER_ID})
