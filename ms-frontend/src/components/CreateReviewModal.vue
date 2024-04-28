@@ -101,19 +101,13 @@
 
 import Button from 'primevue/button'
 import BaseIcon from '@/icons/BaseIcon.vue'
-import { computed, ref, watch } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+import { ref, watch } from 'vue'
 import FileUpload from '@/components/FileUpload.vue'
 import { reviewService } from '@/services/reviewService'
 import Textarea from 'primevue/textarea'
-import type { User } from '@/types/User'
 import type { Location } from '@types/Location'
 import type { Review } from '@types/Review'
 
-const authStore = useAuthStore()
-
-const signedInUser = authStore.user
-const myId = signedInUser?.id ?? ''
 
 const rating = ref<number>(0)
 const reviewText = ref<string>('')
