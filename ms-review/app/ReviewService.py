@@ -15,8 +15,8 @@ from typing import List
 
 
 class ReviewService:
-    def __init__(self):
-        self.rr = ReviewRepository()
+    def __init__(self, review_repository: ReviewRepository):
+        self.rr = review_repository
 
 
     async def create_review(self, review: ReviewCreate, user_id: str, username: str) -> ReviewOut:
@@ -64,7 +64,7 @@ class ReviewService:
         timestamp_cursor = timestamp_cursor if timestamp_cursor else datetime.now()
         page_size = 25
         result = await self.rr.get_feed_by_cursor_and_user_ids(timestamp_cursor, user_ids, page_size)
-        if len(result) == 0:
+        if not result:
             raise HTTPException(status_code=404, detail="No reviews from followed users!")
         for review in result:
             review["id"] = str(review["_id"])
@@ -85,13 +85,13 @@ class ReviewService:
     async def get_reviews_by_locations(self, location_ids: LocationIDs, user_ids: List[str], user_id: str) -> ReviewListFilteredOut:
         if len(user_ids) == 0:
             raise HTTPException(status_code=404, detail="No followed users!")
-        location_reviews = []
         if location_ids is None:
             location_ids = await self.rr.get_location_ids_by_user_ids(user_ids)
             if len(location_ids) == 0:
                 raise HTTPException(status_code=404, detail="No reviews from the followed users!")
         else:
             location_ids = location_ids.model_dump()["location_ids"]
+        location_reviews = []
         for location_id in location_ids:
             result = await self.rr.get_reviews_by_location_and_user_ids(location_id, user_ids)
             if not result:
