@@ -26,7 +26,7 @@ watch(searchTerm, () => {
 })
 
 const searchUser = async function () {
-  if(!searchTerm.value) {
+  if (!searchTerm.value) {
     searchResults.value = []
     noUserFound.value = false
     return
@@ -90,7 +90,7 @@ const clearSearchTerm = function () {
         v-if="searchResults.length == 0 && noUserFound"
         class="w-full text-center font-light text-medium-emphasis"
       >
-        {{$t('no_user_found')}}
+        {{ $t('no_user_found') }}
       </div>
       <router-link
         v-for="user in searchResults"

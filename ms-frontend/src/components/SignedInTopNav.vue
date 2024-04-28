@@ -46,13 +46,18 @@ const onSearch = function (query: string, placeId: string | undefined) {
       <Button
         outlined
         rounded
-        :class="['!rounded-full', authStore.user?.image ? '!p-0 border-none' : '']"
+        :class="['!rounded-full', authStore.user?.image ? 'border-none !p-0' : '']"
         @click="toggleNavbarMenu"
         aria-haspopup="true"
         aria-controls="overlay_menu"
       >
         <template #icon>
-          <img v-if="authStore.user?.image" :src="`${baseUrl}/ms-user/${authStore.user.image}`" class="w-8 h-8 rounded-full" alt=""/>
+          <img
+            v-if="authStore.user?.image"
+            :src="`${baseUrl}/ms-user/${authStore.user.image}`"
+            class="h-8 w-8 rounded-full"
+            alt=""
+          />
           <BaseIcon v-else icon="user" :size="5" :stroke-width="1.5" />
         </template>
       </Button>
