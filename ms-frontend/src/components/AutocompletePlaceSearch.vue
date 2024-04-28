@@ -115,13 +115,19 @@ const onEnter = function () {
               v-for="(match, index) in getPredictionSubString(option)"
               :key="`${match.offset}-${match.length}`"
             >
-              <span v-if="index > 0" class="whitespace-pre-wrap">{{ getPreviousUnMarkedSegment(option, index) }}</span>
-              <span class="whitespace-pre-wrap font-medium">{{ getCurrentMarkedSegment(option, match) }}</span>
-              <span class="whitespace-pre-wrap" v-if="index == getPredictionSubString(option).length - 1">{{
-                getLastUnmarkedSegment(option, match)
+              <span v-if="index > 0" class="whitespace-pre-wrap">{{
+                getPreviousUnMarkedSegment(option, index)
               }}</span>
+              <span class="whitespace-pre-wrap font-medium">{{
+                getCurrentMarkedSegment(option, match)
+              }}</span>
+              <span
+                class="whitespace-pre-wrap"
+                v-if="index == getPredictionSubString(option).length - 1"
+                >{{ getLastUnmarkedSegment(option, match) }}</span
+              >
             </template>
-            <span :class="['ml-1 whitespace-pre-wrap',option.place_id ?  'text-sm' : '' ]">
+            <span :class="['ml-1 whitespace-pre-wrap', option.place_id ? 'text-sm' : '']">
               {{
                 (option as google.maps.places.AutocompletePrediction)['structured_formatting'][
                   'secondary_text'

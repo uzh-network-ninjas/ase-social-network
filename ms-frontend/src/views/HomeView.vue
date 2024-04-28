@@ -58,6 +58,5 @@ const sideNavActions: SideMenuOption[] = [
         </div>
       </div>
     </template>
-
   </main>
 </template>
