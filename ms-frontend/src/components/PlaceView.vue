@@ -42,11 +42,10 @@ const updateLocation = function (){
       coordinates: {
         x: "0",
         y: "0"
-        // x: props.place?.['geometry.location.lat()'],
-        // y: props.place?.['geometry.location.lng()'],
+        x: props.place?.["geometry"].location.lat() ?? 0,
+        y: props.place?.["geometry"].location.lng() ?? 0
       }
     })
-    // console.log(location.value.coordinates.x)
 }
 
 
