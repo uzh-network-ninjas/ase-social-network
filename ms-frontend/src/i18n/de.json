@@ -108,5 +108,8 @@
   "decade_ago": "Letztes Jahrzehnt",
   "decade_from_now": "Nächstes Jahrzehnt",
   "decades_ago": "Vor {value} Jahrzehnten",
-  "decades_from_now": "In {value} Jahrzehnten"
+  "decades_from_now": "In {value} Jahrzehnten",
+  "map": "Karte",
+  "search_user": "Benutzer suchen",
+  "no_user_found": "Es existiert kein Benutzer mit diesem Namen."
 }

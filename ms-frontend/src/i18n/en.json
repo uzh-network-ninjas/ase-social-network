@@ -114,5 +114,8 @@
   "decades_ago": "{value} decades ago",
   "decades_from_now": "{value} decades from now",
   "share_experience": "Share details of your experience",
-  "upload_images": "Upload images"
+  "upload_images": "Upload images",
+  "map": "Map",
+  "search_user": "Search User",
+  "no_user_found": "There exists no user with that name."
 }
