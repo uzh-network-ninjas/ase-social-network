@@ -114,5 +114,12 @@
   "decades_ago": "{value} decades ago",
   "decades_from_now": "{value} decades from now",
   "share_experience": "Share details of your experience",
-  "upload_images": "Upload images"
+  "upload_images": "Upload images",
+  "ascending": "Ascending",
+  "descending": "Descending",
+  "dropdown_sort_by": "Sort by ",
+  "dropdown_selection_rating": "Rating",
+  "dropdown_selection_rating_gm": "Rating (GM)",
+  "dropdown_selection_reviews": "Reviews",
+  "dropdown_selection_reviews_gm": "Reviews (GM)"
 }

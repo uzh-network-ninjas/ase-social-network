@@ -1,13 +1,7 @@
-import type { TextAreaProps, TextAreaContext } from 'primevue/textarea'
+import type { TextareaProps, TextareaContext } from 'primevue/textarea'
+
 export default {
-  root: ({
-    props,
-    context
-  }: {
-    props: TextAreaProps
-    context: TextAreaContext
-    parent: any
-  }) => ({
+  root: ({ props, context }: { props: TextareaProps; context: TextareaContext; parent: any }) => ({
     class: [
       'px-4',
       'py-3',

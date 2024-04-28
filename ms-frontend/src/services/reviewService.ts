@@ -20,7 +20,7 @@ export const reviewService = {
     })
     return new Review(response.data)
   },
-    async appendReviewImage(reviewId: string, file: File) {
+  async appendReviewImage(reviewId: string, file: File) {
     const formData = new FormData()
     formData.append('review_id', reviewId)
     formData.append('image', file)
@@ -37,7 +37,7 @@ export const reviewService = {
     const response = await apiClient.get(`reviews/users/?user_id=${user_id}`)
     return response.data as Review[]
   },
-  
+
   async getReviewByPlaceIds(placeIds: string[]): Promise<LocationReviews[]> {
     const response = await apiClient.request({
       method: 'GET',

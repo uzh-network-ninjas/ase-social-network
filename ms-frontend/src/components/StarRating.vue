@@ -4,9 +4,11 @@ import { computed } from 'vue'
 const props = withDefaults(
   defineProps<{
     rating?: number
+    size?: 'normal' | 'small'
   }>(),
   {
-    rating: 0
+    rating: 0,
+    size: 'normal'
   }
 )
 
@@ -19,14 +21,14 @@ const totalStart = computed<number>(() => {
   <div class="flex gap-1">
     <BaseIcon
       v-for="i in totalStart"
-      class="!h-4 !w-4"
+      :class="[size === 'normal' ? '!h-4 !w-4' : '!h-3 !w-3']"
       icon="star-solid"
       :strokeWidth="1"
       :key="i"
     />
     <BaseIcon
       v-for="i in 5.0 - totalStart"
-      class="!h-4 !w-4 text-medium-emphasis"
+      :class="['text-medium-emphasis', size === 'normal' ? '!h-4 !w-4' : '!h-3 !w-3']"
       icon="star"
       :strokeWidth="1"
       :key="i"

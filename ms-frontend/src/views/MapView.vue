@@ -1,10 +1,21 @@
 <script setup lang="ts">
 import SignedInTopNav from '@/components/SignedInTopNav.vue'
-import { onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
 import { loader, MarkerLibraryType } from '@/utils/useGoogleMaps'
 import Button from 'primevue/button'
 import BaseIcon from '@/icons/BaseIcon.vue'
 import PlaceView from '@/components/PlaceView.vue'
+import PlaceItem from '@/components/PlaceItem.vue'
+import Dropdown from 'primevue/dropdown'
+import ToggleButton from 'primevue/togglebutton'
+import MiniChevronDown from '@/icons/MiniChevronDownIcon.vue'
+import { reviewService } from '@/services/reviewService'
+
+type PlaceResultData = {
+  place: google.maps.places.PlaceResult
+  average_rating: number
+  total_reviews: number
+}
 
 const props = defineProps<{
   query?: string
@@ -23,7 +34,9 @@ const centerPos = ref({ lat: 47.36667, lng: 8.55 })
 const lastPos = ref<google.maps.LatLng | undefined>(undefined)
 const lastZoom = ref<number | undefined>(undefined)
 
-const markerList = ref<google.maps.marker.AdvancedMarkerElement[]>([])
+const markerList = ref<Map<string, google.maps.marker.AdvancedMarkerElement>>(
+  new Map<string, google.maps.marker.AdvancedMarkerElement>()
+)
 
 let mapBoundsWatcher: google.maps.MapsEventListener
 let mapMarkerWatcher: google.maps.MapsEventListener
@@ -34,8 +47,18 @@ const positionChanged = ref<boolean>(false)
 const fetchingPosition = ref<boolean>(false)
 const fetchingPositionSupported = 'navigator' in window && 'geolocation' in navigator
 
+const placeResultList = ref<PlaceResultData[]>([])
 const place = ref<google.maps.places.PlaceResult | null>(null)
 const placeInfoOpen = ref<boolean>(false)
+
+const listSortOptions = [
+  { name: 'dropdown_selection_rating' },
+  { name: 'dropdown_selection_rating_gm' },
+  { name: 'dropdown_selection_reviews' },
+  { name: 'dropdown_selection_reviews_gm' }
+]
+const listSortOption = ref(listSortOptions[0])
+const ascending = ref<boolean>(false)
 
 onMounted(async () => {
   await loader.importLibrary('maps').then(() => {
@@ -115,7 +138,7 @@ const clearMarker = function () {
     marker.map = null
     marker.position = null
   })
-  markerList.value = []
+  markerList.value.clear()
 }
 
 const getPlaceLocation = function (placeId: string) {
@@ -178,13 +201,28 @@ const querySearch = function (query: string, restrictBounds: boolean) {
   placesService.nearbySearch(request, callbackArray)
 }
 
-const callbackArray = function (
+const callbackArray = async function (
   results: google.maps.places.PlaceResult[] | null,
   status: google.maps.places.PlacesServiceStatus
 ) {
   if (status == google.maps.places.PlacesServiceStatus.OK && results) {
     const bounds = new google.maps.LatLngBounds()
+    const placeIds: string[] = results
+      .map((result) => result.place_id)
+      .filter((item): item is string => item !== undefined)
+    const locationReviews = await reviewService.getReviewByPlaceIds(placeIds).catch(() => [])
+    placeResultList.value = []
     results.forEach((result) => {
+      const index = locationReviews.findIndex((location) => location.locationId == result.place_id)
+      if (index == -1) {
+        placeResultList.value.push({ place: result, average_rating: 0, total_reviews: 0 })
+      } else {
+        placeResultList.value.push({
+          place: result,
+          average_rating: locationReviews[index].averageRating,
+          total_reviews: locationReviews[index].reviews.length
+        })
+      }
       createMarker(result)
       if (result.geometry?.location) bounds.extend(result.geometry?.location)
     })
@@ -197,12 +235,29 @@ const callbackArray = function (
   }
 }
 
-const callback = function (
+const callback = async function (
   result: google.maps.places.PlaceResult | null,
   status: google.maps.places.PlacesServiceStatus
 ) {
   if (status == google.maps.places.PlacesServiceStatus.OK && result) {
     createMarker(result)
+    if (result.place_id) {
+      const locationReviews = await reviewService
+        .getReviewByPlaceIds([result.place_id])
+        .catch(() => [])
+      const index = locationReviews.findIndex((location) => location.locationId == result.place_id)
+      if (index == -1) {
+        placeResultList.value = [{ place: result, average_rating: 0, total_reviews: 0 }]
+      } else {
+        placeResultList.value = [
+          {
+            place: result,
+            average_rating: locationReviews[index].averageRating,
+            total_reviews: locationReviews[index].reviews.length
+          }
+        ]
+      }
+    }
     if (result.geometry?.location) {
       map.value?.setCenter(result.geometry?.location)
     }
@@ -212,6 +267,10 @@ const callback = function (
 const createMarker = function (place: google.maps.places.PlaceResult) {
   if (!place.geometry?.location) {
     console.error(`Place ${place.name} does not define a geometry object.`)
+    return
+  }
+  if (!place.place_id) {
+    console.error(`Place ${place.name} does not define a place_id.`)
     return
   }
 
@@ -228,7 +287,11 @@ const createMarker = function (place: google.maps.places.PlaceResult) {
     content: pin.element,
     title: place.name
   })
-  markerList.value.push(marker)
+  markerList.value.set(place.place_id, marker)
+
+  if (place.place_id === props.placeId) {
+    ;(marker.content as HTMLElement).style.transform = 'scale(125%) translate(0, -12.5%)'
+  }
 
   // Add a click listener for each marker, and set up the info window.
   marker.addListener('click', () => {
@@ -254,6 +317,49 @@ const centerOnPosition = function () {
     fetchingPosition.value = false
   })
 }
+
+const onClickPlaceItem = function (placeResult: google.maps.places.PlaceResult) {
+  const placeId = placeResult.place_id
+  if (placeId) {
+    getPlaceDetails(placeId)
+    markerList.value.forEach((m, key) => {
+      ;(m.content as HTMLElement).style.transform =
+        key == placeId ? 'scale(125%) translate(0, -12.5%)' : 'translate(0, 0)'
+    })
+  }
+}
+
+const placeResultListSorted = computed(() => {
+  return [...placeResultList.value].sort((a: PlaceResultData, b: PlaceResultData) => {
+    if (listSortOption.value.name === 'dropdown_selection_rating') {
+      return sortPlaceResultByRating(a, b, ascending.value)
+    } else if (listSortOption.value.name === 'dropdown_selection_rating_gm') {
+      return sortPlaceResultByRatingGoogleMaps(a, b, ascending.value)
+    } else if (listSortOption.value.name === 'dropdown_selection_reviews') {
+      return sortPlaceResultByReviews(a, b, ascending.value)
+    } else if (listSortOption.value.name === 'dropdown_selection_reviews_gm') {
+      return sortPlaceResultByReviewsGoogleMaps(a, b, ascending.value)
+    }
+    return 0
+  })
+})
+
+const sortPlaceResultByRating = function (a: PlaceResultData, b: PlaceResultData, ascending: boolean) : number {
+  return ascending ? a.average_rating - b.average_rating : b.average_rating - a.average_rating
+}
+const sortPlaceResultByRatingGoogleMaps = function (a: PlaceResultData, b: PlaceResultData, ascending: boolean) : number {
+  return ascending
+    ? (a.place.rating ?? 0) - (b.place.rating ?? 0)
+    : (b.place.rating ?? 0) - (a.place.rating ?? 0)
+}
+const sortPlaceResultByReviews = function (a: PlaceResultData, b: PlaceResultData, ascending: boolean) : number {
+  return ascending ? a.total_reviews - b.total_reviews : b.total_reviews - a.total_reviews
+}
+const sortPlaceResultByReviewsGoogleMaps = function (a: PlaceResultData, b: PlaceResultData, ascending: boolean) : number {
+  return ascending
+    ? (a.place.user_ratings_total ?? 0) - (b.place.user_ratings_total ?? 0)
+    : (b.place.user_ratings_total ?? 0) - (a.place.user_ratings_total ?? 0)
+}
 </script>
 
 <template>
@@ -263,12 +369,64 @@ const centerOnPosition = function () {
 
   <main>
     <div class="relative flex h-full w-full flex-row overflow-hidden">
-      <div class="flex w-0 flex-col self-stretch">
-        <div class="h-16 self-stretch border-b">
-          <!-- List Header -->
+      <div
+        :class="[
+          'flex h-full flex-col self-stretch',
+          placeResultList.length > 1 ? 'w-[22rem]' : 'w-0'
+        ]"
+      >
+        <div
+          class="flex h-16 min-h-16 items-center justify-around self-stretch overflow-hidden border-b"
+        >
+          <Dropdown
+            :options="listSortOptions"
+            v-model="listSortOption"
+            optionLabel="name"
+            class="border-none !p-0 text-sm"
+          >
+            <template #value="slotProps">
+              <span class="text-sm">{{ $t('dropdown_sort_by')}}</span
+              ><span class="text-sm text-primary">{{ $t(slotProps.value.name) }}</span>
+            </template>
+            <template #option="slotProps">
+              <span class="text-sm">{{ $t('dropdown_sort_by')}}</span
+              ><span class="text-sm text-primary">{{ $t(slotProps.option.name) }}</span>
+
+            </template>
+            <template #dropdownicon>
+              <MiniChevronDown class="!h-5 !w-5" />
+            </template>
+          </Dropdown>
+
+          <ToggleButton
+            v-model="ascending"
+            class="border-none text-sm"
+            :onLabel="$t('ascending')"
+            :offLabel="$t('descending')"
+          >
+            <template #icon="propScope">
+              <BaseIcon
+                :icon="propScope.value ? 'arrow-up' : 'arrow-down'"
+                class="!h-5 !w-5"
+                :stroke-width="1.5"
+              />
+            </template>
+          </ToggleButton>
         </div>
-        <div class="self-stretch">
-          <!-- List View -->
+        <div class="divide-y self-stretch overflow-y-auto">
+          <PlaceItem
+            v-for="placeResult in placeResultListSorted"
+            :key="`listResult-${placeResult.place['place_id']}`"
+            :place="placeResult.place"
+            :average_rating="placeResult.average_rating"
+            :reviews_total="placeResult.total_reviews"
+            @click="onClickPlaceItem(placeResult.place)"
+            :class="[
+              placeResult.place.place_id == place?.place_id
+                ? 'bg-selection-indicator bg-opacity-5'
+                : ''
+            ]"
+          />
         </div>
       </div>
       <div class="relative grow self-stretch">

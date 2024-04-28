@@ -108,5 +108,12 @@
   "decade_ago": "Letztes Jahrzehnt",
   "decade_from_now": "Nächstes Jahrzehnt",
   "decades_ago": "Vor {value} Jahrzehnten",
-  "decades_from_now": "In {value} Jahrzehnten"
+  "decades_from_now": "In {value} Jahrzehnten",
+  "ascending": "Aufsteigend",
+  "descending": "Absteigend",
+  "dropdown_sort_by": "Sortieren nach ",
+  "dropdown_selection_rating": "Bewertung",
+  "dropdown_selection_rating_gm": "Bewertung (GM)",
+  "dropdown_selection_reviews": "Rezensionen",
+  "dropdown_selection_reviews_gm": "Rezensionen (GM)"
 }
