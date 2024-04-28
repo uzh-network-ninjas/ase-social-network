@@ -122,4 +122,7 @@
   "dropdown_selection_rating_gm": "Rating (GM)",
   "dropdown_selection_reviews": "Reviews",
   "dropdown_selection_reviews_gm": "Reviews (GM)"
+  "map": "Map",
+  "search_user": "Search User",
+  "no_user_found": "There exists no user with that name."
 }

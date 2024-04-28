@@ -8,6 +8,8 @@ import { useAuthStore } from '@/stores/auth'
 import { type IconType } from '@/icons/BaseIcon.vue'
 import AutocompletePlaceSearch from '@/components/AutocompletePlaceSearch.vue'
 
+const baseUrl = import.meta.env.VITE_PICTURE_BASE_URL
+
 const authStore = useAuthStore()
 
 const emit = defineEmits<(e: 'search', query: string, placeId: string | undefined) => void>()
@@ -44,13 +46,19 @@ const onSearch = function (query: string, placeId: string | undefined) {
       <Button
         outlined
         rounded
-        class="!rounded-full"
+        :class="['!rounded-full', authStore.user?.image ? 'border-none !p-0' : '']"
         @click="toggleNavbarMenu"
         aria-haspopup="true"
         aria-controls="overlay_menu"
       >
         <template #icon>
-          <BaseIcon icon="user" :size="5" />
+          <img
+            v-if="authStore.user?.image"
+            :src="`${baseUrl}/ms-user/${authStore.user.image}`"
+            class="h-8 w-8 rounded-full"
+            alt=""
+          />
+          <BaseIcon v-else icon="user" :size="5" :stroke-width="1.5" />
         </template>
       </Button>
       <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">

@@ -11,6 +11,7 @@ import PreferenceSettingsView from '@/views/Settings/PreferenceSettingsView.vue'
 import { useAuthStore } from '@/stores/auth'
 import OnboardingView from '@/views/OnboardingView.vue'
 import MapView from '@/views/MapView.vue'
+import SearchUserView from '@/views/SearchUserView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,12 @@ const router = createRouter({
       path: '/profile/:userId',
       name: 'profile',
       component: ProfileView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/search-user',
+      name: 'search-user',
+      component: SearchUserView,
       meta: { requiresAuth: true }
     },
     {
