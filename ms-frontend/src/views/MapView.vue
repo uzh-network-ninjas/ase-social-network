@@ -328,7 +328,6 @@ const onClickPlaceItem = function (placeResult: google.maps.places.PlaceResult) 
       ;(m.content as HTMLElement).style.transform =
         key == placeId ? 'scale(125%) translate(0, -12.5%)' : 'translate(0, 0)'
     })
-    console.log('HELLO')
     showList.value = false
   }
 }

@@ -8,7 +8,16 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
-  optimizeDeps: {
+  build: {
+    target: "es2022"
+  },
+  esbuild: {
+    target: "es2022"
+  },
+  optimizeDeps:{
+    esbuildOptions: {
+      target: "es2022",
+    },
     include: [
       "vue-google-maps-community-fork",
       "fast-deep-equal",
