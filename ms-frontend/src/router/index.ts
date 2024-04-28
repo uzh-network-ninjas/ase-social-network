@@ -8,7 +8,6 @@ import SettingsView from '@/views/SettingsView.vue'
 import AccountSettingsView from '@/views/Settings/AccountSettingsView.vue'
 import ProfileSettingsView from '@/views/Settings/ProfileSettingsView.vue'
 import PreferenceSettingsView from '@/views/Settings/PreferenceSettingsView.vue'
-import CreateReview from '@/views/CreateReview.vue'
 import { useAuthStore } from '@/stores/auth'
 import OnboardingView from '@/views/OnboardingView.vue'
 import MapView from '@/views/MapView.vue'
@@ -83,12 +82,6 @@ const router = createRouter({
       path: '/test',
       name: 'test',
       component: TestView
-    },
-
-    {
-      path: '/review',
-      name: 'review',
-      component: CreateReview
     },
 
     {
