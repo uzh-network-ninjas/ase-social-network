@@ -96,7 +96,9 @@
             </div>
           </div>
 
-          <div class="w-full font-light text-error text-right" v-if="uploadFailed"> Failed to create review </div>
+          <div class="w-full text-right font-light text-error" v-if="uploadFailed">
+            Failed to create review
+          </div>
           <!-- Divider -->
           <div class="h-px shrink-0 self-stretch bg-medium-emphasis opacity-60"></div>
           <!-- Footer -->
@@ -137,7 +139,6 @@ const reviewText = ref<string>('')
 const ratingValid = ref<boolean>(false)
 const textValid = ref<boolean>(false)
 const uploadFailed = ref<boolean>(false)
-
 
 const props = defineProps<{
   location: Location

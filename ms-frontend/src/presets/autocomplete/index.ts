@@ -36,7 +36,7 @@ export default {
       'rounded-lg',
       'shadow-lg',
       'bg-background',
-      'max-h-[200px] overflow-auto'
+      'max-h-[200px] max-w-full overflow-auto'
     ]
   },
   list: {

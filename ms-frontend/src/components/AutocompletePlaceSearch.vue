@@ -107,27 +107,21 @@ const onEnter = function () {
         <div class="flex items-center gap-4">
           <BaseIcon
             :icon="option.place_id ? 'map-pin' : 'magnifying-glass'"
-            class="!h-5 !w-5"
+            class="!max-h-5 !min-h-5 !min-w-5 !max-w-5"
             :stroke-width="1"
           />
-          <div class="flex items-baseline">
+          <div class="w-full overflow-hidden text-wrap max-sm:text-sm">
             <template
               v-for="(match, index) in getPredictionSubString(option)"
               :key="`${match.offset}-${match.length}`"
             >
-              <span v-if="index > 0" class="whitespace-pre-wrap">{{
-                getPreviousUnMarkedSegment(option, index)
-              }}</span>
-              <span class="whitespace-pre-wrap font-medium">{{
-                getCurrentMarkedSegment(option, match)
-              }}</span>
-              <span
-                class="whitespace-pre-wrap"
-                v-if="index == getPredictionSubString(option).length - 1"
-                >{{ getLastUnmarkedSegment(option, match) }}</span
-              >
+              <template v-if="index > 0">{{ getPreviousUnMarkedSegment(option, index) }}</template>
+              <b>{{ getCurrentMarkedSegment(option, match) }}</b>
+              <template v-if="index == getPredictionSubString(option).length - 1">{{
+                getLastUnmarkedSegment(option, match)
+              }}</template>
             </template>
-            <span :class="['ml-1 whitespace-pre-wrap', option.place_id ? 'text-sm' : '']">
+            <span :class="['ml-1', option.place_id ? 'text-sm' : '']">
               {{
                 (option as google.maps.places.AutocompletePrediction)['structured_formatting'][
                   'secondary_text'
