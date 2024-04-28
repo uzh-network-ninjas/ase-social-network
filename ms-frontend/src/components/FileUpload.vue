@@ -84,7 +84,7 @@ const dragleave = function () {
           ]"
         >
           <template v-if="result">
-            <img :src="result" alt="uploaded profile picture" class="max-h-48 max-w-64" /><!-- //NOSONAR Web:S6851 Can't remove 'picture' because name is 'profile picture' -->
+            <img :src="result" alt="uploaded" class="max-h-48 max-w-64" />
             <span class="text-center">
               {{ isDragging ? $t('release_to_replace_upload') : $t('drag_drop_replace_upload') }}
             </span>

@@ -55,7 +55,7 @@ const getLastUnmarkedSegment = function (
   option: google.maps.places.AutocompletePrediction,
   lastMatch: google.maps.places.PredictionSubstring
 ) {
-  return option.structured_formatting['main_text'].slice(lastMatch.offset + lastMatch.length)
+  return option.structured_formatting['main_text'].slice(lastMatch.offset + lastMatch.length + 1)
 }
 
 const getCurrentMarkedSegment = function (
