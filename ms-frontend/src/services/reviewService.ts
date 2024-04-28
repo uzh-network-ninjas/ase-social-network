@@ -19,7 +19,14 @@ export const reviewService = {
       }
     })
   },
-  
+    async appendReviewImage(reviewId: string, file: File) {
+    const formData = new FormData()
+    formData.append('review_id', reviewId)
+    formData.append('image', file)
+
+    const response = await apiClient.patch('reviews/image', formData)
+    return new Review(response.data)
+  },
   async getReview(reviewId: string) {
     const response = await apiClient.get(`reviews/${reviewId}`)
     return new Review(response.data)
