@@ -50,3 +50,4 @@ async def test_controller_update_user_password_success(mock_update_user_password
         "new_password": "new_test_password"
     })
     assert response.status_code == 204
+    mock_update_user_password.assert_called_once()

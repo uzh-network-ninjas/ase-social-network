@@ -135,6 +135,7 @@ async def test_service_update_user_password_success(mock_update_user_password, m
         "new_password": "new_test_password"
     }
     await auth_service.update_user_password(dummy_request, UpdateUserPassword(**curr_update_password))
+    mock_update_user_password.assert_called_once()
 
 
 @pytest.mark.asyncio
