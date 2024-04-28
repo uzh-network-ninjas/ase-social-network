@@ -83,6 +83,7 @@ const router = createRouter({
       name: 'test',
       component: TestView
     },
+
     {
       path: '/:catchAll(.*)',
       redirect: { name: 'home' }

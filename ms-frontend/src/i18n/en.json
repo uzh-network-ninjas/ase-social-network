@@ -112,5 +112,7 @@
   "decade_ago": "Last decade",
   "decade_from_now": "Next decade",
   "decades_ago": "{value} decades ago",
-  "decades_from_now": "{value} decades from now"
+  "decades_from_now": "{value} decades from now",
+  "share_experience": "Share details of your experience",
+  "upload_images": "Upload images"
 }

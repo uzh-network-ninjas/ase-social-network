@@ -9,6 +9,7 @@ import togglebutton from '@/presets/togglebutton'
 import dropdown from '@/presets/dropdown'
 import menu from '@/presets/menu'
 import autocomplete from '@/presets/autocomplete'
+import textarea from '@/presets/textarea'
 
 export default {
   global,
@@ -24,5 +25,6 @@ export default {
   togglebutton,
   dropdown,
   menu,
-  autocomplete
+  autocomplete,
+  textarea
 }
