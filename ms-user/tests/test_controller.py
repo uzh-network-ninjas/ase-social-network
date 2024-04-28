@@ -32,10 +32,6 @@ test_user_second = {
     "followers": [],
     "updated_at": None
 }
-test_follow = {
-    "users": [test_user_second]
-}
-
 test_user_update = {
     "id": test_user_id,
     "username": test_username,
@@ -48,7 +44,9 @@ test_user_update = {
     "followers": [test_user_id_second],
     "updated_at": datetime.now().isoformat()
 }
-
+test_follow = {
+    "users": [test_user_second]
+}
 test_dietary = {
     "preferences": ["Fast Food", "Fusion"],
     "restrictions": ["Vegetarian", "Vegan"]
