@@ -110,7 +110,7 @@ const getUserProfilePicture = function () {
     <div v-if="image" class="w-full">
       <img
         :src="`${baseUrl}/ms-review/${image}`"
-        class="w-full object-cover"
+        class="w-full max-w-[400px] object-cover"
         alt="of review place"
       />
     </div>

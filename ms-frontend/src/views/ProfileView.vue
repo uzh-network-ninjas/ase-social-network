@@ -171,7 +171,29 @@
                 </div>
               </div>
             </div>
-            <div class="h-px self-stretch bg-medium-emphasis opacity-30"></div>
+            <div class="h-px self-stretch">
+              <div class="flex flex-col items-center divide-y px-8">
+                <PlaceReview
+                  v-for="review in reviews"
+                  :header="'PLACE'"
+                  :key="review.id"
+                  :userId="review.userId"
+                  :username="review.username"
+                  :text="review.text"
+                  :rating="review.rating"
+                  :locationId="review.location.id"
+                  :locationName="review.location.name"
+                  :locationType="review.location.type"
+                  :createdAt="review.createdAt"
+                  :image="review.image"
+                />
+                <div v-if="reviews.length === 0" class="w-full px-2 py-4 text-center">
+                  <span class="font-light text-medium-emphasis">{{
+                    $t('no_reviews_for_place')
+                  }}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -186,8 +208,11 @@ import Button from 'primevue/button'
 import BaseIcon from '@/icons/BaseIcon.vue'
 import { userService } from '@/services/userService'
 import { User } from '@/types/User'
+import { Review } from '@/types/Review'
 import SignedInTopNav from '@/components/SignedInTopNav.vue'
 import PageHeader from '@/components/PageHeader.vue'
+import PlaceReview from '@/components/PlaceReview.vue'
+import { reviewService } from '@/services/reviewService'
 
 const baseUrl = import.meta.env.VITE_PICTURE_BASE_URL
 
@@ -209,6 +234,7 @@ const profilePicUrl = computed<string>(() => {
 
 const isFollowed = ref<boolean>()
 const reviewCount = ref<number>(0)
+const reviews = ref<Review[]>([])
 
 // // Review data
 // const placeName = ref<string>('Placeholder Name')
@@ -216,11 +242,17 @@ const reviewCount = ref<number>(0)
 // const placeRating = ref<number>(3)
 
 // Fetch user profile data on component mount
-onMounted(() => getUserData())
+onMounted(() => {
+  getUserData()
+  getReviews()
+})
 // Fetch user profile data on userId change
 watch(
   () => props.userId,
-  () => getUserData()
+  () => {
+    getUserData()
+    getReviews()
+  }
 )
 
 const getUserData = async () => {
@@ -237,6 +269,17 @@ const getUserData = async () => {
 const followButtonText = computed(() => {
   return isFollowed.value ? 'Unfollow' : 'Follow'
 })
+
+const getReviews = async () => {
+  try {
+    reviews.value = await reviewService.getUserReviews(props.userId)
+    console.log(reviews.value)
+  } catch (error: any) {
+    if (error.response.status == 404) {
+      reviews.value = []
+    } else console.error('Error fetching user reviews:', error)
+  }
+}
 
 // Function to toggle follow status
 const toggleFollowOrUnfollow = async () => {
