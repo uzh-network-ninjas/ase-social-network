@@ -20,6 +20,10 @@ export class Review {
       id: string
       name: string
       type: string
+      coordinates: {
+        x: string
+        y: string
+      }
     }
     image?: string
     created_at: string
