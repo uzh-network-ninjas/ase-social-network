@@ -2,6 +2,7 @@
 - You need to have docker installed with docker-compose
 - setup yout `.env`, by `cp .env.example .env` and adapt your secrets
 - simply run `./init.sh` to setup everything (works in Cygwin for example)
+- in case of issued run `./init.sh -b` which additionally triggers build -> works when the repo is already cloned but some dependencies in microservices has changed
 - otherwise run and `docker compose -f docker-compose.base.yml -f docker-compose.dev.yml -f docker-compose.support.yml up` to start local development
 - each microservice should have 'swagger' available under `/docs` endpoint (one must access direct the endpoint of each microservice)
 - Kongo admin available at `http://localhost:8002/`
