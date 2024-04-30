@@ -65,18 +65,29 @@ if $WITH_COVERAGE; then
     netstat -lt
 
     # get proper name by grep "kong"
-    NAME=$(docker ps -a --format '{{.Names}}' | grep "kong")
-    echo "Kong logs"
-    docker logs $NAME
 
-    NAME=$(docker ps -a --format '{{.Names}}' | grep "seed")
-    echo "Seed logs"
-    docker logs $NAME
+    docker ps -a --format '{{.Names}}'
 
-    MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
-    cypress/included:latest \
-    --config baseUrl=http://localhost:8000  \
-    --reporter-options "toConsole=true" | tee $REPORT_FILE
+    NAME=$(docker ps -a --format '{{.Names}}' | grep "kong" | head -1)
+    if [ -z "$NAME" ]; then
+        echo "No Kong container found."
+    else
+        echo "Kong logs:"
+        docker logs $NAME
+    fi
+
+    NAME=$(docker ps -a --format '{{.Names}}' | grep "seed" | head -1)
+    if [ -z "$NAME" ]; then
+        echo "No Kong container found."
+    else
+        echo "Kong logs:"
+        docker logs $NAME
+    fi
+
+    # MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
+    # cypress/included:latest \
+    # --config baseUrl=http://localhost:8000  \
+    # --reporter-options "toConsole=true" | tee $REPORT_FILE
 
     if [ -s $REPORT_FILE ]; then
         # Print everything after "Run Finished"
