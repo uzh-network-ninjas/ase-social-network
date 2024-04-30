@@ -6,6 +6,21 @@ BUILD_FLAG=false
 
 # Function to parse command line arguments
 parse_args() {
+  # First, let's check for the environment which should be the first argument
+  if [[ $# -gt 0 ]]; then
+    case "$1" in
+      dev|test)
+        ENVIRONMENT=$1
+        shift # move to next argument
+        ;;
+      *)
+        echo "Unsupported environment. Use 'dev' or 'test'."
+        exit 1
+        ;;
+    esac
+  fi
+
+  # Now, look for any remaining options
   while getopts ":b" opt; do
     case $opt in
       b)
@@ -21,15 +36,8 @@ parse_args() {
         ;;
     esac
   done
-
-  # Shift off the options and optional --
-  shift $((OPTIND-1))
-
-  # Remaining argument is the environment, if any
-  if [ $# -gt 0 ]; then
-    ENVIRONMENT=$1
-  fi
 }
+
 
 # Function to start the Docker environment
 start_docker() {
@@ -49,7 +57,7 @@ start_test() {
     docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.test.yml -f docker-compose.support.yml build
   fi
   echo "Starting Docker containers in test environment..."
-  docker compose --env-file .env -f docker-compose.support.yml -f docker-compose.base.yml -f docker-compose.test.yml up
+  docker compose --env-file .env -f docker-compose.support.yml -f docker-compose.base.yml -f docker-compose.test.yml up -d
 }
 
 # Parse command line arguments

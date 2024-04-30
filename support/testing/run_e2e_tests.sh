@@ -90,10 +90,10 @@ if $WITH_COVERAGE; then
 
     
 
-    # MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
-    # cypress/included:latest \
-    # --config baseUrl=http://localhost:8000  \
-    # --reporter-options "toConsole=true" | tee $REPORT_FILE
+    MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
+    cypress/included:latest \
+    --config baseUrl=http://localhost:8000  \
+    --reporter-options "toConsole=true" | tee $REPORT_FILE
 
     if [ -s $REPORT_FILE ]; then
         # Print everything after "Run Finished"
