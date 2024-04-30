@@ -14,4 +14,4 @@ COPY ./app /code/app
 ENV PORT 8080
 
 # Use shell form to use the PORT environment variable
-CMD uvicorn app.UserController:app --host 0.0.0.0 --port $PORT
+CMD uvicorn app.UserController:app --host 0.0.0.0 --port "$PORT"
