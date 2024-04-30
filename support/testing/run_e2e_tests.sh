@@ -79,7 +79,7 @@ if $WITH_COVERAGE; then
     fi
 
     # find out if $GITHUB_REPORT_FILE has string x of x failed 
-    if grep -q "failed" $GITHUB_REPORT_FILE; then
+    if grep -q -e "failed" -e "No relevant test result summary found" $GITHUB_REPORT_FILE; then
         echo "Tests failed please check the CI pipeline for more details"
         exit 1
     else
