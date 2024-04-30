@@ -15,7 +15,7 @@
 - it will launch `docker-compose.support.yml` file, nessesary infrastructure like kong, grafana, loki
 - it will launch `docker-compose.dev.yml` file with exposure of the development ports
 
-- You have option to add flag `-b`
+- You have option to add flag `-b` `./init.sh -b`
   - this will trigger additional build of all docker compose files (useful mainly when adding new pip dependencies) 
 
 # How to create new microservice?

@@ -38,11 +38,8 @@ if $WITH_COVERAGE; then
 
     echo "Running tests with coverage..."
 
-    docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
-
-    echo "Docker logs for Kong and Seed containers"
-    docker logs ase-social-network-kong-1
-    docker logs ase-social-network-seed-1
+    # uncomment for debugging 
+    # docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 
     # # curl verbose output to localhost:8000
     total_calls=1
@@ -64,30 +61,10 @@ if $WITH_COVERAGE; then
     fi
     done
 
-    echo "done"
-
-    netstat -lt
+    # Uncomment for debugging
+    # netstat -lt
 
     # get proper name by grep "kong"
-
-    docker ps -a --format '{{.Names}}'
-
-    NAME=$(docker ps -a --format '{{.Names}}' | grep "kong" | head -1)
-    if [ -z "$NAME" ]; then
-        echo "No Kong container found."
-    else
-        echo "Kong logs:"
-        docker logs $NAME
-    fi
-
-    NAME=$(docker ps -a --format '{{.Names}}' | grep "seed" | head -1)
-    if [ -z "$NAME" ]; then
-        echo "No Kong container found."
-    else
-        echo "Kong logs:"
-        docker logs $NAME
-    fi
-
     
 
     MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
