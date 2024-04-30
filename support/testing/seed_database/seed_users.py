@@ -88,7 +88,7 @@ def create_and_update_users():
                 print(f'Failed to connect to {base_url}')
                 print('Retrying in 5 seconds')
                 time.sleep(5)
-            except Exception as e:
+            except Exception:
                 print(f'Failed to connect to {base_url}')
                 print('Retrying in 5 seconds')
                 time.sleep(5)
