@@ -1,8 +1,8 @@
 name: Build, Test, and Upload Unit tests Coverage to Codecov
 
 on:
-  push:
-  pull_request:
+  # push:
+  # pull_request:
 
 permissions: 
    pull-requests: write 

@@ -84,6 +84,9 @@ if $WITH_COVERAGE; then
         docker logs $NAME
     fi
 
+    docker logs ase-social-network-kong-1
+    docker logs ase-social-network-seed-1
+
     # MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
     # cypress/included:latest \
     # --config baseUrl=http://localhost:8000  \
