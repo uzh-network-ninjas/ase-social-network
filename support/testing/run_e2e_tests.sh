@@ -40,6 +40,10 @@ if $WITH_COVERAGE; then
 
     docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 
+    echo "Docker logs for Kong and Seed containers"
+    docker logs ase-social-network-kong-1
+    docker logs ase-social-network-seed-1
+
     # # curl verbose output to localhost:8000
     total_calls=1
 
@@ -84,8 +88,7 @@ if $WITH_COVERAGE; then
         docker logs $NAME
     fi
 
-    docker logs ase-social-network-kong-1
-    docker logs ase-social-network-seed-1
+    
 
     # MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
     # cypress/included:latest \
