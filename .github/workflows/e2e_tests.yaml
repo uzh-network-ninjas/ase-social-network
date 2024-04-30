@@ -61,3 +61,12 @@ jobs:
           ## E2E Test Results
           ${{ env.TEST_RESULTS }}
         comment_tag: e2e_test_results
+      
+    # mark action as failed if env.TEST_RESULTS contains "Failed" or "No relevant test result summary found"
+    - name: Check for Test Failures
+      if: steps.check_skip_flag.outputs.skip == 'false' && always()
+      run: |
+        if [[ $TEST_RESULTS == *"Failed"* ]] || [[ $TEST_RESULTS == *"No relevant test result summary found"* ]]; then
+          echo "E2E Tests Failed"
+          exit 1
+        fi

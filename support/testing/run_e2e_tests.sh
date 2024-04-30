@@ -68,6 +68,9 @@ if $WITH_COVERAGE; then
     NAME=$(docker ps --format '{{.Names}}' | grep "kong")
     docker logs $NAME
 
+    NAME=$(docker ps --format '{{.Names}}' | grep "seed")
+    docker logs $NAME
+
     MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
     cypress/included:latest \
     --config baseUrl=http://localhost:8000  \
