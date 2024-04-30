@@ -66,9 +66,11 @@ if $WITH_COVERAGE; then
 
     # get proper name by grep "kong"
     NAME=$(docker ps --format '{{.Names}}' | grep "kong")
+    echo "Kong logs"
     docker logs $NAME
 
     NAME=$(docker ps --format '{{.Names}}' | grep "seed")
+    echo "Seed logs"
     docker logs $NAME
 
     MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
