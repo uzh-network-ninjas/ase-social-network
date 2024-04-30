@@ -49,7 +49,7 @@ start_test() {
     docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.test.yml -f docker-compose.support.yml build
   fi
   echo "Starting Docker containers in test environment..."
-  docker compose --env-file .env -f docker-compose.support.yml -f docker-compose.base.yml -f docker-compose.test.yml up -d
+  docker compose --env-file .env -f docker-compose.support.yml -f docker-compose.base.yml -f docker-compose.test.yml up
 }
 
 # Parse command line arguments
