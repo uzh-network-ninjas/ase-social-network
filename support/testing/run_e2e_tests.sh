@@ -65,11 +65,11 @@ if $WITH_COVERAGE; then
     netstat -lt
 
     # get proper name by grep "kong"
-    NAME=$(docker ps --format '{{.Names}}' | grep "kong")
+    NAME=$(docker ps -a --format '{{.Names}}' | grep "kong")
     echo "Kong logs"
     docker logs $NAME
 
-    NAME=$(docker ps --format '{{.Names}}' | grep "seed")
+    NAME=$(docker ps -a --format '{{.Names}}' | grep "seed")
     echo "Seed logs"
     docker logs $NAME
 
