@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main  # Trigger on pushes to the main branch, adjust if necessary
-    tags:
-      - 'v*'  # This will trigger the workflow on tags like v1.0, v2.0, etc.
 
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -13,6 +11,7 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
     - uses: actions/checkout@v4
 
@@ -40,12 +39,12 @@ jobs:
       run: |
         for SERVICE in $SERVICES; do
           echo "Building and pushing Docker image for $SERVICE"
-          # VERSIONED_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/$SERVICE:${{ env.VERSION }}"
-          LATEST_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/$SERVICE:latest"
+          VERSIONED_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/ase-social-network_$SERVICE:${{ env.VERSION }}"
+          LATEST_IMAGE_NAME="${{ env.DOCKERHUB_USERNAME }}/ase-social-network_$SERVICE:latest"
           
-          # docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
+          docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$VERSIONED_IMAGE_NAME" -t "$LATEST_IMAGE_NAME"
           docker build "$SERVICE" -f "$SERVICE/Dockerfile.build" -t "$LATEST_IMAGE_NAME"
           
-          # docker push "$VERSIONED_IMAGE_NAME"
+          docker push "$VERSIONED_IMAGE_NAME"
           docker push "$LATEST_IMAGE_NAME"
         done

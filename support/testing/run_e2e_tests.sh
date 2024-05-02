@@ -1,3 +1,5 @@
+#!/bin/bash
+
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 
 # Import if with coverage and reports dir
@@ -36,7 +38,8 @@ if $WITH_COVERAGE; then
 
     echo "Running tests with coverage..."
 
-    docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
+    # uncomment for debugging 
+    # docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 
     # # curl verbose output to localhost:8000
     total_calls=1
@@ -58,13 +61,11 @@ if $WITH_COVERAGE; then
     fi
     done
 
-    echo "done"
-
-    netstat -lt
+    # Uncomment for debugging
+    # netstat -lt
 
     # get proper name by grep "kong"
-    NAME=$(docker ps --format '{{.Names}}' | grep "kong")
-    docker logs $NAME
+    
 
     MSYS_NO_PATHCONV=1 docker run --network host -v $volume_path -w "/app" \
     cypress/included:latest \
@@ -79,7 +80,7 @@ if $WITH_COVERAGE; then
     fi
 
     # find out if $GITHUB_REPORT_FILE has string x of x failed 
-    if grep -q "failed" $GITHUB_REPORT_FILE; then
+    if grep -q -e "failed" -e "No relevant test result summary found" $GITHUB_REPORT_FILE; then
         echo "Tests failed please check the CI pipeline for more details"
         exit 1
     else

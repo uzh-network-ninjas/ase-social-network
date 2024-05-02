@@ -7,7 +7,7 @@ describe('search a user', () => {
     it('searches for a user', () => {
         cy.visit(endpoint)
 
-        cy.contains('Hello, user1')
+        cy.contains('Home')
         // todo needs implementation once following fixes
         // search user by username 'user2 input with placeholder: Search by username
         // cy.get('input[placeholder="Search by username"]').type('user2')

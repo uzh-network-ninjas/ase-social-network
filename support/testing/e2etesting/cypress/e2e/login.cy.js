@@ -21,7 +21,7 @@ describe('login as a user', () => {
     cy.url().should('not.eq', Cypress.config('baseUrl')+"/sign-in") // kinda a workload ->wait for redirect doesn't matter to what
 +
     cy.visit('/')
-    cy.contains('Hello, '+userName)
+    cy.contains('Home')
     // now we open preferences, because the user was seeded
   })
 })

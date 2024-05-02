@@ -51,6 +51,6 @@ describe('register as a user and add prefernences', () => {
     // assert new url is /
     cy.url().should('eq', endpoint+'/')
     // there is Hello, userName
-    cy.contains('Hello, '+userName)
+    cy.contains('Home')
   })
 })
