@@ -7,7 +7,7 @@ on:
 
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  TARGET_BRANCH: 'docker-images-testing' 
+  TARGET_BRANCH: 'main' 
 
 jobs:
   build-and-push:
