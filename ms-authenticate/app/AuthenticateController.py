@@ -31,7 +31,6 @@ async def register(user: UserRegister) -> dict[str, str]:
 
     :param user: The user data (UserRegister model).
     :return: A dictionary containing the JWT access token and token type.
-    :rtype: dict[str, str]
     """
     registered_user = await auth_service.register_user(user)
     access_token = await auth_service.login_user(registered_user)
@@ -45,7 +44,6 @@ async def login_generate_token(user: UserLogin) -> dict[str, str]:
 
     :param user: The user data (UserLogin model).
     :return: A dictionary containing the JWT access token and token type.
-    :rtype: dict[str, str]
     """
     access_token = await auth_service.login_user(user)
     return {"access_token": access_token, "token_type": "bearer"}

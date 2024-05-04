@@ -33,7 +33,6 @@ class AuthenticateService:
 
         :param user: The user object containing the user's credentials (UserLogin model).
         :return: The created JWT token.
-        :rtype: str
         """
         access_token_expires = timedelta(minutes=self.auth_encryption['ACCESS_TOKEN_EXPIRE_MINUTES'])
         to_encode = {'sub': user.id, 'username': user.username}
@@ -53,7 +52,6 @@ class AuthenticateService:
 
         :param request: The request object that includes the Authorization header (provided by FastAPI).
         :return: The user ID from the decoded JWT token.
-        :rtype: str
         """
         bearer = request.headers.get("Authorization")
         token = bearer.split(" ")[1]
@@ -66,7 +64,6 @@ class AuthenticateService:
 
         :param user: The user registration data (UserRegister model).
         :return: The registered user's login information.
-        :rtype: UserLogin
         :raises HTTPException (409): If the username or email is already in use.
         """
         if await self.auth_repo.username_exists(user.username):
@@ -85,7 +82,6 @@ class AuthenticateService:
 
         :param user: The user login data (UserLogin model).
         :return: The created JWT token.
-        :rtype: str
         :raises HTTPException (404): If the user is not found
         :raises HTTPException (401): If the password is invalid.
         """
