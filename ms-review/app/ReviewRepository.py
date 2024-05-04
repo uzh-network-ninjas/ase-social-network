@@ -1,8 +1,8 @@
 import os
 
 from app.models.ReviewCreate import ReviewCreate
-from app.models.ReviewCreateImage import ReviewCreateImage
 from app.models.ReviewOut import ReviewOut
+from app.models.ReviewUpdate import ReviewUpdate
 from bson import ObjectId
 from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -33,28 +33,16 @@ class ReviewRepository:
         review_dict["created_at"] = datetime.now()
         return await self.collection.insert_one(review_dict)
 
-    async def update_review_username(self, review_id: str, new_username: str) -> UpdateResult:
+    async def update_review_by_id(self, review_id: str, updated_review: ReviewUpdate) -> UpdateResult:
         """
-        Updates the username for a review.
+        Updates the specified review details in the database.
 
         :param review_id: The ID of the review to update.
-        :param new_username: The new username to associate with the review.
-        :return: An UpdateResult containing the success status.
+        :param updated_review: The new details for the review (ReviewUpdate model).
+        :return: The result of the update operation.
         """
-        update_query = {
-            "$set": {"username": new_username}
-        }
-        return await self.collection.update_one({"_id": ObjectId(review_id)}, update_query)
-
-    async def update_review_image(self, review_id: str, review_image: ReviewCreateImage) -> UpdateResult:
-        """Updates the existing review with an image reference.
-
-        :param review_id: The ID of the review to which the image will be appended.
-        :param review_image: The image reference that will be appended.
-        :return: An UpdateResult containing the success status.
-        """
-        updated_review = review_image.model_dump()
-        return await self.collection.update_one({"_id": ObjectId(review_id)}, {"$set": updated_review})
+        updated_reviewdata = updated_review.model_dump(exclude_unset=True)
+        return await self.collection.update_one({"_id": ObjectId(review_id)}, {"$set": updated_reviewdata})
 
     async def get_review_by_id(self, review_id: str) -> dict:
         """Get a review by its ID.
