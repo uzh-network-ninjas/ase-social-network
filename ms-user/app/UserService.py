@@ -19,7 +19,7 @@ class UserService:
         """
         Initializes the UserService with a UserRepository to interact with user data stored in a database.
         """
-        self.ur = UserRepository()
+        self.user_repo = UserRepository()
 
     async def get_user_by_id(self, user_id: str) -> UserOut:
         """
@@ -29,7 +29,7 @@ class UserService:
         :return: A UserOut object containing the user's detailed information.
         :raises HTTPException (404): If the user is not found in the database.
         """
-        result = await self.ur.get_user_by_id(user_id)
+        result = await self.user_repo.get_user_by_id(user_id)
         if not result:
             raise HTTPException(status_code=404, detail="User not found!")
         result["id"] = str(result["_id"])
@@ -43,7 +43,7 @@ class UserService:
         :return: A UserOut object containing the user's detailed information.
         :raises HTTPException (404): If no user with the specified name is found.
         """
-        result = await self.ur.get_user_by_username(username)
+        result = await self.user_repo.get_user_by_username(username)
         if not result:
             raise HTTPException(status_code=404, detail="User not found!")
         result["id"] = str(result["_id"])
@@ -60,10 +60,10 @@ class UserService:
         :raises HTTPException (400): If username/email is taken
         :raises HTTPException (404): If provided preferences/restrictions are invalid.
         """
-        if not await self.ur.get_user_by_id(user_id):
+        if not await self.user_repo.get_user_by_id(user_id):
             raise HTTPException(status_code=404, detail="User not found!")
-        username = await self.ur.get_user_by_username(updated_user.username)
-        email = await self.ur.get_user_by_email(updated_user.email)
+        username = await self.user_repo.get_user_by_username(updated_user.username)
+        email = await self.user_repo.get_user_by_email(updated_user.email)
         detail = (f"Username already taken: {updated_user.username}!" if username else "") \
                  + (" " if username and email else "") \
                  + (f"Email already taken: {updated_user.email}!" if email else "")
@@ -74,7 +74,7 @@ class UserService:
         if preferences or restrictions:
             raise HTTPException(status_code=400, detail=f"Preferences/Restrictions do not exist: "
                                                         f"{', '.join(preferences + restrictions)}")
-        result = await self.ur.update_user_by_id(user_id, updated_user)
+        result = await self.user_repo.update_user_by_id(user_id, updated_user)
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update user details!")
         return await self.get_user_by_id(user_id)
@@ -90,7 +90,7 @@ class UserService:
         :raises HTTPException(400): If the image could not be uploaded to s3.
         :raises HTTPException(400): If the database could not update the image reference.
         """
-        if not await self.ur.get_user_by_id(user_id):
+        if not await self.user_repo.get_user_by_id(user_id):
             raise HTTPException(status_code=404, detail="User not found!")
         bucket_name = "ms-user"
         s3_folder = "user-images"
@@ -119,7 +119,7 @@ class UserService:
         :param user_id: The ID of the user to be deleted.
         :raises HTTPException (404): If the user is not found.
         """
-        result = await self.ur.delete_user_by_id(user_id)
+        result = await self.user_repo.delete_user_by_id(user_id)
         if not result:
             raise HTTPException(status_code=404, detail="User not found!")
 
@@ -134,11 +134,11 @@ class UserService:
         :raises HTTPException (409): If they are already following the user.
         :raises HTTPException (400): If the database could not update the list.
         """
-        if not await self.ur.get_user_by_id(follow_user_id):
+        if not await self.user_repo.get_user_by_id(follow_user_id):
             raise HTTPException(status_code=404, detail="User not found!")
-        if await self.ur.user_is_following_user(user_id, follow_user_id):
+        if await self.user_repo.user_is_following_user(user_id, follow_user_id):
             raise HTTPException(status_code=409, detail="Already following that user!")
-        result_following, result_followers = await self.ur.follow_user_by_id(user_id, follow_user_id)
+        result_following, result_followers = await self.user_repo.follow_user_by_id(user_id, follow_user_id)
         if not result_following.raw_result["updatedExisting"] or not result_followers.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update the user followings!")
         return await self.get_user_by_id(user_id)
@@ -154,11 +154,11 @@ class UserService:
         :raises HTTPException (409): If they are not following the user.
         :raises HTTPException (400): If the database could not update the list.
         """
-        if not await self.ur.get_user_by_id(unfollow_user_id):
+        if not await self.user_repo.get_user_by_id(unfollow_user_id):
             raise HTTPException(status_code=404, detail="User not found!")
-        if not await self.ur.user_is_following_user(user_id, unfollow_user_id):
+        if not await self.user_repo.user_is_following_user(user_id, unfollow_user_id):
             raise HTTPException(status_code=409, detail="Not following that user already!")
-        result_following, result_followers = await self.ur.unfollow_user_by_id(user_id, unfollow_user_id)
+        result_following, result_followers = await self.user_repo.unfollow_user_by_id(user_id, unfollow_user_id)
         if not result_following.raw_result["updatedExisting"] or not result_followers.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update the user followings!")
         return await self.get_user_by_id(user_id)
