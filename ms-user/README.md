@@ -10,3 +10,5 @@ The `ms-user` is used for all operations on users in the database such as search
 - GET `users/{user_id}/following`: used to get a list of users the user is following
 - GET `users/{user_id}/followers`: used to get a list of users who follow the user
 - GET `users/dietary_criteria`: used to get a list of possible preferences and restrictions
+
+Upon log in the user is able to change their data including username, email, profile picture, preferences and restrictions. The password is changed via `ms-authenticate` to separate responsibility.
