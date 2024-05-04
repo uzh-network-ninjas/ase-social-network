@@ -14,6 +14,7 @@ export interface MenuOption {
 
 withDefaults(
   defineProps<{
+    titleTo: RouteLocationRaw
     actions?: MenuOption[]
     iconPos?: 'left' | 'right' | 'top' | 'bottom'
   }>(),
@@ -30,7 +31,7 @@ withDefaults(
       <li>
         <router-link
           class="flex w-fit items-center gap-2 rounded-lg text-primary outline-none ring-primary ring-offset-1 focus-visible:ring-1"
-          :to="{ name: 'home' }"
+          :to="titleTo"
         >
           <BaseIcon icon="sparkles" :stroke-width="1.5" class="h-8 w-8" />
           <span class="text-xl font-medium uppercase tracking-widest max-sm:hidden"

@@ -51,7 +51,7 @@ const signIn = function () {
 
 <template>
   <header class="sticky top-0 z-40">
-    <Navbar :actions="topNavActions" iconPos="right" />
+    <Navbar :titleTo="{ name: 'landing' }" :actions="topNavActions" iconPos="right" />
   </header>
   <main class="md:pl-16">
     <div class="mx-4 flex h-full items-center justify-center pt-8 md:justify-start">
