@@ -22,7 +22,7 @@ class ReviewService:
 
         :param review_repository: An instance of ReviewRepository.
         """
-        self.rr = review_repository
+        self.review_repo = review_repository
 
     async def create_review(self, review: ReviewCreate, user_id: str, username: str) -> ReviewOut:
         """Creates a new review.
@@ -32,7 +32,7 @@ class ReviewService:
         :param username: The username of the user creating the review.
         :return: The created review.
         """
-        result = await self.rr.add_review(review, user_id, username)
+        result = await self.review_repo.add_review(review, user_id, username)
         return await self.get_review_by_id(result.inserted_id, user_id)
 
     async def append_review_image_by_id(self, review_id: str, image: UploadFile, user_id: str) -> ReviewOut:
@@ -42,8 +42,8 @@ class ReviewService:
         :param image: The image that will be appended.
         :param user_id: The ID of the user appending the image.
         :return: The updated review with the appended image.
-        :raise HTTPException(400): If the image could not be uploaded to s3.
-        :raise HTTPException(400): If the database could not update the image reference.
+        :raises HTTPException(400): If the image could not be uploaded to s3.
+        :raises HTTPException(400): If the database could not update the image reference.
         """
 
         bucket_name = "ms-review"
@@ -65,7 +65,7 @@ class ReviewService:
             raise HTTPException(status_code=400, detail="Could not append review image!")
 
         updated_review = ReviewCreateImage(image=object_key)
-        result = await self.rr.update_review_image(review_id, updated_review)
+        result = await self.review_repo.update_review_image(review_id, updated_review)
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update review image reference!")
         return await self.get_review_by_id(review_id, user_id)
@@ -76,9 +76,9 @@ class ReviewService:
         :param review_id: The ID of the review to retrieve.
         :param user_id: The ID of the user retrieving the review.
         :return: The retrieved review.
-        :raise HTTPException(404): If the review could not be found.
+        :raises HTTPException(404): If the review could not be found.
         """
-        result = await self.rr.get_review_by_id(review_id)
+        result = await self.review_repo.get_review_by_id(review_id)
         if not result:
             raise HTTPException(status_code=404, detail="Review not found!")
         result["id"] = str(result["_id"])
@@ -92,13 +92,13 @@ class ReviewService:
         :param user_ids: The list of user IDs of followed users.
         :param user_id: The ID of the user retrieving the feed.
         :return: A list of reviews in the feed.
-        :raise HTTPException(404): If the user is not following other users.
-        :raise HTTPException(404): If the followed users have not created reviews.
+        :raises HTTPException(404): If the user is not following other users.
+        :raises HTTPException(404): If the followed users have not created reviews.
         """
         if len(user_ids) == 0:
             raise HTTPException(status_code=404, detail="No followed users!")
         timestamp_cursor = timestamp_cursor if timestamp_cursor else datetime.now()
-        result = await self.rr.get_feed_by_cursor_and_user_ids(timestamp_cursor, user_ids, 25)
+        result = await self.review_repo.get_feed_by_cursor_and_user_ids(timestamp_cursor, user_ids, 25)
         if not result:
             raise HTTPException(status_code=404, detail="No reviews from followed users!")
         for review in result:
@@ -112,9 +112,9 @@ class ReviewService:
         :param user_id: The ID of the user for the requested reviews.
         :param current_user_id: The ID of the user retrieving the reviews.
         :return: A list of reviews created by the user.
-        :raise HTTPException(404): If the user has not created any reviews.
+        :raises HTTPException(404): If the user has not created any reviews.
         """
-        result = await self.rr.get_reviews_by_user_id(user_id)
+        result = await self.review_repo.get_reviews_by_user_id(user_id)
         if not result:
             raise HTTPException(status_code=404, detail="User has not created any reviews yet!")
         for review in result:
@@ -130,21 +130,21 @@ class ReviewService:
         :param user_ids: The list of user IDs of followed users.
         :param user_id: The ID of the user retrieving the filtered reviews.
         :return: A list of filtered reviews. If location_ids is not provided, all reviews from followed users are returned.
-        :raise HTTPException(404): If the user is not following other users.
-        :raise HTTPException(404): If the followed users have not created reviews.
-        :raise HTTPException(404): If no reviews exist for the location and user combination.
+        :raises HTTPException(404): If the user is not following other users.
+        :raises HTTPException(404): If the followed users have not created reviews.
+        :raises HTTPException(404): If no reviews exist for the location and user combination.
         """
         if len(user_ids) == 0:
             raise HTTPException(status_code=404, detail="No followed users!")
         if location_ids is None:
-            location_ids = await self.rr.get_location_ids_by_user_ids(user_ids)
+            location_ids = await self.review_repo.get_location_ids_by_user_ids(user_ids)
             if len(location_ids) == 0:
                 raise HTTPException(status_code=404, detail="No reviews from the followed users!")
         else:
             location_ids = location_ids.model_dump()["location_ids"]
         location_reviews = []
         for location_id in location_ids:
-            result = await self.rr.get_reviews_by_location_and_user_ids(location_id, user_ids)
+            result = await self.review_repo.get_reviews_by_location_and_user_ids(location_id, user_ids)
             if not result:
                 continue
             rating_avg = 0
@@ -164,15 +164,15 @@ class ReviewService:
         :param review_id: The ID of the review to like.
         :param user_id: The ID of the user liking a review.
         :return: The updated review with the added like.
-        :raise HTTPException(404): If the review does not exist.
-        :raise HTTPException(400): If the user has already liked the review.
-        :raise HTTPException(400): If the database could not update the like count.
+        :raises HTTPException(404): If the review does not exist.
+        :raises HTTPException(400): If the user has already liked the review.
+        :raises HTTPException(400): If the database could not update the like count.
         """
-        if not await self.rr.get_review_by_id(review_id):
+        if not await self.review_repo.get_review_by_id(review_id):
             raise HTTPException(status_code=404, detail="Review not found!")
-        if await self.rr.user_has_liked_review(review_id, user_id):
+        if await self.review_repo.user_has_liked_review(review_id, user_id):
             raise HTTPException(status_code=400, detail="User has already liked the review!")
-        result = await self.rr.like_review_by_id(review_id, user_id)
+        result = await self.review_repo.like_review_by_id(review_id, user_id)
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update the like count!")
         return await self.get_review_by_id(review_id, user_id)
@@ -183,15 +183,15 @@ class ReviewService:
         :param review_id: The ID of the review to unlike.
         :param user_id: The ID of the user unliking a review.
         :return: The updated review with the removed like.
-        :raise ReviewNotFoundException: If the review does not exist.
-        :raise HTTPException(400): If the user has already unliked the review.
-        :raise HTTPException(400): If the database could not update the like count.
+        :raises ReviewNotFoundException: If the review does not exist.
+        :raises HTTPException(400): If the user has already unliked the review.
+        :raises HTTPException(400): If the database could not update the like count.
         """
-        if not await self.rr.get_review_by_id(review_id):
+        if not await self.review_repo.get_review_by_id(review_id):
             raise HTTPException(status_code=404, detail="Review not found!")
-        if not await self.rr.user_has_liked_review(review_id, user_id):
+        if not await self.review_repo.user_has_liked_review(review_id, user_id):
             raise HTTPException(status_code=400, detail="User has not liked the review already!")
-        result = await self.rr.unlike_review_by_id(review_id, user_id)
+        result = await self.review_repo.unlike_review_by_id(review_id, user_id)
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update the like count!")
         return await self.get_review_by_id(review_id, user_id)
@@ -225,7 +225,7 @@ class ReviewService:
         """Validates the objectId.
 
         :param object_id: The objectId to test.
-        :raise HTTPException(422): If the objectId is invalid.
+        :raises HTTPException(422): If the objectId is invalid.
         """
         try:
             ObjectId(object_id)

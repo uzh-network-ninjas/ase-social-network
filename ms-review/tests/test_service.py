@@ -120,7 +120,7 @@ async def test_append_review_image_by_id_update_issue(mock_boto3_client, review_
     mock_image.filename = IMAGE_FILENAME
     mock_image.read.return_value = "mock image"
 
-    with patch.object(review_service.rr, "update_review_image") as mock_update_review_image:
+    with patch.object(review_service.review_repo, "update_review_image") as mock_update_review_image:
         update_result = MagicMock(spec=UpdateResult)
         update_result.raw_result = {"updatedExisting": False}
         mock_update_review_image.return_value = update_result
@@ -154,7 +154,7 @@ async def test_get_feed_by_cursor_no_followings(review_service):
 
 @pytest.mark.asyncio
 async def test_get_feed_by_cursor_no_reviews(review_service):
-    with patch.object(review_service.rr, "get_feed_by_cursor_and_user_ids") as mock_get_feed:
+    with patch.object(review_service.review_repo, "get_feed_by_cursor_and_user_ids") as mock_get_feed:
         mock_get_feed.return_value = []
         with pytest.raises(HTTPException) as e:
             await review_service.get_feed_by_cursor(None, [USER_ID], USER_ID)
@@ -168,7 +168,7 @@ async def test_get_reviews_by_user_id(review_service):
 
 @pytest.mark.asyncio
 async def test_get_reviews_by_user_id_no_reviews(review_service):
-    with patch.object(review_service.rr, "get_reviews_by_user_id") as mock_get_reviews:
+    with patch.object(review_service.review_repo, "get_reviews_by_user_id") as mock_get_reviews:
         mock_get_reviews.return_value = []
         with pytest.raises(HTTPException) as e:
             await review_service.get_reviews_by_user_id(USER_ID, USER_ID)
@@ -194,7 +194,7 @@ async def test_get_reviews_by_locations_no_followings(review_service):
 
 @pytest.mark.asyncio
 async def test_get_reviews_by_locations_no_reviews(review_service):
-    with patch.object(review_service.rr, "get_location_ids_by_user_ids") as mock_get_locations:
+    with patch.object(review_service.review_repo, "get_location_ids_by_user_ids") as mock_get_locations:
         mock_get_locations.return_value = []
         with pytest.raises(HTTPException) as e:
             await review_service.get_reviews_by_locations(None, [USER_ID], USER_ID)
@@ -202,7 +202,7 @@ async def test_get_reviews_by_locations_no_reviews(review_service):
 
 @pytest.mark.asyncio
 async def test_get_reviews_by_locations_bad_combination(review_service):
-    with patch.object(review_service.rr, "get_reviews_by_location_and_user_ids") as mock_get_reviews:
+    with patch.object(review_service.review_repo, "get_reviews_by_location_and_user_ids") as mock_get_reviews:
         mock_get_reviews.return_value = []
         with pytest.raises(HTTPException) as e:
             await review_service.get_reviews_by_locations(None, [USER_ID], USER_ID)
@@ -222,7 +222,7 @@ async def test_like_review_by_id_not_existing(review_service):
 
 @pytest.mark.asyncio
 async def test_like_review_by_id_has_liked(review_service):
-    with patch.object(review_service.rr, "user_has_liked_review") as mock_user_has_liked_review:
+    with patch.object(review_service.review_repo, "user_has_liked_review") as mock_user_has_liked_review:
         mock_user_has_liked_review.return_value = True
         with pytest.raises(HTTPException) as e:
             await review_service.like_review_by_id(REVIEW_ID, USER_ID)
@@ -230,7 +230,7 @@ async def test_like_review_by_id_has_liked(review_service):
 
 @pytest.mark.asyncio
 async def test_like_review_by_id_update_issue(review_service):
-    with patch.object(review_service.rr, "like_review_by_id") as mock_like_review:
+    with patch.object(review_service.review_repo, "like_review_by_id") as mock_like_review:
         update_result = MagicMock(spec=UpdateResult)
         update_result.raw_result = {"updatedExisting": False}
         mock_like_review.return_value = update_result
@@ -240,7 +240,7 @@ async def test_like_review_by_id_update_issue(review_service):
 
 @pytest.mark.asyncio
 async def test_unlike_review_by_id(review_service):
-    with patch.object(review_service.rr, "user_has_liked_review") as mock_user_has_liked_review:
+    with patch.object(review_service.review_repo, "user_has_liked_review") as mock_user_has_liked_review:
         mock_user_has_liked_review.return_value = True
         result = await review_service.unlike_review_by_id(REVIEW_ID, USER_ID)
 
@@ -254,7 +254,7 @@ async def test_unlike_review_by_id_not_existing(review_service):
 
 @pytest.mark.asyncio
 async def test_unlike_review_by_id_has_unliked(review_service):
-    with patch.object(review_service.rr, "user_has_liked_review") as mock_user_has_liked_review:
+    with patch.object(review_service.review_repo, "user_has_liked_review") as mock_user_has_liked_review:
         mock_user_has_liked_review.return_value = False
         with pytest.raises(HTTPException) as e:
             await review_service.unlike_review_by_id(REVIEW_ID, USER_ID)
@@ -262,9 +262,9 @@ async def test_unlike_review_by_id_has_unliked(review_service):
 
 @pytest.mark.asyncio
 async def test_unlike_review_by_id_update_issue(review_service):
-    with patch.object(review_service.rr, "user_has_liked_review") as mock_user_has_liked_review:
+    with patch.object(review_service.review_repo, "user_has_liked_review") as mock_user_has_liked_review:
         mock_user_has_liked_review.return_value = True
-        with patch.object(review_service.rr, "unlike_review_by_id") as mock_unlike_review:
+        with patch.object(review_service.review_repo, "unlike_review_by_id") as mock_unlike_review:
             update_result = MagicMock(spec=UpdateResult)
             update_result.raw_result = {"updatedExisting": False}
             mock_unlike_review.return_value = update_result
