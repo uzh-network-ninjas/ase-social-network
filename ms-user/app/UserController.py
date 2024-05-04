@@ -45,7 +45,8 @@ async def update_user(request: Request, updated_user: UserUpdate) -> UserOut:
     """
     user_id = user_service.extract_user_id_from_token(request)
     user = await user_service.update_user_by_id(user_id, updated_user)
-    requests.patch(f'http://kong:8000/reviews/update_reviews/{user.username}', headers=request.headers)
+    if updated_user.username:
+        requests.patch(f'http://kong:8000/reviews/update_reviews/{user.username}', headers=request.headers)
     return user
 
 
