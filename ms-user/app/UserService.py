@@ -27,7 +27,7 @@ class UserService:
 
         :param user_id: The ID of the user.
         :return: A UserOut object containing the user's detailed information.
-        :raises HTTPException (404): If the user is not found in the database.
+        :raises HTTPException(404): If the user is not found in the database.
         """
         result = await self.user_repo.get_user_by_id(user_id)
         if not result:
@@ -41,7 +41,7 @@ class UserService:
 
         :param username: The name of the user.
         :return: A UserOut object containing the user's detailed information.
-        :raises HTTPException (404): If no user with the specified name is found.
+        :raises HTTPException(404): If no user with the specified name is found.
         """
         result = await self.user_repo.get_user_by_username(username)
         if not result:
@@ -56,9 +56,9 @@ class UserService:
         :param user_id: The ID of the user to be updated.
         :param updated_user: The updated user data (UserUpdate model).
         :return: A UserOut object showing the updated user details.
-        :raises HTTPException (404): If the user is not found
-        :raises HTTPException (400): If username/email is taken
-        :raises HTTPException (404): If provided preferences/restrictions are invalid.
+        :raises HTTPException(404): If the user is not found
+        :raises HTTPException(400): If username/email is taken
+        :raises HTTPException(404): If provided preferences/restrictions are invalid.
         """
         if not await self.user_repo.get_user_by_id(user_id):
             raise HTTPException(status_code=404, detail="User not found!")
@@ -117,7 +117,7 @@ class UserService:
         Deletes a user's profile from the database.
 
         :param user_id: The ID of the user to be deleted.
-        :raises HTTPException (404): If the user is not found.
+        :raises HTTPException(404): If the user is not found.
         """
         result = await self.user_repo.delete_user_by_id(user_id)
         if not result:
@@ -130,9 +130,9 @@ class UserService:
         :param user_id: The ID of the user who wants to follow another user.
         :param follow_user_id: The ID of the user to be followed.
         :return: A UserOut object showing the updated details of the following user.
-        :raises HTTPException (404): If the following user is not found.
-        :raises HTTPException (409): If they are already following the user.
-        :raises HTTPException (400): If the database could not update the list.
+        :raises HTTPException(404): If the following user is not found.
+        :raises HTTPException(409): If they are already following the user.
+        :raises HTTPException(400): If the database could not update the list.
         """
         if not await self.user_repo.get_user_by_id(follow_user_id):
             raise HTTPException(status_code=404, detail="User not found!")
@@ -150,9 +150,9 @@ class UserService:
         :param user_id: The ID of the user who wants to unfollow another user.
         :param unfollow_user_id: The ID of the user to be unfollowed.
         :return: A UserOut object showing the updated details of the user.
-        :raises HTTPException (404): If the following user is not found.
-        :raises HTTPException (409): If they are not following the user.
-        :raises HTTPException (400): If the database could not update the list.
+        :raises HTTPException(404): If the following user is not found.
+        :raises HTTPException(409): If they are not following the user.
+        :raises HTTPException(400): If the database could not update the list.
         """
         if not await self.user_repo.get_user_by_id(unfollow_user_id):
             raise HTTPException(status_code=404, detail="User not found!")
@@ -223,7 +223,7 @@ class UserService:
         Validates the objectId.
 
         :param object_id: The objectId to test.
-        :raise HTTPException(422): If the objectId is invalid.
+        :raises HTTPException(422): If the objectId is invalid.
         """
         try:
             ObjectId(object_id)

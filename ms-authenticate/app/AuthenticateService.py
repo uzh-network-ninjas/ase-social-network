@@ -64,7 +64,7 @@ class AuthenticateService:
 
         :param user: The user registration data (UserRegister model).
         :return: The registered user's login information.
-        :raises HTTPException (409): If the username or email is already in use.
+        :raises HTTPException(409): If the username or email is already in use.
         """
         if await self.auth_repo.username_exists(user.username):
             raise HTTPException(status_code=409, detail="Username already exists")
@@ -82,8 +82,8 @@ class AuthenticateService:
 
         :param user: The user login data (UserLogin model).
         :return: The created JWT token.
-        :raises HTTPException (404): If the user is not found
-        :raises HTTPException (401): If the password is invalid.
+        :raises HTTPException(404): If the user is not found
+        :raises HTTPException(401): If the password is invalid.
         """
         if not await self.auth_repo.user_exists(user):
             raise HTTPException(status_code=404, detail="User not found")
@@ -98,8 +98,8 @@ class AuthenticateService:
 
         :param request: The request object containing the current user's token.
         :param update_user_password: Contains the current and new password.
-        :raises HTTPException (401): If the current password is invalid.
-        :raises HTTPException (400): If the new password is the same as the current one.
+        :raises HTTPException(401): If the current password is invalid.
+        :raises HTTPException(400): If the new password is the same as the current one.
         """
         hashed_user = await self.auth_repo.get_user_by_id(self.extract_user_id(request))
         if not self.auth_encryption['pwd_context'].verify(update_user_password.curr_password, hashed_user.password):
