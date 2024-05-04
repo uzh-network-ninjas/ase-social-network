@@ -61,7 +61,7 @@ const onSave = function () {
 
 <template>
   <header class="sticky top-0 z-20">
-    <Navbar />
+    <Navbar :titleTo="{ name: 'onboarding' }" />
   </header>
   <main class="md:pl-16 md:pr-1/4">
     <div
