@@ -158,6 +158,19 @@ class ReviewService:
             raise HTTPException(status_code=404, detail="No reviews for this location and user combination!")
         return ReviewListFilteredOut(location_reviews=location_reviews)
 
+    async def update_reviews(self, user_id: str, new_username: str):
+        """
+        Gets all reviews written by the user and updates each with the new username
+
+        :param user_id: The ID of the user.
+        :param new_username: The newly chosen username used to update the reviews.
+        """
+        reviews_to_update = self.get_reviews_by_user_id(user_id, "")
+        for review in reviews_to_update.reviews:
+            result = await self.review_repo.update_review_username(review.id, new_username)
+            if not result.raw_result["updatedExisting"]:
+                raise HTTPException(status_code=400, detail="Could not update review username!")
+
     async def like_review_by_id(self, review_id: str, user_id: str) -> ReviewOut:
         """Like a review.
 

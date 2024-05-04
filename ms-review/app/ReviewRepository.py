@@ -33,6 +33,19 @@ class ReviewRepository:
         review_dict["created_at"] = datetime.now()
         return await self.collection.insert_one(review_dict)
 
+    async def update_review_username(self, review_id: str, new_username: str) -> UpdateResult:
+        """
+        Updates the username for a review.
+
+        :param review_id: The ID of the review to update.
+        :param new_username: The new username to associate with the review.
+        :return: An UpdateResult containing the success status.
+        """
+        update_query = {
+            "$set": {"username": new_username}
+        }
+        return await self.collection.update_one({"_id": ObjectId(review_id)}, update_query)
+
     async def update_review_image(self, review_id: str, review_image: ReviewCreateImage) -> UpdateResult:
         """Updates the existing review with an image reference.
 

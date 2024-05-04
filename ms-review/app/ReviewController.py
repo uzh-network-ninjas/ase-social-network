@@ -1,4 +1,5 @@
 import requests
+import os
 
 from app.models.LocationIDs import LocationIDs
 from app.models.ReviewCreate import ReviewCreate
@@ -99,8 +100,20 @@ async def get_filtered_reviews(request: Request, location_ids: LocationIDs = Non
     """
     user_id = review_service.extract_user_id_from_token(request)
     headers = {k: v for k, v in request.headers.items() if k not in ("content-type", "content-length")}
-    response = requests.get(f'http://kong:8000/users/{user_id}', headers=headers)
+    response = requests.get(f'{os.getenv("KONG_BASE_URL", "http://kong:8000")}/users/{user_id}', headers=headers)
     return await review_service.get_reviews_by_locations(location_ids, response.json()["following"], user_id)
+
+
+@app.patch("/update_reviews/{new_username}", status_code=status.HTTP_204_NO_CONTENT)
+async def update_reviews_with_username(request: Request, new_username: str):
+    """
+    Updates all reviews written by the user with the newly chosen username
+
+    :param request: The request object (provided by FastAPI)
+    :param new_username: The newly chosen username with which all reviews have to be updated
+    """
+    user_id = review_service.extract_user_id_from_token(request)
+    await review_service.update_reviews(user_id, new_username)
 
 
 @app.patch("/{review_id}/likes", status_code=status.HTTP_200_OK, response_model=ReviewOut)
