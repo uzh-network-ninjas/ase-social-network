@@ -7,17 +7,18 @@ x-aws-config:
   AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
   S3_ENDPOINT_URL: ${S3_ENDPOINT_URL}
 
-x-log-config:
-  &log-env
+x-ms-config:
+  &ms-env
   LOKI_ENDPOINT: http://loki:3100/loki/api/v1/push
   LOG_LEVEL: ${LOG_LEVEL:-DEBUG}
+  GATEWAY_IP: "${GATEWAY_IP:-http://kong:8000}"
 
 
 services:
   ms-authenticate:
     build: ms-authenticate
     environment:
-      <<: [*aws-env, *log-env]
+      <<: [*aws-env, *ms-env]
       PORT: 5000
       MONGO_URL: mongodb://ms-user-db:27017/ms_user_db
       JWT_SECRET: ${JWT_SECRET}
@@ -32,7 +33,7 @@ services:
   ms-user:
     build: ms-user
     environment:
-      <<: [*aws-env, *log-env]
+      <<: [*aws-env, *ms-env]
       PORT: 5002
       MONGO_URL: mongodb://ms-user-db:27017/ms_user_db
       APP_NAME: ms-user
@@ -45,7 +46,7 @@ services:
   ms-review:
     build: ms-review
     environment:
-      <<: [*aws-env, *log-env]
+      <<: [*aws-env, *ms-env]
       PORT: 5001
       MONGO_URL: mongodb://ms-review-db:27017/ms_review_db
       APP_NAME: ms-review
