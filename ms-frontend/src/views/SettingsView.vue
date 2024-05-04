@@ -26,7 +26,7 @@ const topNavActions: SideMenuOption[] = [
 <template>
   <header class="sticky top-0 z-20">
     <SignedInTopNav />
-    <PageHeader label="Settings" />
+    <PageHeader :label="$t('settings')" />
   </header>
   <main class="sm:mx-8 sm:my-4">
     <div class="relative flex w-full flex-col gap-8">

@@ -21,7 +21,7 @@
             </div>
             <!-- Place type -->
             <div
-              class="font-inter text-center text-sm font-light not-italic leading-[normal] text-medium-emphasis"
+              class="font-inter text-center text-sm font-light capitalize not-italic leading-[normal] text-medium-emphasis"
             >
               {{ location.type }}
             </div>
@@ -37,7 +37,7 @@
                 <div
                   class="font-inter text-base font-light not-italic leading-[normal] text-medium-emphasis"
                 >
-                  Experience
+                  {{ $t('rating') }}
                 </div>
               </div>
               <!-- Rating -->
@@ -64,7 +64,7 @@
                   v-if="!ratingValid"
                   class="font-inter absolute bottom-[-20px] text-[10px] font-light not-italic leading-[normal] text-error"
                 >
-                  Please select the rating
+                  {{ $t('rating_missing_error') }}
                 </div>
               </div>
             </div>
@@ -73,7 +73,7 @@
               <Textarea
                 v-model="reviewText"
                 type="text"
-                placeholder="Share details of your experience"
+                :placeholder="$t('review_text_placeholder')"
                 class="self-stretch text-base font-light not-italic leading-[normal]"
                 rows="4"
               />
@@ -82,14 +82,14 @@
                 v-if="!textValid"
                 class="font-inter text-[10px] font-light not-italic leading-[normal] text-error"
               >
-                Your text must contain more than 5 and less than 200 words
+                {{ $t('review_text_error') }}
               </div>
             </div>
 
             <div
               class="font-inter text-base font-light not-italic leading-[normal] text-medium-emphasis"
             >
-              Images
+              {{ $t('images') }}
             </div>
             <div class="relative w-full">
               <FileUpload v-model="reviewPicture"> </FileUpload>
@@ -97,7 +97,7 @@
           </div>
 
           <div class="w-full text-right font-light text-error" v-if="uploadFailed">
-            Failed to create review
+            {{ $t('create_review_error') }}
           </div>
           <!-- Divider -->
           <div class="h-px shrink-0 self-stretch bg-medium-emphasis opacity-60"></div>
@@ -105,14 +105,14 @@
           <div class="flex items-start justify-end self-stretch">
             <!-- Cancel button -->
             <div class="flex items-center justify-center px-2 py-1">
-              <Button outlined rounded label="Cancel" @click="$emit('closeModal')"></Button>
+              <Button outlined rounded :label="$t('cancel')" @click="$emit('closeModal')"></Button>
             </div>
 
             <!-- Post button -->
             <div class="flex items-center justify-center px-2 py-1">
               <Button
                 rounded
-                label="Post"
+                :label="$t('post')"
                 :disabled="!checkInputValidity()"
                 @click="createReview"
               ></Button>

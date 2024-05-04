@@ -13,9 +13,24 @@ const messages = {
   [Locales.EN]: en
 }
 
+const savedLanguage = localStorage.getItem('selectedLanguage')
+let selectedLanguage: Locales
+if (
+  savedLanguage &&
+  Object.values(Locales)
+    .map((value) => value.toString())
+    .includes(savedLanguage)
+) {
+  selectedLanguage = Object.values(Locales).find((value) => value.toString() === savedLanguage)!
+} else {
+  selectedLanguage =
+    Object.values(Locales).find((value) => navigator.language.includes(value.toString())) ??
+    Locales.EN
+}
+
 export const i18n = createI18n({
   legacy: false,
   messages,
-  locale: Locales.EN,
+  locale: selectedLanguage,
   fallbackLocale: Locales.EN
 })

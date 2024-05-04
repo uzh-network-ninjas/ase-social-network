@@ -98,7 +98,7 @@ const dragleave = function () {
         </div>
       </div>
     </div>
-    <Button outlined rounded label="Browse" class="max-sm:w-full" @click="onBrowse">
+    <Button outlined rounded :label="$t('browse')" class="max-sm:w-full" @click="onBrowse">
       <template #icon>
         <BaseIcon icon="arrow-up-tray" :size="5" :strokeWidth="1.25" />
       </template>
