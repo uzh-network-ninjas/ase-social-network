@@ -1,14 +1,32 @@
-# MS User
-The `ms-user` is used for all operations on users in the database such as searching, adding information and follow / unfollow users. The microservice uses the same database as `ms-authenticate` to enable easy access to newly added users and their IDs. It provides the following endpoints:
-- GET `users/{user_id}`: used to get a user by ID
-- GET `users/?username={username}`: used to get a user by username
-- PATCH `users/`: used to update the user's profile (for example with preferences, username, email)
-- PATCH `users/image`: used to update the user's profile picture
-- DELETE `users/`: used to delete the user
-- PATCH `users/following/{user_id}`: used to follow another user
-- DELETE `users/following/{user_id}`: used to unfollow another user
-- GET `users/{user_id}/following`: used to get a list of users the user is following
-- GET `users/{user_id}/followers`: used to get a list of users who follow the user
-- GET `users/dietary_criteria`: used to get a list of possible preferences and restrictions
+# MS User - FastAPI Microservice 👥
 
-Upon log in the user is able to change their data including username, email, profile picture, preferences and restrictions. The password is changed via `ms-authenticate` to separate responsibility.
+## Overview
+The `ms-user` microservice is designed to manage all user-related activities within our application. It facilitates user profile management, including search, update, and social features like following and unfollowing users. This microservice shares its database with `ms-authenticate` to ensure seamless integration and access to user data.
+
+## Key Features
+- **User Profile Management**: Update user information such as preferences, profile pictures, and personal details.
+- **Social Interactions**: Users can follow or unfollow other users, enhancing the social aspect of the application.
+- **Search and Retrieval**: Retrieve user information by ID or username.
+
+## API Endpoints
+- **GET `/users/{user_id}`**: Retrieve a user by their ID.
+- **GET `/users/`**: Search for a user by username with a query like `?username={username}`.
+- **PATCH `/users/`**: Update the user's profile information.
+- **PATCH `/users/image`**: Update the user's profile picture.
+- **DELETE `/users/`**: Delete a user profile.
+- **PATCH `/users/following/{user_id}`**: Follow another user.
+- **DELETE `/users/following/{user_id}`**: Unfollow a user.
+- **GET `/users/{user_id}/following`**: List the users that a user is following.
+- **GET `/users/{user_id}/followers`**: List the users who follow the user.
+- **GET `/users/dietary_criteria`**: Retrieve a list of potential dietary preferences and restrictions.
+
+## Data Model
+User profiles include the following information:
+- `username`: A unique identifier chosen by the user.
+- `email`: User's email address.
+- `profile_picture`: A link to the user's profile image.
+- `preferences`: User-selected preferences such as dietary needs.
+- `restrictions`: Dietary or other restrictions.
+- `following`: List of user IDs that the user is following.
+- `followers`: List of user IDs that follow the user.
+- All user data can be updated, except the password which is handled by `ms-authenticate`.
