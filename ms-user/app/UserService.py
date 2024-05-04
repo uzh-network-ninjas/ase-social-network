@@ -2,6 +2,7 @@ import boto3
 import jwt
 import os
 
+from bson import ObjectId
 from app.models.DietaryCriteria import DietaryCriteria
 from app.models.Preferences import Preferences
 from app.models.Restrictions import Restrictions
@@ -9,6 +10,7 @@ from app.models.UserUpdate import UserUpdate
 from app.models.UserOut import UserOut
 from app.models.UserListOut import UserListOut
 from app.UserRepository import UserRepository
+from app.logging_config import logger
 from fastapi import HTTPException, Request, UploadFile
 
 
@@ -128,3 +130,17 @@ class UserService:
             preferences=[preference.value for preference in Preferences],
             restrictions=[restriction.value for restriction in Restrictions]
         )
+
+    @staticmethod
+    def validate_object_id(object_id: str):
+        """
+        Validates the objectId.
+
+        :param object_id: The objectId to test.
+        :raise HTTPException(422): If the objectId is invalid.
+        """
+        try:
+            ObjectId(object_id)
+        except Exception as e:
+            logger.error(f"An invalid objectId has been provided: {object_id}")
+            raise HTTPException(status_code=422, detail=f"{e}")
