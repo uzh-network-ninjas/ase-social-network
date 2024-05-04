@@ -12,6 +12,9 @@ import os
 
 class AuthenticateService:
     def __init__(self):
+        """Initializes the AuthenticateService with a AuthenticateRepository instance
+        and the required jwt information used for token handling and hashing.
+        """
         self.auth_repo = AuthenticateRepository()
         self.auth_encryption = {
             'SECRET_KEY': os.getenv("JWT_SECRET", "no_key"),
@@ -22,7 +25,12 @@ class AuthenticateService:
             'oauth2_scheme': OAuth2PasswordBearer(tokenUrl="token")
         }
 
-    def generate_token(self, user) -> str:
+    def generate_token(self, user: UserLogin) -> str:
+        """Creates a new token.
+
+        :param user: The user data (UserLogin model).
+        :return: The created access token including user_id, user_name and expires_at.
+        """
         access_token_expires = timedelta(minutes=self.auth_encryption['ACCESS_TOKEN_EXPIRE_MINUTES'])
         to_encode = {'sub': user.id, 'username': user.username}
         expire = datetime.now() + (access_token_expires or timedelta(minutes=15))
@@ -35,13 +43,23 @@ class AuthenticateService:
         )
 
     @staticmethod
-    def extract_user_id(request) -> str:
+    def extract_user_id(request: Request) -> str:
+        """Extracts the user ID from the request.
+
+        :param request: The request object.
+        :return: The user ID.
+        """
         bearer = request.headers.get("Authorization")
         token = bearer.split(" ")[1]
         payload = jwt.decode(token, options={"verify_signature": False})
         return payload["sub"]
 
     async def register_user(self, user: UserRegister) -> UserLogin:
+        """Registers a new user.
+
+        :param user: The user data (UserRegister model).
+        :return: The registered user.
+        """
         if await self.auth_repo.username_exists(user.username):
             raise HTTPException(status_code=409, detail="Username already exists")
         if await self.auth_repo.user_email_exists(user.email):
