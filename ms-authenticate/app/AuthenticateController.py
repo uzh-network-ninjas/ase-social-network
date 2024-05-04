@@ -10,9 +10,10 @@ auth_service = AuthenticateService()
 
 
 def check_env_vars():
-    """Checks .env file for all required environment variables
+    """
+    Checks for the presence of required environment variables in the system's environment settings.
 
-    :raise: EnvironmentError: If no environment variables are not defined.
+    :raises EnvironmentError: If any required environment variables are missing, they are listed.
     """
     required_env_vars = ["MONGO_URL", "JWT_KONG_KEY", "JWT_SECRET", "JWT_ALGORITHM"]
     missing_vars = [var for var in required_env_vars if var not in os.environ]
@@ -25,14 +26,16 @@ check_env_vars()
 
 @app.post("/user", status_code=status.HTTP_201_CREATED)
 async def register(user: UserRegister) -> dict[str, str]:
-    """Registers a new user.
+    """
+    Registers a new user in the system and generates a JWT access token.
 
     :param user: The user data (UserRegister model).
-    :return: The access token including user_id, user_name and expires_at.
+    :return: A dictionary containing the JWT access token and token type.
+    :rtype: dict[str, str]
 
-    .. note::
-        Pydantic automatically validates the provided data against the model's schema upon instantiation,
-        raising a `ValidationError` if the data does not conform to the specified structure and constraints.
+    Note:
+    Pydantic automatically validates the provided data against the model's schema upon instantiation,
+    raising a `ValidationError` if the data does not conform to the specified structure and constraints.
     """
     registered_user = await auth_service.register_user(user)
     access_token = await auth_service.login_user(registered_user)
@@ -41,14 +44,16 @@ async def register(user: UserRegister) -> dict[str, str]:
 
 @app.post("/token", status_code=status.HTTP_201_CREATED)
 async def login_generate_token(user: UserLogin) -> dict[str, str]:
-    """Logs in an existing user.
+    """
+    Authenticates an existing user and generates a JWT access token.
 
-    :param user: The user data (UserLogin model)
-    :return: The access token including user_id, user_name and expires_at.
+    :param user: The user data (UserLogin model).
+    :return: A dictionary containing the JWT access token and token type.
+    :rtype: dict[str, str]
 
-    .. note::
-        Pydantic automatically validates the provided data against the model's schema upon instantiation,
-        raising a `ValidationError` if the data does not conform to the specified structure and constraints.
+    Note:
+    Pydantic automatically validates the provided data against the model's schema upon instantiation,
+    raising a `ValidationError` if the data does not conform to the specified structure and constraints.
     """
     access_token = await auth_service.login_user(user)
     return {"access_token": access_token, "token_type": "bearer"}
@@ -56,13 +61,14 @@ async def login_generate_token(user: UserLogin) -> dict[str, str]:
 
 @app.patch("/password", status_code=status.HTTP_204_NO_CONTENT)
 async def update_password(request: Request, update_user_password: UpdateUserPassword):
-    """Changes the user's current password to the new one.
+    """
+    Changes the user's current password to the new one.
 
     :param request: The request object (provided by FastAPI).
     :param update_user_password: UpdateUserPassword model including the current and the new password.
 
-    .. note::
-        Pydantic automatically validates the provided data against the model's schema upon instantiation,
-        raising a `ValidationError` if the data does not conform to the specified structure and constraints.
+    Note:
+    Pydantic automatically validates the provided data against the model's schema upon instantiation,
+    raising a `ValidationError` if the data does not conform to the specified structure and constraints.
     """
     await auth_service.update_user_password(request, update_user_password)
