@@ -12,8 +12,10 @@ import os
 
 class AuthenticateService:
     def __init__(self):
-        """Initializes the AuthenticateService with a AuthenticateRepository instance
-        and the required jwt information used for token handling and hashing.
+        """
+        Initializes the AuthenticateService with a AuthenticateRepository instance
+        and the required configuration for handling authentication,
+        including JWT token generation and password hashing.
         """
         self.auth_repo = AuthenticateRepository()
         self.auth_encryption = {
@@ -26,10 +28,12 @@ class AuthenticateService:
         }
 
     def generate_token(self, user: UserLogin) -> str:
-        """Creates a new token.
+        """
+        Generates a JWT token.
 
-        :param user: The user data (UserLogin model).
-        :return: The created access token including user_id, user_name and expires_at.
+        :param user: The user object containing the user's credentials (UserLogin model).
+        :return: The created JWT token.
+        :rtype: str
         """
         access_token_expires = timedelta(minutes=self.auth_encryption['ACCESS_TOKEN_EXPIRE_MINUTES'])
         to_encode = {'sub': user.id, 'username': user.username}
@@ -44,10 +48,12 @@ class AuthenticateService:
 
     @staticmethod
     def extract_user_id(request: Request) -> str:
-        """Extracts the user ID from the request.
+        """
+        Extracts the user ID from the authorization token provided in the request headers.
 
-        :param request: The request object.
-        :return: The user ID.
+        :param request: The request object that includes the Authorization header (provided by FastAPI).
+        :return: The user ID from the decoded JWT token.
+        :rtype: str
         """
         bearer = request.headers.get("Authorization")
         token = bearer.split(" ")[1]
@@ -55,10 +61,13 @@ class AuthenticateService:
         return payload["sub"]
 
     async def register_user(self, user: UserRegister) -> UserLogin:
-        """Registers a new user.
+        """
+        Registers a new user and returns the user's login credentials if successful.
 
-        :param user: The user data (UserRegister model).
-        :return: The registered user.
+        :param user: The user registration data (UserRegister model).
+        :return: The registered user's login information.
+        :rtype: UserLogin
+        :raises HTTPException (409): If the username or email is already in use.
         """
         if await self.auth_repo.username_exists(user.username):
             raise HTTPException(status_code=409, detail="Username already exists")
@@ -71,6 +80,15 @@ class AuthenticateService:
         return registered_user
 
     async def login_user(self, user: UserLogin) -> str:
+        """
+        Authenticates a user's login credentials and returns a JWT token if successful.
+
+        :param user: The user login data (UserLogin model).
+        :return: The created JWT token.
+        :rtype: str
+        :raises HTTPException (404): If the user is not found
+        :raises HTTPException (401): If the password is invalid.
+        """
         if not await self.auth_repo.user_exists(user):
             raise HTTPException(status_code=404, detail="User not found")
         hashed_user = await self.auth_repo.get_user_by_name_or_email(user)
@@ -79,6 +97,14 @@ class AuthenticateService:
         return self.generate_token(hashed_user)
 
     async def update_user_password(self, request: Request, update_user_password: UpdateUserPassword):
+        """
+        Updates the password for an authenticated user.
+
+        :param request: The request object containing the current user's token.
+        :param update_user_password: Contains the current and new password.
+        :raises HTTPException (401): If the current password is invalid.
+        :raises HTTPException (400): If the new password is the same as the current one.
+        """
         hashed_user = await self.auth_repo.get_user_by_id(self.extract_user_id(request))
         if not self.auth_encryption['pwd_context'].verify(update_user_password.curr_password, hashed_user.password):
             raise HTTPException(status_code=401, detail="Invalid password")

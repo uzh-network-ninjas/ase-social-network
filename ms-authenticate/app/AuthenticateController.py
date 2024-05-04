@@ -32,10 +32,6 @@ async def register(user: UserRegister) -> dict[str, str]:
     :param user: The user data (UserRegister model).
     :return: A dictionary containing the JWT access token and token type.
     :rtype: dict[str, str]
-
-    Note:
-    Pydantic automatically validates the provided data against the model's schema upon instantiation,
-    raising a `ValidationError` if the data does not conform to the specified structure and constraints.
     """
     registered_user = await auth_service.register_user(user)
     access_token = await auth_service.login_user(registered_user)
@@ -50,10 +46,6 @@ async def login_generate_token(user: UserLogin) -> dict[str, str]:
     :param user: The user data (UserLogin model).
     :return: A dictionary containing the JWT access token and token type.
     :rtype: dict[str, str]
-
-    Note:
-    Pydantic automatically validates the provided data against the model's schema upon instantiation,
-    raising a `ValidationError` if the data does not conform to the specified structure and constraints.
     """
     access_token = await auth_service.login_user(user)
     return {"access_token": access_token, "token_type": "bearer"}
@@ -66,9 +58,5 @@ async def update_password(request: Request, update_user_password: UpdateUserPass
 
     :param request: The request object (provided by FastAPI).
     :param update_user_password: UpdateUserPassword model including the current and the new password.
-
-    Note:
-    Pydantic automatically validates the provided data against the model's schema upon instantiation,
-    raising a `ValidationError` if the data does not conform to the specified structure and constraints.
     """
     await auth_service.update_user_password(request, update_user_password)
