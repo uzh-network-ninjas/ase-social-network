@@ -8,14 +8,14 @@ from app.models.ReviewOut import ReviewOut
 from app.ReviewService import ReviewService
 from app.ReviewRepository import ReviewRepository
 from datetime import datetime
-from fastapi import FastAPI, Form, Request, UploadFile
+from fastapi import FastAPI, Form, Request, UploadFile, status
 from typing import Annotated
 
 app = FastAPI()
 rs = ReviewService(ReviewRepository())
 
 
-@app.post("/", response_model=ReviewOut)
+@app.post("/", status_code=status.HTTP_201_CREATED, response_model=ReviewOut)
 async def create_review(request: Request, review: ReviewCreate) -> ReviewOut:
     """Creates a new review.
 
@@ -32,7 +32,7 @@ async def create_review(request: Request, review: ReviewCreate) -> ReviewOut:
     return await rs.create_review(review, user_id, username)
 
 
-@app.patch("/image", response_model=ReviewOut)
+@app.patch("/image", status_code=status.HTTP_200_OK, response_model=ReviewOut)
 async def append_review_image(request: Request, review_id: Annotated[str, Form()], image: UploadFile) -> ReviewOut:
     """Appends an image to an existing review.
 
@@ -46,7 +46,7 @@ async def append_review_image(request: Request, review_id: Annotated[str, Form()
     return await rs.append_review_image_by_id(review_id, image, user_id)
 
 
-@app.get("/{review_id}", response_model=ReviewOut)
+@app.get("/{review_id}", status_code=status.HTTP_200_OK, response_model=ReviewOut)
 async def get_review(request: Request, review_id: str) -> ReviewOut:
     """Get a review by its ID.
 
@@ -59,7 +59,7 @@ async def get_review(request: Request, review_id: str) -> ReviewOut:
     return await rs.get_review_by_id(review_id, user_id)
 
 
-@app.get("/", response_model=ReviewListOut)
+@app.get("/", status_code=status.HTTP_200_OK, response_model=ReviewListOut)
 async def get_feed(request: Request, timestamp_cursor: datetime = None) -> ReviewListOut:
     """Get a feed of reviews from the followed users.
 
@@ -72,7 +72,7 @@ async def get_feed(request: Request, timestamp_cursor: datetime = None) -> Revie
     return await rs.get_feed_by_cursor(timestamp_cursor, response.json()["following"], user_id)
 
 
-@app.get("/users/", response_model=ReviewListOut)
+@app.get("/users/", status_code=status.HTTP_200_OK, response_model=ReviewListOut)
 async def get_reviews_from_user(request: Request, user_id: str) -> ReviewListOut:
     """Get reviews created by a specific user.
 
@@ -85,7 +85,7 @@ async def get_reviews_from_user(request: Request, user_id: str) -> ReviewListOut
     return await rs.get_reviews_by_user_id(user_id, extracted_user_id)
 
 
-@app.get("/locations/", response_model=ReviewListFilteredOut)
+@app.get("/locations/", status_code=status.HTTP_200_OK, response_model=ReviewListFilteredOut)
 async def get_filtered_reviews(request: Request, location_ids: LocationIDs = None) -> ReviewListFilteredOut:
     """Get filtered reviews based on location and followed users.
 
@@ -103,7 +103,7 @@ async def get_filtered_reviews(request: Request, location_ids: LocationIDs = Non
     return await rs.get_reviews_by_locations(location_ids, response.json()["following"], user_id)
 
 
-@app.patch("/{review_id}/likes", response_model=ReviewOut)
+@app.patch("/{review_id}/likes", status_code=status.HTTP_200_OK, response_model=ReviewOut)
 async def like_review(request: Request, review_id: str) -> ReviewOut:
     """Like a review.
 
@@ -116,7 +116,7 @@ async def like_review(request: Request, review_id: str) -> ReviewOut:
     return await rs.like_review_by_id(review_id, user_id)
 
 
-@app.delete("/{review_id}/likes", response_model=ReviewOut)
+@app.delete("/{review_id}/likes", status_code=status.HTTP_200_OK, response_model=ReviewOut)
 async def unlike_review(request: Request, review_id: str) -> ReviewOut:
     """Unlike a review.
 
