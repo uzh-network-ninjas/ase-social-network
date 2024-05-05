@@ -139,8 +139,6 @@ class ReviewService:
             location_ids = await self.review_repo.get_location_ids_by_user_ids(user_ids)
             if len(location_ids) == 0:
                 raise HTTPException(status_code=404, detail="No reviews from the followed users!")
-            #TODO check if location_ids is correct
-        print(location_ids)
         location_reviews = []
         for location_id in location_ids:
             result = await self.review_repo.get_reviews_by_location_and_user_ids(location_id, user_ids)
