@@ -1,6 +1,5 @@
 import requests
 
-from app.models.LocationIDs import LocationIDs
 from app.models.ReviewCreate import ReviewCreate
 from app.models.ReviewListFilteredOut import ReviewListFilteredOut
 from app.models.ReviewListOut import ReviewListOut
@@ -8,7 +7,7 @@ from app.models.ReviewOut import ReviewOut
 from app.ReviewService import ReviewService
 from app.ReviewRepository import ReviewRepository
 from datetime import datetime
-from fastapi import FastAPI, Form, Request, UploadFile, status
+from fastapi import FastAPI, Form, Request, UploadFile, status, Query
 from typing import Annotated
 
 app = FastAPI()
@@ -86,21 +85,20 @@ async def get_reviews_from_user(request: Request, user_id: str) -> ReviewListOut
 
 
 @app.get("/locations/", status_code=status.HTTP_200_OK, response_model=ReviewListFilteredOut)
-async def get_filtered_reviews(request: Request, location_ids: LocationIDs = None) -> ReviewListFilteredOut:
+async def get_filtered_reviews(request: Request, location_id: Annotated[list[str] | None, Query()] = None) -> ReviewListFilteredOut:
     """Get filtered reviews based on location and followed users.
 
     :param request: The request object (provided by FastAPI).
-    :param location_ids: (optional) The IDs of the locations to filter by. Defaults to None.
-    :return: A list of filtered reviews. If location_ids is not provided, all reviews from followed users are returned.
+    :param location_id: (optional) The IDs of the locations to filter by. Defaults to None.
+    :return: A list of filtered reviews. If no location_id are provided, all reviews from followed users are returned.
 
     .. note::
         Pydantic automatically validates the provided data against the model's schema upon instantiation,
         raising a `ValidationError` if the data does not conform to the specified structure and constraints.
     """
     user_id = review_service.extract_user_id_from_token(request)
-    headers = {k: v for k, v in request.headers.items() if k not in ("content-type", "content-length")}
-    response = requests.get(f'http://kong:8000/users/{user_id}', headers=headers)
-    return await review_service.get_reviews_by_locations(location_ids, response.json()["following"], user_id)
+    response = requests.get(f'http://kong:8000/users/{user_id}', headers=request.headers)
+    return await review_service.get_reviews_by_locations(location_id, response.json()["following"], user_id)
 
 
 @app.patch("/{review_id}/likes", status_code=status.HTTP_200_OK, response_model=ReviewOut)
