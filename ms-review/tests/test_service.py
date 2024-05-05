@@ -29,6 +29,10 @@ MOCK_REVIEW_DATA = {
     }
 }
 
+MOCK_UPDATE_REVIEW_DATA = {
+    "username": "new_username"
+}
+
 MOCK_REVIEW_RESPONSE_DATA = {
     "id": REVIEW_ID,
     "user_id": USER_ID,
@@ -131,6 +135,28 @@ async def test_append_review_image_by_id_update_issue(mock_boto3_client, review_
         mock_update_review_by_id.return_value = update_result
         with pytest.raises(HTTPException) as e:
             await review_service.append_review_image_by_id(REVIEW_ID, mock_image, USER_ID)
+        assert e.value.status_code == 400
+
+
+@pytest.mark.asyncio
+@patch('app.ReviewService.ReviewService.get_reviews_by_user_id')
+async def test_service_update_reviews_success(mock_get_reviews_by_user_id, review_service, test_review_update_model):
+    mock_get_reviews_by_user_id.return_value = ReviewListOut(**MOCK_REVIEW_LIST_RESPONSE_DATA)
+
+    await review_service.update_review(USER_ID, test_review_update_model(**MOCK_UPDATE_REVIEW_DATA))
+
+
+@pytest.mark.asyncio
+@patch('app.ReviewService.ReviewService.get_reviews_by_user_id')
+async def test_service_update_reviews_update_issue(mock_get_reviews_by_user_id, review_service, test_review_update_model):
+    mock_get_reviews_by_user_id.return_value = ReviewListOut(**MOCK_REVIEW_LIST_RESPONSE_DATA)
+
+    with patch.object(review_service.review_repo, "update_review_by_id") as mock_update_review_by_id:
+        update_result = MagicMock(spec=UpdateResult)
+        update_result.raw_result = {"updatedExisting": False}
+        mock_update_review_by_id.return_value = update_result
+        with pytest.raises(HTTPException) as e:
+            await review_service.update_review(USER_ID, test_review_update_model(**MOCK_UPDATE_REVIEW_DATA))
         assert e.value.status_code == 400
 
 

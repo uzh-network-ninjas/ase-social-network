@@ -5,6 +5,7 @@ from app.ReviewController import app  # Ensure this points to your FastAPI app i
 from app.ReviewService import ReviewService
 from app.models.ReviewCreate import ReviewCreate
 from app.models.ReviewOut import ReviewOut
+from app.models.ReviewUpdate import ReviewUpdate
 from app.models.ReviewListOut import ReviewListOut
 from app.models.ReviewListFilteredOut import ReviewListFilteredOut
 from fastapi.testclient import TestClient
@@ -23,6 +24,10 @@ def review_service():
 @pytest.fixture(scope="module")
 def test_review_create_model():
     return ReviewCreate
+
+@pytest.fixture(scope="module")
+def test_review_update_model():
+    return ReviewUpdate
 
 @pytest.fixture(scope="module")
 def test_review_out_model():

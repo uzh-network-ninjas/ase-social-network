@@ -90,6 +90,18 @@ async def test_append_review_image(mock_append_review_image, mock_extract_user_i
 
 
 @pytest.mark.asyncio
+@patch('app.ReviewService.ReviewService.extract_user_id_from_token', return_value=USER_ID)
+@patch('app.ReviewService.ReviewService.update_review')
+async def test_controller_update_existing_review_success(mock_update_review, mock_extract_user_id_from_token, test_app):
+    response = test_app.patch("/update_review", json={
+        "username": "new_username"
+    })
+    assert response.status_code == 204
+    mock_extract_user_id_from_token.assert_called_once()
+    mock_update_review.assert_called_once()
+
+
+@pytest.mark.asyncio
 @patch('app.ReviewService.ReviewService.validate_object_id', return_value=None)
 @patch('app.ReviewService.ReviewService.extract_user_id_from_token', return_value=USER_ID)
 @patch('app.ReviewService.ReviewService.get_review_by_id', return_value=MOCK_REVIEW_RESPONSE_DATA)
@@ -156,18 +168,6 @@ async def test_get_filtered_reviews(mock_get_reviews, mock_requests_get, mock_ex
     assert response.status_code == 200
     assert response.json() == MOCK_REVIEW_LIST_FILTERED_RESPONSE_DATA
     assert test_review_list_filtered_out_model(**response.json())
-
-
-@pytest.mark.asyncio
-@patch('app.ReviewService.ReviewService.extract_user_id_from_token', return_value=USER_ID)
-@patch('app.ReviewService.ReviewService.update_reviews')
-async def test_controller_update_review_success(mock_update_reviews, mock_extract_user_id_from_token, test_app):
-    response = test_app.patch("/update_reviews", json={
-        "username": "new_username"
-    })
-    assert response.status_code == 204
-    mock_extract_user_id_from_token.assert_called_once()
-    mock_update_reviews.assert_called_once()
 
 
 @pytest.mark.asyncio
