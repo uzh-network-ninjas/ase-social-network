@@ -8,6 +8,7 @@ import { computed, ref } from 'vue'
 import Button from 'primevue/button'
 import { useAuthStore } from '@/stores/auth'
 import FileUpload from '@/components/FileUpload.vue'
+import LanguageSelection from '@/components/LanguageSelection.vue'
 
 const authStore = useAuthStore()
 
@@ -117,6 +118,15 @@ const updateUsername = function () {
       <span v-if="usernameChanged" class="text-light w-full truncate text-secondary">
         {{ $t('username_change_success') }}
       </span>
+    </div>
+    <div class="flex flex-col gap-8">
+      <div class="w-full border-b border-b-medium-emphasis">
+        <h2 class="mb-2 text-xl font-light text-medium-emphasis">{{ $t('language') }}</h2>
+      </div>
+      <FloatLabel class="sm:w-fit">
+        <LanguageSelection id="language-selection" showFlag />
+        <label for="language-selection">{{ $t('language') }}</label>
+      </FloatLabel>
     </div>
   </div>
 </template>
