@@ -92,8 +92,8 @@ async def test_append_review_image(mock_append_review_image, mock_extract_user_i
 @pytest.mark.asyncio
 @patch('app.ReviewService.ReviewService.extract_user_id_from_token', return_value=USER_ID)
 @patch('app.ReviewService.ReviewService.update_review')
-async def test_controller_update_existing_review_success(mock_update_review, mock_extract_user_id_from_token, test_app):
-    response = test_app.patch("/update_review", json={
+async def test_controller_update_review_success(mock_update_review, mock_extract_user_id_from_token, test_app):
+    response = test_app.patch("/", json={
         "username": "new_username"
     })
     assert response.status_code == 204
