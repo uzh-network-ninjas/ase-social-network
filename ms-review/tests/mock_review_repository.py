@@ -41,7 +41,7 @@ class MockReviewRepository:
         return insert_one_result
 
     @staticmethod
-    async def update_review_image(review_id, review_image) -> UpdateResult:
+    async def update_review_by_id(review_id, updated_review) -> UpdateResult:
         update_result = MagicMock(spec=UpdateResult)
         update_result.raw_result = {"updatedExisting": True}
         return update_result
