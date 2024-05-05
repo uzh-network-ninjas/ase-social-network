@@ -37,6 +37,8 @@ import MapIcon from '@/icons/MapIcon.vue'
 import ListBulletIcon from '@/icons/ListBulletIcon.vue'
 import FlagDe from '@/icons/flags/FlagDe.vue'
 import FlagEn from '@/icons/flags/FlagEn.vue'
+import LikeIcon from '@/icons/LikeIcon.vue'
+import LikeSolidIcon from '@/icons/LikeSolidIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -78,6 +80,8 @@ export type IconType =
   | 'list-bullet'
   | 'flag-de'
   | 'flag-en'
+  | 'like'
+  | 'like-solid'
   | undefined
 
 withDefaults(
@@ -266,4 +270,11 @@ defineOptions({
   />
   <FlagDe v-else-if="icon == 'flag-de'" v-bind="$attrs" />
   <FlagEn v-else-if="icon == 'flag-en'" v-bind="$attrs" />
+  <LikeIcon v-else-if="icon == 'like'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
+  <LikeSolidIcon
+    v-else-if="icon == 'like-solid'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
 </template>

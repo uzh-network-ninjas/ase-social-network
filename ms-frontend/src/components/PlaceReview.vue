@@ -5,13 +5,18 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { TimeConverter } from '@/utils/timeConverter'
 import type { User } from '@/types/User'
 import { userService } from '@/services/userService'
+import { reviewService } from '@/services/reviewService'
+import Button from 'primevue/button'
 
 const props = withDefaults(
   defineProps<{
     header?: 'USER' | 'PLACE'
     userId: string
     username: string
+    reviewId: string
     text: string
+    like_count: number
+    liked_by_current_user: boolean
     rating: number
     locationId: string
     locationName: string
@@ -24,6 +29,9 @@ const props = withDefaults(
   }
 )
 
+const likes = ref<number>(0)
+const liked_by_me = ref<boolean>()
+
 const createdHumanReadable = computed(() => {
   return TimeConverter.humanReadable(props.createdAt)
 })
@@ -34,6 +42,8 @@ onMounted(() => {
   if (props.header === 'USER') {
     getUserProfilePicture()
   }
+  likes.value = props.like_count
+  liked_by_me.value = props.liked_by_current_user
 })
 
 watch(
@@ -52,6 +62,26 @@ const getUserProfilePicture = function () {
   userService.getUser(props.userId).then((user: User) => {
     userProfilePicture.value = user.image
   })
+}
+
+const toggleLikeOrUnlike = async () => {
+  if (!liked_by_me.value) {
+    try {
+      await reviewService.likeReview(props.reviewId)
+      liked_by_me.value = true
+      likes.value++
+    } catch (error) {
+      console.error('Error liking review:', error)
+    }
+  } else {
+    try {
+      await reviewService.unlikeReview(props.reviewId)
+      liked_by_me.value = false
+      likes.value--
+    } catch (error) {
+      console.error('Error unliking review:', error)
+    }
+  }
 }
 </script>
 
@@ -113,6 +143,27 @@ const getUserProfilePicture = function () {
         class="w-full max-w-[400px] object-cover"
         alt="of review place"
       />
+    </div>
+    <div class="flex items-center justify-between self-stretch px-2 py-0">
+      <div class="flex items-start gap-4">
+        <Button text rounded @click="toggleLikeOrUnlike()">
+          <template #icon>
+            <BaseIcon
+              :icon="liked_by_me ? 'like-solid' : 'like'"
+              :class="'text-primary'"
+              :size="5"
+              :strokeWidth="1.5"
+            />
+          </template>
+        </Button>
+        <div class="flex h-6 items-center justify-center gap-2.5">
+          <div
+            class="font-inter text-base font-light not-italic leading-[normal] text-medium-emphasis"
+          >
+            {{ likes }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
