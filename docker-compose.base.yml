@@ -11,7 +11,7 @@ x-ms-config:
   &ms-env
   LOKI_ENDPOINT: http://loki:3100/loki/api/v1/push
   LOG_LEVEL: ${LOG_LEVEL:-DEBUG}
-  GATEWAY_IP: "${GATEWAY_IP:-http://kong:8000}"
+  GATEWAY_IP: ${GATEWAY_IP}
 
 
 services:
