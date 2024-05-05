@@ -444,3 +444,11 @@ def test_service_get_dietary_criteria():
     assert Preferences.ERITREAN == dietary_criteria.preferences[-1]
     assert Restrictions.VEGETARIAN == dietary_criteria.restrictions[0]
     assert Restrictions.KOSHER == dietary_criteria.restrictions[-1]
+
+
+@patch("app.logging_config.logger.error", return_value=None)
+def test_validate_object_id_invalid_id(mock_logger_error):
+    with pytest.raises(HTTPException) as e:
+        user_service.validate_object_id("invalid_id")
+    mock_logger_error.assert_called_once()
+    assert e.value.status_code == 422

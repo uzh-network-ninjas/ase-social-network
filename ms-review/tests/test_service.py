@@ -144,7 +144,8 @@ async def test_service_update_review_success(mock_get_reviews_by_user_id, review
 
 @pytest.mark.asyncio
 @patch('app.ReviewService.ReviewService.get_reviews_by_user_id')
-async def test_service_update_review_update_issue(mock_get_reviews_by_user_id, review_service, test_review_update_model):
+async def test_service_update_review_update_issue(mock_get_reviews_by_user_id, review_service,
+                                                  test_review_update_model):
     mock_get_reviews_by_user_id.return_value = ReviewListOut(**MOCK_REVIEW_LIST_RESPONSE_DATA)
 
     with patch.object(review_service.review_repo, "update_review_by_id") as mock_update_review_by_id:
