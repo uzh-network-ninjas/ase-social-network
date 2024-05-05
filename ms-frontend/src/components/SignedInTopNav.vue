@@ -38,7 +38,7 @@ const onSearch = function (query: string, placeId: string | undefined) {
 </script>
 
 <template>
-  <Navbar :titleTo="{ name: 'home' }">
+  <Navbar :titleTo="{ name: 'home' }" :showLanguageSelection="false">
     <template #center>
       <AutocompletePlaceSearch @search="onSearch" />
     </template>
