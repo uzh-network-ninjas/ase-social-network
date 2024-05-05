@@ -8,7 +8,7 @@ from app.models.ReviewCreate import ReviewCreate
 from app.models.ReviewListOut import ReviewListOut
 from app.models.ReviewListFilteredOut import ReviewListFilteredOut, LocationReviews
 from app.models.ReviewOut import ReviewOut
-from app.models.ReviewCreateImage import ReviewCreateImage
+from app.models.ReviewUpdate import ReviewUpdate
 from app.ReviewRepository import ReviewRepository
 from bson import ObjectId
 from datetime import datetime
@@ -64,11 +64,24 @@ class ReviewService:
             logger.error(f"Could not upload an image to s3: {e}")
             raise HTTPException(status_code=400, detail="Could not append review image!")
 
-        updated_review = ReviewCreateImage(image=object_key)
-        result = await self.review_repo.update_review_image(review_id, updated_review)
+        updated_review = ReviewUpdate(image=object_key)
+        result = await self.review_repo.update_review_by_id(review_id, updated_review)
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update review image reference!")
         return await self.get_review_by_id(review_id, user_id)
+
+    async def update_review(self, user_id: str, updated_review: ReviewUpdate):
+        """
+        Gets all reviews written by the user and updates each with the new username
+
+        :param user_id: The ID of the user.
+        :param updated_review: The updated review data (new username).
+        """
+        reviews_to_update = await self.get_reviews_by_user_id(user_id, "")
+        for review in reviews_to_update.reviews:
+            result = await self.review_repo.update_review_by_id(review.id, updated_review)
+            if not result.raw_result["updatedExisting"]:
+                raise HTTPException(status_code=400, detail="Could not update review!")
 
     async def get_review_by_id(self, review_id: str, user_id: str) -> ReviewOut:
         """Get a review by its ID.
