@@ -270,12 +270,7 @@ defineOptions({
   />
   <FlagDe v-else-if="icon == 'flag-de'" v-bind="$attrs" />
   <FlagEn v-else-if="icon == 'flag-en'" v-bind="$attrs" />
-  <LikeIcon
-    v-else-if="icon == 'like'"
-    v-bind="$attrs"
-    :size="size"
-    :strokeWidth="strokeWidth"
-  />
+  <LikeIcon v-else-if="icon == 'like'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
   <LikeSolidIcon
     v-else-if="icon == 'like-solid'"
     v-bind="$attrs"
