@@ -48,7 +48,7 @@ async def append_review_image(request: Request, review_id: Annotated[str, Form()
     return await review_service.append_review_image_by_id(review_id, image, user_id)
 
 
-@app.patch("/", status_code=status.HTTP_204_NO_CONTENT)
+@app.patch("/", status_code=status.HTTP_204_NO_CONTENT, include_in_schema=False)
 async def update_review(request: Request, updated_review: ReviewUpdate):
     """
     Updates all reviews written by the user with the newly chosen username
