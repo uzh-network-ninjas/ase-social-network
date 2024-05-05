@@ -110,7 +110,7 @@ class UserService:
             logger.error(f"Could not upload an image to s3: {e}")
             raise HTTPException(status_code=400, detail="Could not update user profile picture!")
 
-        updated_user = UserUpdate(image=f"{os.getenv("S3_DEFAULT_INSTANCE")}/{bucket_name}/{object_key}")
+        updated_user = UserUpdate(image=f"{os.getenv("S3_DEFAULT_INSTANCE", "https://localhost.localstack.cloud:4566")}/{bucket_name}/{object_key}")
         return await self.update_user_by_id(user_id, updated_user)
 
     async def delete_user_by_id(self, user_id: str):
