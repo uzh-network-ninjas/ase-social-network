@@ -4,6 +4,8 @@ import Button from 'primevue/button'
 import router from '@/router'
 import type { RouteLocationRaw } from 'vue-router'
 
+import LanguageSelection from '@/components/LanguageSelection.vue'
+
 export interface MenuOption {
   labelKey: string
   icon?: IconType
@@ -14,12 +16,15 @@ export interface MenuOption {
 
 withDefaults(
   defineProps<{
+    titleTo: RouteLocationRaw
     actions?: MenuOption[]
     iconPos?: 'left' | 'right' | 'top' | 'bottom'
+    showLanguageSelection?: boolean
   }>(),
   {
     actions: () => [],
-    iconPos: 'left'
+    iconPos: 'left',
+    showLanguageSelection: true
   }
 )
 </script>
@@ -30,7 +35,7 @@ withDefaults(
       <li>
         <router-link
           class="flex w-fit items-center gap-2 rounded-lg text-primary outline-none ring-primary ring-offset-1 focus-visible:ring-1"
-          :to="{ name: 'home' }"
+          :to="titleTo"
         >
           <BaseIcon icon="sparkles" :stroke-width="1.5" class="h-8 w-8" />
           <span class="text-xl font-medium uppercase tracking-widest max-sm:hidden"
@@ -40,6 +45,9 @@ withDefaults(
       </li>
       <slot name="center">
         <li class="grow" aria-hidden="true"></li>
+        <li v-if="showLanguageSelection">
+          <LanguageSelection plain />
+        </li>
         <li
           v-for="action in actions"
           :key="`${action.labelKey}:${action.to}`"

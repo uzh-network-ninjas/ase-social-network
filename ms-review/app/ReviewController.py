@@ -1,9 +1,11 @@
 import requests
+import os
 
 from app.models.ReviewCreate import ReviewCreate
 from app.models.ReviewListFilteredOut import ReviewListFilteredOut
 from app.models.ReviewListOut import ReviewListOut
 from app.models.ReviewOut import ReviewOut
+from app.models.ReviewUpdate import ReviewUpdate
 from app.ReviewService import ReviewService
 from app.ReviewRepository import ReviewRepository
 from datetime import datetime
@@ -45,6 +47,18 @@ async def append_review_image(request: Request, review_id: Annotated[str, Form()
     return await review_service.append_review_image_by_id(review_id, image, user_id)
 
 
+@app.patch("/", status_code=status.HTTP_204_NO_CONTENT, include_in_schema=False)
+async def update_review(request: Request, updated_review: ReviewUpdate):
+    """
+    Updates all reviews written by the user with the newly chosen username
+
+    :param request: The request object (provided by FastAPI)
+    :param updated_review: The updated review data (new username).
+    """
+    user_id = review_service.extract_user_id_from_token(request)
+    await review_service.update_review(user_id, updated_review)
+
+
 @app.get("/{review_id}", status_code=status.HTTP_200_OK, response_model=ReviewOut)
 async def get_review(request: Request, review_id: str) -> ReviewOut:
     """Get a review by its ID.
@@ -67,7 +81,7 @@ async def get_feed(request: Request, timestamp_cursor: datetime = None) -> Revie
     :return: A list of reviews in the feed.
     """
     user_id = review_service.extract_user_id_from_token(request)
-    response = requests.get(f'http://kong:8000/users/{user_id}', headers=request.headers)
+    response = requests.get(f'{os.getenv("GATEWAY_IP", "http://kong:8000")}/users/{user_id}', headers=request.headers)
     return await review_service.get_feed_by_cursor(timestamp_cursor, response.json()["following"], user_id)
 
 
@@ -97,7 +111,7 @@ async def get_filtered_reviews(request: Request, location_id: Annotated[list[str
         raising a `ValidationError` if the data does not conform to the specified structure and constraints.
     """
     user_id = review_service.extract_user_id_from_token(request)
-    response = requests.get(f'http://kong:8000/users/{user_id}', headers=request.headers)
+    response = requests.get(f'{os.getenv("GATEWAY_IP", "http://kong:8000")}/users/{user_id}', headers=request.headers)
     return await review_service.get_reviews_by_locations(location_id, response.json()["following"], user_id)
 
 

@@ -1,3 +1,6 @@
+import requests
+import os
+
 from app.models.DietaryCriteria import DietaryCriteria
 from app.models.UserUpdate import UserUpdate
 from app.models.UserOut import UserOut
@@ -42,7 +45,10 @@ async def update_user(request: Request, updated_user: UserUpdate) -> UserOut:
     :return: A UserOut object showing the updated user details.
     """
     user_id = user_service.extract_user_id_from_token(request)
-    return await user_service.update_user_by_id(user_id, updated_user)
+    user = await user_service.update_user_by_id(user_id, updated_user)
+    if updated_user.username:
+        requests.patch(f'{os.getenv("GATEWAY_IP", "http://kong:8000")}/reviews/', headers=request.headers, json={"username": user.username})
+    return user
 
 
 @app.patch("/image", status_code=status.HTTP_200_OK, response_model=UserOut)

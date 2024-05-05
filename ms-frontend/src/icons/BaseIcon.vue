@@ -35,6 +35,8 @@ import PhoneIcon from '@/icons/PhoneIcon.vue'
 import MiniChevronLeftIcon from '@/icons/MiniChevronLeftIcon.vue'
 import MapIcon from '@/icons/MapIcon.vue'
 import ListBulletIcon from '@/icons/ListBulletIcon.vue'
+import FlagDe from '@/icons/flags/FlagDe.vue'
+import FlagEn from '@/icons/flags/FlagEn.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -74,6 +76,8 @@ export type IconType =
   | 'mini-chevron-left'
   | 'map'
   | 'list-bullet'
+  | 'flag-de'
+  | 'flag-en'
   | undefined
 
 withDefaults(
@@ -260,4 +264,6 @@ defineOptions({
     :size="size"
     :strokeWidth="strokeWidth"
   />
+  <FlagDe v-else-if="icon == 'flag-de'" v-bind="$attrs" />
+  <FlagEn v-else-if="icon == 'flag-en'" v-bind="$attrs" />
 </template>

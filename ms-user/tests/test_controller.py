@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch
 from datetime import datetime
+from app.models.UserOut import UserOut
 
 # Test data setup
 test_user_id = "test_user_id"
@@ -78,12 +79,14 @@ async def test_controller_search_user_success(mock_get_user_by_username, test_ap
 @pytest.mark.asyncio
 @patch('jwt.decode')  # Mock jwt.decode directly
 @patch('app.UserService.UserService.update_user_by_id')
-async def test_controller_update_user_success(mock_update_user_by_id, mock_jwt_decode, test_app):
+@patch('requests.patch')
+async def test_controller_update_user_success(mock_request, mock_update_user_by_id, mock_jwt_decode, test_app):
     mock_jwt_decode.return_value = {"sub": test_user_id}  # Mocked user ID to be returned by jwt.decode
-    mock_update_user_by_id.return_value = test_user_update
+    mock_update_user_by_id.return_value = UserOut(**test_user_update)
     response = test_app.patch("/", json=test_user, headers=test_headers)
     assert response.status_code == 200
     assert response.json() == test_user_update
+    mock_request.assert_called_once()
 
 
 @pytest.mark.asyncio

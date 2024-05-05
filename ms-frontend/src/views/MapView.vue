@@ -10,6 +10,7 @@ import Dropdown from 'primevue/dropdown'
 import ToggleButton from 'primevue/togglebutton'
 import MiniChevronDown from '@/icons/MiniChevronDownIcon.vue'
 import { reviewService } from '@/services/reviewService'
+import { useI18n } from 'vue-i18n'
 
 type PlaceResultData = {
   place: google.maps.places.PlaceResult
@@ -21,6 +22,8 @@ const props = defineProps<{
   query?: string
   placeId?: string
 }>()
+
+const i18n = useI18n()
 
 let placesService: google.maps.places.PlacesService
 
@@ -146,7 +149,8 @@ const clearMarker = function () {
 const getPlaceLocation = function (placeId: string) {
   let request = {
     placeId: placeId,
-    fields: ['place_id', 'name', 'geometry', 'icon']
+    fields: ['place_id', 'name', 'geometry', 'icon'],
+    language: i18n.locale.value
   }
 
   clearMarker()
@@ -175,7 +179,8 @@ const getPlaceDetails = function (placeId: string) {
       'type',
       'editorial_summary',
       'geometry'
-    ]
+    ],
+    language: i18n.locale.value
   }
 
   placesService.getDetails(
@@ -197,7 +202,8 @@ const querySearch = function (query: string, restrictBounds: boolean) {
     bounds: restrictBounds ? mapBounds.value : undefined,
     location: restrictBounds ? undefined : map.value?.getCenter(),
     radius: 1000,
-    keyword: query
+    keyword: query,
+    language: i18n.locale.value
   }
   clearMarker()
   placesService.nearbySearch(request, callbackArray)

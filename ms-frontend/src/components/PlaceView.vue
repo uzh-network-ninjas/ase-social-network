@@ -250,7 +250,7 @@ const getReviews = function () {
         <h2 class="text-xl uppercase tracking-[6px] text-medium-emphasis">Reviews</h2>
         <Button class="w-full" rounded :label="$t('create_review')" @click="openCreateModal()" />
         <div class="w-full text-center font-light text-secondary" v-if="uploadSuccess">
-          Review created successfully
+          {{ $t('create_review_success') }}
         </div>
         <CreateReviewModal
           v-if="showCreateModal && location"
