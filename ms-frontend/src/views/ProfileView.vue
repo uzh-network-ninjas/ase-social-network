@@ -179,7 +179,10 @@
                   :key="review.id"
                   :userId="review.userId"
                   :username="review.username"
+                  :review-id="review.id"
                   :text="review.text"
+                  :like_count="review.like_count"
+                  :liked_by_current_user="review.liked_by_current_user"
                   :rating="review.rating"
                   :locationId="review.location.id"
                   :locationName="review.location.name"
@@ -273,7 +276,6 @@ const followButtonText = computed(() => {
 const getReviews = async () => {
   try {
     reviews.value = await reviewService.getUserReviews(props.userId)
-    console.log(reviews.value)
   } catch (error: any) {
     if (error.response.status == 404) {
       reviews.value = []

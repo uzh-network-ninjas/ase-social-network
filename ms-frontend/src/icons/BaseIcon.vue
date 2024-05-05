@@ -35,6 +35,8 @@ import PhoneIcon from '@/icons/PhoneIcon.vue'
 import MiniChevronLeftIcon from '@/icons/MiniChevronLeftIcon.vue'
 import MapIcon from '@/icons/MapIcon.vue'
 import ListBulletIcon from '@/icons/ListBulletIcon.vue'
+import LikeIcon from '@/icons/LikeIcon.vue'
+import LikeSolidIcon from '@/icons/LikeSolidIcon.vue'
 
 export type IconType =
   | 'exclamation-circle'
@@ -74,6 +76,8 @@ export type IconType =
   | 'mini-chevron-left'
   | 'map'
   | 'list-bullet'
+  | 'like'
+  | 'like-solid'
   | undefined
 
 withDefaults(
@@ -256,6 +260,18 @@ defineOptions({
   <MapIcon v-else-if="icon == 'map'" v-bind="$attrs" :size="size" :strokeWidth="strokeWidth" />
   <ListBulletIcon
     v-else-if="icon == 'list-bullet'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <LikeIcon
+    v-else-if="icon == 'like'"
+    v-bind="$attrs"
+    :size="size"
+    :strokeWidth="strokeWidth"
+  />
+  <LikeSolidIcon
+    v-else-if="icon == 'like-solid'"
     v-bind="$attrs"
     :size="size"
     :strokeWidth="strokeWidth"

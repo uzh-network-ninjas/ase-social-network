@@ -49,5 +49,13 @@ export const reviewService = {
     return response.data['location_reviews'].map(
       (locationReviewData: any) => new LocationReviews(locationReviewData)
     )
+  },
+
+  async likeReview(review_id: string) {
+    await apiClient.patch(`reviews/${review_id}/likes`)
+  },
+
+  async unlikeReview(review_id: string) {
+    await apiClient.delete(`reviews/${review_id}/likes`)
   }
 }

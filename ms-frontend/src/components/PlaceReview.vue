@@ -5,13 +5,18 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { TimeConverter } from '@/utils/timeConverter'
 import type { User } from '@/types/User'
 import { userService } from '@/services/userService'
+import { reviewService } from '@/services/reviewService'
+import Button from 'primevue/button'
 
 const props = withDefaults(
   defineProps<{
     header?: 'USER' | 'PLACE'
     userId: string
     username: string
+    reviewId: string
     text: string
+    like_count: number
+    liked_by_current_user: boolean
     rating: number
     locationId: string
     locationName: string
@@ -24,6 +29,9 @@ const props = withDefaults(
   }
 )
 
+const likes = ref<number>(0)
+const liked_by_me = ref<boolean>()
+
 const createdHumanReadable = computed(() => {
   return TimeConverter.humanReadable(props.createdAt)
 })
@@ -34,6 +42,8 @@ onMounted(() => {
   if (props.header === 'USER') {
     getUserProfilePicture()
   }
+  likes.value = props.like_count
+  liked_by_me.value = props.liked_by_current_user
 })
 
 watch(
@@ -53,6 +63,29 @@ const getUserProfilePicture = function () {
     userProfilePicture.value = user.image
   })
 }
+
+const toggleLikeOrUnlike = async () => {
+  if (!liked_by_me.value) {
+    try {
+      await reviewService.likeReview(props.reviewId)
+      liked_by_me.value = true
+      likes.value++
+    } catch (error) {
+      console.error('Error liking review:', error)
+    }
+  }
+  else {
+    try {
+      await reviewService.unlikeReview(props.reviewId)
+      liked_by_me.value = false
+      likes.value--
+    } catch (error) {
+      console.error('Error unliking review:', error)
+    }
+  }
+}
+
+
 </script>
 
 <template>
@@ -61,20 +94,12 @@ const getUserProfilePicture = function () {
       <template v-if="header === 'USER'">
         <router-link :to="{ name: 'profile', params: { userId: userId } }">
           <div class="flex items-center gap-2">
-            <div
-              v-if="userProfilePicture"
-              class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full"
-            >
-              <img
-                :src="`${baseUrl}/ms-user/${userProfilePicture}`"
-                class="h-full w-full object-cover"
-                alt="of user"
-              />
+            <div v-if="userProfilePicture"
+              class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
+              <img :src="`${baseUrl}/ms-user/${userProfilePicture}`" class="h-full w-full object-cover" alt="of user" />
             </div>
-            <div
-              v-else
-              class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-medium-emphasis"
-            >
+            <div v-else
+              class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-medium-emphasis">
               <BaseIcon icon="user" class="!h-4 !w-4 text-medium-emphasis" />
             </div>
             <div class="flex flex-col">
@@ -108,11 +133,23 @@ const getUserProfilePicture = function () {
       <span class="text-justify font-light text-medium-emphasis">{{ text }}</span>
     </div>
     <div v-if="image" class="w-full">
-      <img
-        :src="`${baseUrl}/ms-review/${image}`"
-        class="w-full max-w-[400px] object-cover"
-        alt="of review place"
-      />
+      <img :src="`${baseUrl}/ms-review/${image}`" class="w-full max-w-[400px] object-cover" alt="of review place" />
+    </div>
+    <div class="flex justify-between items-center self-stretch px-2 py-0">
+      <div class="flex items-start gap-4">
+        <Button text rounded  @click="toggleLikeOrUnlike()">
+          <template #icon>
+            <BaseIcon :icon="liked_by_me ? 'like-solid' : 'like'" :class = "'text-primary'" :size="5" :strokeWidth="1.5" />
+          </template>
+        </Button>
+        <div class="flex h-6 justify-center items-center gap-2.5">
+          <div class="text-base not-italic font-light leading-[normal] font-inter text-medium-emphasis">{{ likes }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
+
+
 </template>
