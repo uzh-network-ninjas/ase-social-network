@@ -113,7 +113,7 @@ const toggleLikeOrUnlike = async () => {
           <div class="flex items-center gap-2">
             <div class="flex flex-col">
               <span class="text-lg font-light text-secondary"> {{ locationName }} </span>
-              <span class="-mt-1 text-sm font-light text-medium-emphasis">
+              <span class="-mt-1 text-sm font-light capitalize text-medium-emphasis">
                 {{ locationType }}
               </span>
             </div>

@@ -41,7 +41,7 @@ const sideNavActions: SideMenuOption[] = [
       v-if="authStore.signedIn"
       class="z-40 bg-white py-3 max-sm:border-b max-sm:border-b-medium-emphasis max-sm:px-2 sm:px-4"
     >
-      <h1 class="ml-8 text-2xl font-extralight text-medium-emphasis">Home</h1>
+      <h1 class="ml-8 text-2xl font-extralight text-medium-emphasis">{{ $t('home') }}</h1>
     </div>
   </header>
 

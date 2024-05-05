@@ -35,7 +35,7 @@ export const reviewService = {
 
   async getUserReviews(user_id: string): Promise<Review[]> {
     const response = await apiClient.get('reviews/users/', { params: { user_id: user_id } })
-    return response.data.reviews.map((review : any) => new Review(review))
+    return response.data.reviews.map((review: any) => new Review(review))
   },
 
   async getReviewByPlaceIds(placeIds: string[]): Promise<LocationReviews[]> {

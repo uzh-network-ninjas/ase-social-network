@@ -15,7 +15,7 @@ export default {
 
       'rounded-lg',
       'outline-none',
-
+      'font-light',
       'border',
 
       { 'focus-within:border-primary': !props.disabled && !props.invalid },
@@ -70,7 +70,7 @@ export default {
     class: [
       'text-base',
       'text-medium-emphasis',
-
+      'font-light',
       'px-4',
       'py-2',
       'rounded-lg',

@@ -28,55 +28,69 @@ restrictions_list = ["Vegetarian", "Vegan", "Lactose Intolerant", "Ovo", "Pescet
                      "Pollo", "Halal", "Kosher"]
 
 # Function to create users and update their preferences
+
+def create_user(i):
+    username = f'user{i}'
+    email = f'{username}@uzh.ch'
+    user_data = {
+        "username": username,
+        "email": email,
+        "password": "user"
+    }
+
+    response = requests.post(base_url+"/authenticator/user", headers=headers, json=user_data)
+
+    if response.status_code in [200, 201]:
+        print(f'Successfully created {username}')
+        access_token = response.json().get('access_token')
+        if not access_token:
+            raise Exception(f'Access token not found for {username}')
+        user_data['access_token'] = access_token
+
+        return user_data
+    else:
+        raise Exception(f'Failed to create {username}: {response.text}')
+        
+        
+
 def create_and_update_users():
     for i in range(1, 11):
-        username = f'user{i}'
-        email = f'{username}@uzh.ch'
-        user_data = {
-            "username": username,
-            "email": email,
-            "password": "user"
-        }
-
-        # Create user
         while True:
             try:
-                response = requests.post(base_url+"/authenticator/user", headers=headers, json=user_data)
-                if response.status_code in [200, 201]:
-                    print(f'Successfully created {username}')
-                    # Extract the access_token from the response
-                    access_token = response.json().get('access_token')
-                    if access_token:
-                        # Randomly select preferences and restrictions
-                        chosen_preferences = random.sample(preferences_list, 5)
-                        chosen_restrictions = random.sample(restrictions_list, random.randint(0, 1))
+                user_data = create_user(i)
+                access_token = user_data['access_token'] 
+                username = user_data['username']
 
-                        # Prepare the data for updating user preferences
-                        update_data = {
-                            "preferences": chosen_preferences,
-                            "restrictions": chosen_restrictions
-                        }
+                # Randomly select preferences and restrictions
+                chosen_preferences = random.sample(preferences_list, 5)
+                chosen_restrictions = random.sample(restrictions_list, random.randint(0, 1))
 
-                        # Set the authorization header with the access token
-                        auth_headers = {
-                            'Content-Type': 'application/json',
-                            'Authorization': f'Bearer {access_token}'
-                        }
+                # Prepare the data for updating user preferences
+                update_data = {
+                    "preferences": chosen_preferences,
+                    "restrictions": chosen_restrictions
+                }
 
-                        # Update user preferences
-                        update_response = requests.patch(f'{base_url}/users', headers=auth_headers, json=update_data)
-                        if update_response.status_code in [200, 201]:
-                            print(f'Successfully updated preferences for {username}')
-                        else:
-                            print(f'Failed to update preferences for {username}: {update_response.text}')
-                    else:
-                        print(f'Access token not found for {username}')
+                # Set the authorization header with the access token
+                auth_headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {access_token}'
+                }
+
+                # Update user preferences
+                update_response = requests.patch(f'{base_url}/users', headers=auth_headers, json=update_data)
+                if update_response.status_code in [200, 201]:
+                    print(f'Successfully updated preferences for {username}')
                 else:
-                    print(f'Failed to create {username}: {response.text}')
+                    print(f'Failed to update preferences for {username}: {update_response.text}')
                 break
             except requests.ConnectionError:
                 print(f'Failed to connect to {base_url}')
-                print(f'Retrying in 5 seconds')
+                print('Retrying in 5 seconds')
+                time.sleep(5)
+            except Exception:
+                print(f'Failed to connect to {base_url}')
+                print('Retrying in 5 seconds')
                 time.sleep(5)
 
 # Run the function to create and update users

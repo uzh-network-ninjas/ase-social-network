@@ -56,11 +56,11 @@ const clearSearchTerm = function () {
 <template>
   <header class="sticky top-0 z-20">
     <SignedInTopNav />
-    <PageHeader label="Search User" />
+    <PageHeader :label="$t('search_user')" />
     <div class="w-full px-4">
       <FloatLabel class="mt-4">
         <IconField iconPosition="right">
-          <InputText v-model="searchTerm"></InputText>
+          <InputText id="search_user_field" v-model="searchTerm"></InputText>
           <InputIcon>
             <BaseIcon
               v-if="searchTerm"
@@ -75,12 +75,12 @@ const clearSearchTerm = function () {
             <BaseIcon v-else icon="magnifying-glass" :size="5" />
           </InputIcon>
         </IconField>
-        <label for="password">{{ 'Search' }}</label>
+        <label for="search_user_field">{{ $t('search_user') }}</label>
       </FloatLabel>
     </div>
     <div class="mx-4 mt-2 border-b border-b-medium-emphasis px-4 py-2">
       <span class="text-sm font-light text-medium-emphasis">{{
-        `Users - ${searchResults.length}`
+        `${$t('user')} - ${searchResults.length}`
       }}</span>
     </div>
   </header>

@@ -35,6 +35,8 @@ import PhoneIcon from '@/icons/PhoneIcon.vue'
 import MiniChevronLeftIcon from '@/icons/MiniChevronLeftIcon.vue'
 import MapIcon from '@/icons/MapIcon.vue'
 import ListBulletIcon from '@/icons/ListBulletIcon.vue'
+import FlagDe from '@/icons/flags/FlagDe.vue'
+import FlagEn from '@/icons/flags/FlagEn.vue'
 import LikeIcon from '@/icons/LikeIcon.vue'
 import LikeSolidIcon from '@/icons/LikeSolidIcon.vue'
 
@@ -76,6 +78,8 @@ export type IconType =
   | 'mini-chevron-left'
   | 'map'
   | 'list-bullet'
+  | 'flag-de'
+  | 'flag-en'
   | 'like'
   | 'like-solid'
   | undefined
@@ -264,6 +268,8 @@ defineOptions({
     :size="size"
     :strokeWidth="strokeWidth"
   />
+  <FlagDe v-else-if="icon == 'flag-de'" v-bind="$attrs" />
+  <FlagEn v-else-if="icon == 'flag-en'" v-bind="$attrs" />
   <LikeIcon
     v-else-if="icon == 'like'"
     v-bind="$attrs"

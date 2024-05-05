@@ -64,7 +64,7 @@ async def test_create_review(mock_create_review, mock_extract_username, mock_ext
     mock_create_review.assert_called_once()
     mock_extract_username.assert_called_once()
     mock_extract_user_id.assert_called_once()
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response.json() == MOCK_REVIEW_RESPONSE_DATA
     assert test_review_out_model(**response.json())
 

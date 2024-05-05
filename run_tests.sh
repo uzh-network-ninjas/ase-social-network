@@ -38,7 +38,7 @@ run_e2e_tests() {
     # copy .env.example to .env
     cp .env.example .env
     # execute this -> from the main script
-    $script_dir/init.sh test
+    $script_dir/init.sh test -b
     if $WITH_COVERAGE; then
         echo "running e2e tests with coverage"
         $script_dir/support/testing/run_e2e_tests.sh "${REPORTS_DIR}" --with-coverage

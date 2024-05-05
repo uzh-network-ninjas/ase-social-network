@@ -2,7 +2,7 @@
   <div>
     <header class="sticky top-0 z-40">
       <SignedInTopNav />
-      <PageHeader label="Profile" />
+      <PageHeader :label="$t('profile')" />
     </header>
     <main class="flex h-[896px] shrink-0 flex-col items-start self-stretch">
       <!--Page-->
@@ -120,7 +120,7 @@
 
               <!--Share button-->
               <div class="flex items-center justify-center gap-3 px-4 py-1">
-                <Button outlined rounded label="Share" iconPos="left">
+                <Button outlined rounded :label="$t('share')" iconPos="left">
                   <template #icon>
                     <BaseIcon icon="share" :size="5" :strokeWidth="1.5" />
                   </template>
@@ -152,12 +152,12 @@
                   <div
                     class="font-inter text-base font-light not-italic leading-[normal] text-[color:var(--text-medium-emphasis,rgba(0,0,0,0.60))]"
                   >
-                    Sort By
+                    {{ $t('dropdown_sort_by') }}
                   </div>
                   <div
                     class="font-inter text-base font-normal not-italic leading-[normal] text-[color:var(--primary-color,#B1BF41)]"
                   >
-                    Rating
+                    {{ $t('dropdown_selection_rating') }}
                   </div>
                 </div>
               </div>
@@ -167,7 +167,7 @@
                 <div
                   class="font-inter flex h-6 items-center justify-center gap-2.5 text-base font-light not-italic leading-[normal] text-[color:var(--text-medium-emphasis,rgba(0,0,0,0.60))]"
                 >
-                  Lowest First
+                  {{ $t('ascending') }}
                 </div>
               </div>
             </div>
@@ -192,7 +192,7 @@
                 />
                 <div v-if="reviews.length === 0" class="w-full px-2 py-4 text-center">
                   <span class="font-light text-medium-emphasis">{{
-                    $t('no_reviews_for_place')
+                    $t('no_reviews_for_user')
                   }}</span>
                 </div>
               </div>

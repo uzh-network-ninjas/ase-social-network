@@ -16,4 +16,4 @@ ENV PORT 8080
 
 # Use shell form to use the PORT environment variable
 # for development only with --reload
-CMD uvicorn app.ReviewController:app --host 0.0.0.0 --port $PORT --reload
+CMD uvicorn app.ReviewController:app --host 0.0.0.0 --port "$PORT" --reload
