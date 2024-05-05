@@ -28,7 +28,6 @@ const createdHumanReadable = computed(() => {
   return TimeConverter.humanReadable(props.createdAt)
 })
 
-const baseUrl = import.meta.env.VITE_PICTURE_BASE_URL
 const userProfilePicture = ref<string | null>()
 onMounted(() => {
   if (props.header === 'USER') {
@@ -66,7 +65,7 @@ const getUserProfilePicture = function () {
               class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full"
             >
               <img
-                :src="`${baseUrl}/ms-user/${userProfilePicture}`"
+                :src="userProfilePicture"
                 class="h-full w-full object-cover"
                 alt="of user"
               />
@@ -109,7 +108,7 @@ const getUserProfilePicture = function () {
     </div>
     <div v-if="image" class="w-full">
       <img
-        :src="`${baseUrl}/ms-review/${image}`"
+        :src="image"
         class="w-full max-w-[400px] object-cover"
         alt="of review place"
       />

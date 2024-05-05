@@ -8,8 +8,6 @@ import { useAuthStore } from '@/stores/auth'
 import { type IconType } from '@/icons/BaseIcon.vue'
 import AutocompletePlaceSearch from '@/components/AutocompletePlaceSearch.vue'
 
-const baseUrl = import.meta.env.VITE_PICTURE_BASE_URL
-
 const authStore = useAuthStore()
 
 const emit = defineEmits<(e: 'search', query: string, placeId: string | undefined) => void>()
@@ -54,7 +52,7 @@ const onSearch = function (query: string, placeId: string | undefined) {
         <template #icon>
           <img
             v-if="authStore.user?.image"
-            :src="`${baseUrl}/ms-user/${authStore.user.image}`"
+            :src="authStore.user.image"
             class="h-8 w-8 rounded-full"
             alt=""
           />

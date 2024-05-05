@@ -25,7 +25,7 @@
             <img
               :src="profilePicUrl"
               alt="of user"
-              class="bg-lightgray z-10 h-32 w-32 shrink-0 rounded-[128px] bg-cover bg-center bg-no-repeat"
+              class="bg-lightgray z-10 h-32 w-32 shrink-0 rounded-[128px] bg-cover bg-center bg-no-repeat object-cover"
             />
           </div>
 
@@ -214,8 +214,6 @@ import PageHeader from '@/components/PageHeader.vue'
 import PlaceReview from '@/components/PlaceReview.vue'
 import { reviewService } from '@/services/reviewService'
 
-const baseUrl = import.meta.env.VITE_PICTURE_BASE_URL
-
 const props = defineProps<{
   userId: string
 }>()
@@ -226,7 +224,7 @@ const user = ref<User>()
 
 const profilePicUrl = computed<string>(() => {
   if (user.value?.image) {
-    return `${baseUrl}/ms-user/${user.value.image}`
+    return user.value.image
   } else {
     return 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
   }
