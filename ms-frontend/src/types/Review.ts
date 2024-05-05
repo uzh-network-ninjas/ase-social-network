@@ -17,6 +17,8 @@ export class Review {
     user_id: string
     username: string
     text: string
+    like_count: number
+    liked_by_current_user: boolean
     rating: number
     location: {
       id: string
