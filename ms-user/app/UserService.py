@@ -107,7 +107,8 @@ class UserService:
             file_content = await image.read()
             object_key = f"{s3_folder}/{user_id}/{image.filename}"
             s3_client.put_object(Bucket=bucket_name, Key=object_key, Body=file_content)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Could not upload an image to s3: {e}")
             raise HTTPException(status_code=400, detail="Could not update user profile picture!")
 
         updated_user = UserUpdate(image=f"{s3_endpoint}/{bucket_name}/{object_key}")
