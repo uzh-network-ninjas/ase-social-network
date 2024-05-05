@@ -1,4 +1,4 @@
-const endpoint = '/'
+const endpoint = '/home'
 describe('search a user', () => {
     beforeEach(() => {
         cy.loginByUI('user1', 'user');

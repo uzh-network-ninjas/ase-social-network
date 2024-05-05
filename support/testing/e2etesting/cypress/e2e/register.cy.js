@@ -49,7 +49,7 @@ describe('register as a user and add prefernences', () => {
     // click on submit button -> wait because is is enabled by state change
     cy.get('button:visible').contains("Next", { timeout: 5000 }).click()
     // assert new url is /
-    cy.url().should('eq', endpoint+'/')
+    cy.url().should('eq', endpoint+'/home')
     // there is Hello, userName
     cy.contains('Home')
   })
