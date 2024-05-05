@@ -70,7 +70,7 @@ class ReviewService:
             raise HTTPException(status_code=400, detail="Could not update review image reference!")
         return await self.get_review_by_id(review_id, user_id)
 
-    async def update_reviews(self, user_id: str, updated_review: ReviewUpdate):
+    async def update_review(self, user_id: str, updated_review: ReviewUpdate):
         """
         Gets all reviews written by the user and updates each with the new username
 

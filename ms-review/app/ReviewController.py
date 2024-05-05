@@ -48,6 +48,18 @@ async def append_review_image(request: Request, review_id: Annotated[str, Form()
     return await review_service.append_review_image_by_id(review_id, image, user_id)
 
 
+@app.patch("/update_review", status_code=status.HTTP_204_NO_CONTENT)
+async def update_existing_review(request: Request, updated_review: ReviewUpdate):
+    """
+    Updates all reviews written by the user with the newly chosen username
+
+    :param request: The request object (provided by FastAPI)
+    :param updated_review: The updated review data (new username).
+    """
+    user_id = review_service.extract_user_id_from_token(request)
+    await review_service.update_review(user_id, updated_review)
+
+
 @app.get("/{review_id}", status_code=status.HTTP_200_OK, response_model=ReviewOut)
 async def get_review(request: Request, review_id: str) -> ReviewOut:
     """Get a review by its ID.
@@ -103,18 +115,6 @@ async def get_filtered_reviews(request: Request, location_ids: LocationIDs = Non
     headers = {k: v for k, v in request.headers.items() if k not in ("content-type", "content-length")}
     response = requests.get(f'{os.getenv("GATEWAY_IP", "http://kong:8000")}/users/{user_id}', headers=headers)
     return await review_service.get_reviews_by_locations(location_ids, response.json()["following"], user_id)
-
-
-@app.patch("/update_reviews", status_code=status.HTTP_204_NO_CONTENT)
-async def update_review(request: Request, updated_review: ReviewUpdate):
-    """
-    Updates all reviews written by the user with the newly chosen username
-
-    :param request: The request object (provided by FastAPI)
-    :param updated_review: The updated review data (new username).
-    """
-    user_id = review_service.extract_user_id_from_token(request)
-    await review_service.update_reviews(user_id, updated_review)
 
 
 @app.patch("/{review_id}/likes", status_code=status.HTTP_200_OK, response_model=ReviewOut)
