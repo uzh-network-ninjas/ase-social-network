@@ -1,5 +1,4 @@
 # MS Review - FastAPI Microservice 🌟
-
 ## Overview
 The `ms-review` microservice manages all review-related functionalities within our application. It handles operations such as creating, updating, and querying reviews, and operates with its own dedicated database to maintain independence and performance.
 
@@ -19,13 +18,10 @@ The `ms-review` microservice manages all review-related functionalities within o
 - **DELETE `/reviews/{review_id}/likes`**: Unlike a review.
 
 ## Data Model
-Each review stores the following information:
+When a new review is created a test, the rating and the corresponding place are required. Additionally, when saving the review in the database the following fields are instantiated:
 - `user_id / author`: The ID of the user who wrote the review.
 - `username`: The username of the author.
 - `image`: An optional image added to the review.
 - `like_count`: The number of likes the review has received.
 - `liked_by`: A list of users who have liked the review.
 - `created_at`: The timestamp when the review was created.
-
-## Getting Started
-To work with `ms-review`, follow these steps for setting up your development environment:

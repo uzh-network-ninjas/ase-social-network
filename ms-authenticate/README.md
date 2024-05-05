@@ -1,5 +1,4 @@
 # MS Authenticate - FastAPI Microservice 🛡️
-
 ## Overview
 The `ms-authenticate` microservice is crucial for handling all onboarding functionalities such as user registration, login, and updating security features like password management. It plays a key role in user authentication, generating JWT tokens, and securing password hashes.
 
@@ -16,7 +15,7 @@ It shares a database with `ms-user` to ensure seamless integration and immediate
 - **PATCH `/authenticator/password`**: Updates a user's password.
 
 ## Data Model
-Upon registration, the following details are stored:
+A new user is required to provide a username, an email address and a password upon registration. The username as well as the email address must be unique. To log in a user can then use either their email address or their username in combination with their password. When saving the user in the database the following fields are instantiated:
 - `username`: Must be unique.
 - `email`: Must be unique and used for logging in.
 - `password`: Hashed for security.
