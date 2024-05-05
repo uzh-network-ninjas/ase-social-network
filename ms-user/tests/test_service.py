@@ -249,24 +249,28 @@ async def test_service_update_user_image_by_id_not_found(mock_get_user_by_id):
 
 @pytest.mark.asyncio
 @patch('app.UserRepository.UserRepository.get_user_by_id')
+@patch("app.logging_config.logger.error", return_value=None)
 @patch('boto3.client')
-async def test_service_update_user_image_by_id_faulty_boto(mock_boto3_client, mock_get_user_by_id):
+async def test_service_update_user_image_by_id_faulty_boto(mock_boto3_client, mock_logger_error, mock_get_user_by_id):
     mock_get_user_by_id.return_value = test_user
     mock_boto3_client.return_value = None
     with pytest.raises(HTTPException) as e:
         await user_service.update_user_image_by_id(test_user_id, MagicMock(spec=UploadFile))
+    mock_logger_error.assert_called_once()
     assert e.value.status_code == 400
 
 
 @pytest.mark.asyncio
 @patch('app.UserRepository.UserRepository.get_user_by_id')
+@patch("app.logging_config.logger.error", return_value=None)
 @patch('boto3.client')
-async def test_service_update_user_image_by_id_corrupt_image(mock_boto3_client, mock_get_user_by_id):
+async def test_service_update_user_image_by_id_corrupt_image(mock_boto3_client, mock_logger_error, mock_get_user_by_id):
     mock_get_user_by_id.return_value = test_user
     mock_boto3_client.return_value = MagicMock()
     mock_image = MagicMock(spec=UploadFile)
     with pytest.raises(HTTPException) as e:
         await user_service.update_user_image_by_id(test_user_id, mock_image)
+    mock_logger_error.assert_called_once()
     assert e.value.status_code == 400
 
 

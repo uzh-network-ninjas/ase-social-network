@@ -58,10 +58,6 @@ MOCK_REVIEW_LIST_RESPONSE_DATA = {
     "reviews": [MOCK_REVIEW_RESPONSE_DATA]
 }
 
-MOCK_LOCATION_IDS = {
-    "location_ids": [LOCATION_ID]
-}
-
 MOCK_REVIEW_LIST_FILTERED_OUT = {
     "location_reviews": [
         {
@@ -214,9 +210,8 @@ async def test_get_reviews_by_user_id_no_reviews(review_service):
 
 
 @pytest.mark.asyncio
-async def test_get_reviews_by_locations(review_service, test_location_ids_model):
-    result = await review_service.get_reviews_by_locations(test_location_ids_model(**MOCK_LOCATION_IDS), [USER_ID],
-                                                           USER_ID)
+async def test_get_reviews_by_locations(review_service):
+    result = await review_service.get_reviews_by_locations([LOCATION_ID], [USER_ID], USER_ID)
 
     assert result == ReviewListFilteredOut(**MOCK_REVIEW_LIST_FILTERED_OUT)
 
