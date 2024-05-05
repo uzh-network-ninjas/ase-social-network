@@ -92,11 +92,12 @@ class UserService:
         """
         if not await self.user_repo.get_user_by_id(user_id):
             raise HTTPException(status_code=404, detail="User not found!")
+        s3_endpoint = os.getenv("S3_ENDPOINT_URL")
         bucket_name = "ms-user"
         s3_folder = "user-images"
         s3_client = boto3.client(
             's3',
-            endpoint_url=os.getenv("S3_ENDPOINT_URL"),
+            endpoint_url=s3_endpoint,
             aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID", "test"),
             aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY", "test"),
             region_name=os.getenv("AWS_DEFAULT_REGION", "us-east-1")
@@ -109,7 +110,7 @@ class UserService:
         except Exception:
             raise HTTPException(status_code=400, detail="Could not update user profile picture!")
 
-        updated_user = UserUpdate(image=object_key)
+        updated_user = UserUpdate(image=f"{s3_endpoint}/{bucket_name}/{object_key}")
         return await self.update_user_by_id(user_id, updated_user)
 
     async def delete_user_by_id(self, user_id: str):

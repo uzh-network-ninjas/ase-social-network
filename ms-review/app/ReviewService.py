@@ -45,12 +45,12 @@ class ReviewService:
         :raises HTTPException(400): If the image could not be uploaded to s3.
         :raises HTTPException(400): If the database could not update the image reference.
         """
-
+        s3_endpoint = os.getenv("S3_ENDPOINT_URL")
         bucket_name = "ms-review"
         s3_folder = "review-images"
         s3_client = boto3.client(
             's3',
-            endpoint_url=os.getenv("S3_ENDPOINT_URL"),
+            endpoint_url=s3_endpoint,
             aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID", "test"),
             aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY", "test"),
             region_name=os.getenv("AWS_DEFAULT_REGION", "us-east-1")
@@ -64,7 +64,7 @@ class ReviewService:
             logger.error(f"Could not upload an image to s3: {e}")
             raise HTTPException(status_code=400, detail="Could not append review image!")
 
-        updated_review = ReviewCreateImage(image=object_key)
+        updated_review = ReviewCreateImage(image=f"{s3_endpoint}/{bucket_name}/{object_key}")
         result = await self.review_repo.update_review_image(review_id, updated_review)
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update review image reference!")
