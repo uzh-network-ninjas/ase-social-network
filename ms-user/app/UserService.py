@@ -177,7 +177,7 @@ class UserService:
         for following_user_id in user.following:
             result = await self.get_user_by_id(following_user_id)
             following_users.append(UserOut(**result.dict()))
-        return UserListOut(**{"users": following_users})
+        return UserListOut(users=following_users)
 
     async def get_user_followers_by_id(self, user_id: str) -> UserListOut:
         """
@@ -191,7 +191,7 @@ class UserService:
         for user_follower_id in user.followers:
             result = await self.get_user_by_id(user_follower_id)
             user_followers.append(UserOut(**result.dict()))
-        return UserListOut(**{"users": user_followers})
+        return UserListOut(users=user_followers)
 
     @staticmethod
     def extract_user_id_from_token(request: Request) -> str:
