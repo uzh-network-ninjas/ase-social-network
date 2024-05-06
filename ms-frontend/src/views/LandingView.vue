@@ -3,6 +3,10 @@ import TopNav, { type MenuOption } from '@/components/TopNav.vue'
 import type { IconType } from '@/icons/BaseIcon.vue'
 import Button from 'primevue/button'
 import { onMounted, onUnmounted, ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import SignedInTopNav from '@/components/SignedInTopNav.vue'
+
+const authStore = useAuthStore()
 
 const topNavActions: MenuOption[] = [
   {
@@ -39,7 +43,13 @@ const handleScroll = function () {
 
 <template>
   <header :class="['sticky top-0 z-40 transition-shadow', atTopPage ? '' : 'shadow-lg']">
-    <TopNav :titleTo="{ name: 'landing' }" :actions="topNavActions" iconPos="right" />
+    <TopNav
+      v-if="!authStore.signedIn"
+      :titleTo="{ name: 'landing' }"
+      :actions="topNavActions"
+      iconPos="right"
+    />
+    <SignedInTopNav v-else />
   </header>
   <main>
     <div class="flex flex-col">

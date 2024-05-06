@@ -10,7 +10,7 @@ import Button from 'primevue/button'
 
 const props = withDefaults(
   defineProps<{
-    header?: 'USER' | 'PLACE'
+    header?: 'USER' | 'PLACE' | 'BOTH'
     userId: string
     username: string
     reviewId: string
@@ -39,7 +39,7 @@ const createdHumanReadable = computed(() => {
 const baseUrl = import.meta.env.VITE_PICTURE_BASE_URL
 const userProfilePicture = ref<string | null>()
 onMounted(() => {
-  if (props.header === 'USER') {
+  if (props.header !== 'PLACE') {
     getUserProfilePicture()
   }
   likes.value = props.like_count
@@ -50,8 +50,8 @@ watch(
   () => [props.userId, props.header],
   (value, oldValue) => {
     if (
-      (props.header === 'USER' && value[0] !== oldValue[0]) ||
-      (oldValue[1] === 'PLACE' && value[1] === 'USER')
+      (props.header !== 'PLACE' && value[0] !== oldValue[0]) ||
+      (oldValue[1] === 'PLACE' && value[1] !== 'PLACE')
     ) {
       getUserProfilePicture()
     }
@@ -87,8 +87,8 @@ const toggleLikeOrUnlike = async () => {
 
 <template>
   <div class="flex w-full max-w-full flex-col gap-4 px-4 py-4">
-    <div class="flex items-center">
-      <template v-if="header === 'USER'">
+    <div class="flex flex-col justify-center gap-4">
+      <template v-if="header !== 'PLACE'">
         <router-link :to="{ name: 'profile', params: { userId: userId } }">
           <div class="flex items-center gap-2">
             <div
@@ -113,7 +113,8 @@ const toggleLikeOrUnlike = async () => {
           </div>
         </router-link>
       </template>
-      <template v-else>
+      <div v-if="header == 'BOTH'" class="h-[1px] w-full bg-black bg-opacity-5"></div>
+      <template v-if="header !== 'USER'">
         <router-link :to="{ name: 'map', query: { query: locationName, placeId: locationId } }">
           <div class="flex items-center gap-2">
             <div class="flex flex-col">
@@ -140,28 +141,26 @@ const toggleLikeOrUnlike = async () => {
     <div v-if="image" class="w-full">
       <img
         :src="`${baseUrl}/ms-review/${image}`"
-        class="w-full max-w-[400px] object-cover"
+        class="w-full max-w-[400px] object-cover font-light text-medium-emphasis"
         alt="of review place"
       />
     </div>
+    <div class="h-[1px] w-full bg-black bg-opacity-5"></div>
     <div class="flex items-center justify-between self-stretch px-2 py-0">
-      <div class="flex items-start gap-4">
+      <div class="flex items-center gap-2">
         <Button text rounded @click="toggleLikeOrUnlike()">
           <template #icon>
             <BaseIcon
               :icon="liked_by_me ? 'like-solid' : 'like'"
-              :class="'text-primary'"
+              :class="liked_by_me ? 'text-primary' : 'text-medium-emphasis'"
               :size="5"
-              :strokeWidth="1.5"
             />
           </template>
         </Button>
-        <div class="flex h-6 items-center justify-center gap-2.5">
-          <div
-            class="font-inter text-base font-light not-italic leading-[normal] text-medium-emphasis"
-          >
-            {{ likes }}
-          </div>
+        <div
+          class="font-inter text-base font-light not-italic leading-[normal] text-medium-emphasis"
+        >
+          {{ likes }}
         </div>
       </div>
     </div>

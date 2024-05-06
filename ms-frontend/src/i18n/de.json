@@ -151,5 +151,6 @@
   "user": "Benutzer",
   "no_reviews_for_user": "Dieser Benutzer hat keine Reviews.",
   "home": "Startseite",
-  "browse": "Durchsuchen"
+  "browse": "Durchsuchen",
+  "no_reviews_in_feed": "Folge anderen Benutzer um ihre Reviews in deinem Feed zu sehen!"
 }

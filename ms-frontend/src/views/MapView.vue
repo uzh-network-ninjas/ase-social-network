@@ -237,9 +237,10 @@ const callbackArray = async function (
     map.value?.fitBounds(bounds)
     lastPos.value = bounds.getCenter()
     lastZoom.value = map.value?.getZoom()
-  } else if (google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+  } else if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
     lastPos.value = map.value?.getCenter()
     lastZoom.value = map.value?.getZoom()
+    placeResultList.value = []
   }
 }
 

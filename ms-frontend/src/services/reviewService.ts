@@ -28,9 +28,13 @@ export const reviewService = {
     const response = await apiClient.patch('reviews/image', formData)
     return new Review(response.data)
   },
-  async getReview(reviewId: string) {
-    const response = await apiClient.get(`reviews/${reviewId}`)
-    return new Review(response.data)
+  async getReviews(timestamp_cursor?: Date): Promise<Review[]> {
+    const response = await apiClient.get(`reviews/`, {
+      params: {
+        timestamp_cursor: timestamp_cursor ? formatDateTime(timestamp_cursor) : undefined
+      }
+    })
+    return response.data.reviews.map((review: any) => new Review(review))
   },
 
   async getUserReviews(user_id: string): Promise<Review[]> {
@@ -58,4 +62,21 @@ export const reviewService = {
   async unlikeReview(review_id: string) {
     await apiClient.delete(`reviews/${review_id}/likes`)
   }
+}
+
+function formatDateTime(date: Date) {
+  // Helper function to pad numbers to two digits
+  function pad(number: number, length: number) {
+    return number.toString().padStart(length, '0')
+  }
+
+  const year = date.getFullYear()
+  const month = pad(date.getMonth() + 1, 2)
+  const day = pad(date.getDate(), 2)
+  const hour = pad(date.getHours(), 2)
+  const minute = pad(date.getMinutes(), 2)
+  const second = pad(date.getSeconds(), 2)
+  const millisecond = pad(date.getMilliseconds(), 6) // Extend to 6 digits
+
+  return `${year}-${month}-${day}T${hour}:${minute}:${second}.${millisecond}`
 }
