@@ -78,17 +78,16 @@ const getReviews = function () {
     reviewService
       .getReviewByPlaceIds([placeId])
       .then((locationReviews: LocationReviews[]) => {
-        const index = locationReviews.findIndex((location) => location.locationId == placeId)
-        if (index == -1) {
+        if (locationReviews.length != 1 || locationReviews[0].locationId !== placeId) {
           reviews.value = []
           average_rating.value = 0.0
         } else {
-          reviews.value = locationReviews[index].reviews
-          average_rating.value = locationReviews[index].averageRating
+          reviews.value = locationReviews[0].reviews
+          average_rating.value = locationReviews[0].averageRating
         }
       })
       .catch((error) => {
-        if (error.response?.status === 401) {
+        if (error.response?.status === 404) {
           reviews.value = []
           average_rating.value = 0.0
         }

@@ -1,6 +1,5 @@
 import pytest
 
-from app.models.LocationIDs import LocationIDs
 from app.ReviewController import app  # Ensure this points to your FastAPI app instance
 from app.ReviewService import ReviewService
 from app.models.ReviewCreate import ReviewCreate
@@ -40,7 +39,3 @@ def test_review_list_out_model():
 @pytest.fixture(scope="module")
 def test_review_list_filtered_out_model():
     return ReviewListFilteredOut
-
-@pytest.fixture(scope="module")
-def test_location_ids_model():
-    return LocationIDs

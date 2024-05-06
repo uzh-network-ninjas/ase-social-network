@@ -10,8 +10,6 @@ import BaseIcon from '@/icons/BaseIcon.vue'
 import type { User } from '@/types/User'
 import { userService } from '@/services/userService'
 
-const baseUrl = import.meta.env.VITE_PICTURE_BASE_URL
-
 const searchTerm = ref<string>('')
 const searchResults = ref<User[]>([])
 const noUserFound = ref<boolean>(false)
@@ -112,7 +110,7 @@ const clearSearchTerm = function () {
                   class="flex h-[34px] w-[34px] items-center justify-center overflow-hidden rounded-full"
                 >
                   <img
-                    :src="`${baseUrl}/ms-user/${user.image}`"
+                    :src="user.image"
                     class="h-[34px] w-[34px] rounded-full object-cover"
                     alt="of user"
                   />

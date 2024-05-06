@@ -3,7 +3,6 @@ import jwt
 import os
 
 from app.logging_config import logger
-from app.models.LocationIDs import LocationIDs
 from app.models.ReviewCreate import ReviewCreate
 from app.models.ReviewListOut import ReviewListOut
 from app.models.ReviewListFilteredOut import ReviewListFilteredOut, LocationReviews
@@ -45,7 +44,6 @@ class ReviewService:
         :raises HTTPException(400): If the image could not be uploaded to s3.
         :raises HTTPException(400): If the database could not update the image reference.
         """
-
         bucket_name = "ms-review"
         s3_folder = "review-images"
         s3_client = boto3.client(
@@ -64,7 +62,7 @@ class ReviewService:
             logger.error(f"Could not upload an image to s3: {e}")
             raise HTTPException(status_code=400, detail="Could not append review image!")
 
-        updated_review = ReviewUpdate(image=object_key)
+        updated_review = ReviewUpdate(image=f"{os.getenv("S3_DEFAULT_INSTANCE", "https://localhost:4566")}/{bucket_name}/{object_key}")
         result = await self.review_repo.update_review_by_id(review_id, updated_review)
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update review image reference!")
@@ -113,7 +111,7 @@ class ReviewService:
         timestamp_cursor = timestamp_cursor if timestamp_cursor else datetime.now()
         result = await self.review_repo.get_feed_by_cursor_and_user_ids(timestamp_cursor, user_ids, 25)
         if not result:
-            raise HTTPException(status_code=404, detail="No reviews from followed users!")
+            raise HTTPException(status_code=404, detail="No reviews from followed users (with that timestamp)!")
         for review in result:
             review["id"] = str(review["_id"])
             review["liked_by_current_user"] = user_id in review["liked_by"]
@@ -135,7 +133,7 @@ class ReviewService:
             review["liked_by_current_user"] = current_user_id in review["liked_by"]
         return ReviewListOut(reviews=result)
 
-    async def get_reviews_by_locations(self, location_ids: LocationIDs, user_ids: List[str],
+    async def get_reviews_by_locations(self, location_ids: List[str], user_ids: List[str],
                                        user_id: str) -> ReviewListFilteredOut:
         """Get filtered reviews based on location and followed users.
 
@@ -153,8 +151,6 @@ class ReviewService:
             location_ids = await self.review_repo.get_location_ids_by_user_ids(user_ids)
             if len(location_ids) == 0:
                 raise HTTPException(status_code=404, detail="No reviews from the followed users!")
-        else:
-            location_ids = location_ids.model_dump()["location_ids"]
         location_reviews = []
         for location_id in location_ids:
             result = await self.review_repo.get_reviews_by_location_and_user_ids(location_id, user_ids)

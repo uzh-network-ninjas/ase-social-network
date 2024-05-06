@@ -36,7 +36,6 @@ const createdHumanReadable = computed(() => {
   return TimeConverter.humanReadable(props.createdAt)
 })
 
-const baseUrl = import.meta.env.VITE_PICTURE_BASE_URL
 const userProfilePicture = ref<string | null>()
 onMounted(() => {
   if (props.header !== 'PLACE') {
@@ -96,7 +95,7 @@ const toggleLikeOrUnlike = async () => {
               class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full"
             >
               <img
-                :src="`${baseUrl}/ms-user/${userProfilePicture}`"
+                :src="userProfilePicture"
                 class="h-full w-full object-cover"
                 alt="of user"
               />
@@ -140,7 +139,7 @@ const toggleLikeOrUnlike = async () => {
     </div>
     <div v-if="image" class="w-full">
       <img
-        :src="`${baseUrl}/ms-review/${image}`"
+        :src="image"
         class="w-full max-w-[400px] object-cover font-light text-medium-emphasis"
         alt="of review place"
       />

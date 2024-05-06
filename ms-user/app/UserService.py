@@ -106,10 +106,11 @@ class UserService:
             file_content = await image.read()
             object_key = f"{s3_folder}/{user_id}/{image.filename}"
             s3_client.put_object(Bucket=bucket_name, Key=object_key, Body=file_content)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Could not upload an image to s3: {e}")
             raise HTTPException(status_code=400, detail="Could not update user profile picture!")
 
-        updated_user = UserUpdate(image=object_key)
+        updated_user = UserUpdate(image=f"{os.getenv("S3_DEFAULT_INSTANCE", "https://localhost:4566")}/{bucket_name}/{object_key}")
         return await self.update_user_by_id(user_id, updated_user)
 
     async def delete_user_by_id(self, user_id: str):
@@ -175,7 +176,7 @@ class UserService:
         for following_user_id in user.following:
             result = await self.get_user_by_id(following_user_id)
             following_users.append(UserOut(**result.dict()))
-        return UserListOut(**{"users": following_users})
+        return UserListOut(users=following_users)
 
     async def get_user_followers_by_id(self, user_id: str) -> UserListOut:
         """
@@ -189,7 +190,7 @@ class UserService:
         for user_follower_id in user.followers:
             result = await self.get_user_by_id(user_follower_id)
             user_followers.append(UserOut(**result.dict()))
-        return UserListOut(**{"users": user_followers})
+        return UserListOut(users=user_followers)
 
     @staticmethod
     def extract_user_id_from_token(request: Request) -> str:
