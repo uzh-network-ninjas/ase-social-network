@@ -51,8 +51,8 @@ const isTargetRoute = function (targetRoute: RouteLocationRaw) {
                 : 'bg-white text-medium-emphasis ring-medium-emphasis hover:bg-selection-indicator hover:bg-opacity-5 '
             ]"
           >
-            <BaseIcon :icon="action.icon" :strokeWidth="1.5" class="min-h-5 min-w-5" />
-            <span class="text-nowrap pr-2">{{ $t(action.labelKey) }}</span>
+            <BaseIcon :icon="action.icon" :strokeWidth="1" class="min-h-6 min-w-6" />
+            <span class="text-nowrap pr-2 font-light">{{ $t(action.labelKey) }}</span>
           </div>
         </router-link>
       </li>

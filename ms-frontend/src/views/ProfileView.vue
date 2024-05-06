@@ -172,7 +172,7 @@
               </div>
             </div>
             <div class="h-px self-stretch">
-              <div class="flex flex-col items-center divide-y px-8">
+              <div class="flex flex-col divide-y px-8">
                 <PlaceReview
                   v-for="review in reviews"
                   :header="'PLACE'"
