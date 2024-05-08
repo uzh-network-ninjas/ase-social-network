@@ -10,5 +10,8 @@ RUN pip install requests
 # Copy your script
 COPY seed_users.py ./seed_users.py
 
+# copy another files
+COPY . .
+
 # Run the script
 CMD ["python", "seed_users.py"]
