@@ -62,7 +62,7 @@ class ReviewService:
             logger.error(f"Could not upload an image to s3: {e}")
             raise HTTPException(status_code=400, detail="Could not append review image!")
 
-        updated_review = ReviewUpdate(image=f"{os.getenv("S3_DEFAULT_INSTANCE", "https://localhost:4566")}/{bucket_name}/{object_key}")
+        updated_review = ReviewUpdate(image=f"{os.getenv("S3_DEFAULT_INSTANCE", "http://localhost:4566")}/{bucket_name}/{object_key}")
         result = await self.review_repo.update_review_by_id(review_id, updated_review)
         if not result.raw_result["updatedExisting"]:
             raise HTTPException(status_code=400, detail="Could not update review image reference!")

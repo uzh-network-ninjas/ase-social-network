@@ -27,5 +27,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  define: {
+    'process.env.VITE_GOOGLE_API_KEY': `"${process.env.VITE_GOOGLE_API_KEY}"`,
+    'process.env.VITE_GOOGLE_API_MAP_ID': `"${process.env.VITE_GOOGLE_API_MAP_ID}"`
   }
 })

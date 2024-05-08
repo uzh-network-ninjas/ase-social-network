@@ -1,6 +1,15 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY . .
+
+# Set ARGs for build-time environment variables
+ARG VITE_GOOGLE_API_KEY
+ARG VITE_GOOGLE_API_MAP_ID
+
+# Export ARGs as environment variables for the build
+ENV VITE_GOOGLE_API_KEY=$VITE_GOOGLE_API_KEY
+ENV VITE_GOOGLE_API_MAP_ID=$VITE_GOOGLE_API_MAP_ID
+
 RUN npm install --ignore-scripts
 RUN npm run build
 
