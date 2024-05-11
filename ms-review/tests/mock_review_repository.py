@@ -40,11 +40,8 @@ class MockReviewRepository:
         insert_one_result.inserted_id = REVIEW_ID
         return insert_one_result
 
-    @staticmethod
-    async def update_review_by_id(review_id, updated_review) -> UpdateResult:
-        update_result = MagicMock(spec=UpdateResult)
-        update_result.raw_result = {"updatedExisting": True}
-        return update_result
+    async def update_review_by_id(self, review_id, updated_review) -> UpdateResult:
+        return self._get_update_result()
 
     @staticmethod
     async def get_review_by_id(review_id) -> dict:
@@ -66,18 +63,18 @@ class MockReviewRepository:
     async def get_location_ids_by_user_ids(user_ids) -> List[str]:
         return [LOCATION_ID]
 
-    @staticmethod
-    async def like_review_by_id(review_id, user_id) -> UpdateResult:
-        update_result = MagicMock(spec=UpdateResult)
-        update_result.raw_result = {"updatedExisting": True}
-        return update_result
+    async def like_review_by_id(self, review_id, user_id) -> UpdateResult:
+        return self._get_update_result()
 
-    @staticmethod
-    async def unlike_review_by_id(review_id, user_id) -> UpdateResult:
-        update_result = MagicMock(spec=UpdateResult)
-        update_result.raw_result = {"updatedExisting": True}
-        return update_result
+    async def unlike_review_by_id(self, review_id, user_id) -> UpdateResult:
+        return self._get_update_result()
 
     @staticmethod
     async def user_has_liked_review(review_id, user_id) -> bool:
         return False
+
+    @staticmethod
+    def _get_update_result() -> UpdateResult:
+        update_result = MagicMock(spec=UpdateResult)
+        update_result.raw_result = {"updatedExisting": True}
+        return update_result
