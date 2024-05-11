@@ -6,7 +6,7 @@ defineProps<{
 </script>
 
 <template>
-  <div
+  <button
     v-ripple="{
       pt: {
         root: { style: 'transform: scale(0); background: #fff;' }
@@ -18,12 +18,9 @@ defineProps<{
         ? 'border-primary bg-primary text-white  ring-primary'
         : 'border-medium-emphasis bg-white text-medium-emphasis ring-medium-emphasis'
     ]"
-    tabindex="0"
-    role="option"
-    :aria-selected="active"
   >
     <span class="select-none text-center font-light tracking-widest">{{
       labelKey ? $t(labelKey.replace(/ /g, '_').toLowerCase()) : 'Label'
     }}</span>
-  </div>
+  </button>
 </template>
