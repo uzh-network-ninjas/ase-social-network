@@ -28,6 +28,7 @@ watch(
   () => [props.place],
   () => {
     container.value?.scrollTo(0, 0)
+    uploadSuccess.value = false
     getReviews()
     updateLocation()
   }
