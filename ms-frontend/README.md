@@ -1,5 +1,10 @@
 # ms-frontend
 
+## Overview
+The ms-frontend microservice is responsible for delivering the interactive web application to users. It serves as the primary interface for user interaction.
+
+General developer setup instructions can be found [here](https://github.com/uzh-network-ninjas/ase-social-network/wiki/Developer-Setup).
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
