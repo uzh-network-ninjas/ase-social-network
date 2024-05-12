@@ -3,35 +3,26 @@
 # Set default environment to dev
 ENVIRONMENT="dev"
 BUILD_FLAG=false
+POWERSHELL=false
 
 # Function to parse command line arguments
 parse_args() {
-  # First, let's check for the environment which should be the first argument
-  if [[ $# -gt 0 ]]; then
+  while [[ $# -gt 0 ]]; do
     case "$1" in
       dev|test)
         ENVIRONMENT=$1
         shift # move to next argument
         ;;
-      *)
-        echo "Unsupported environment. Use 'dev' or 'test'."
-        exit 1
-        ;;
-    esac
-  fi
-
-  # Now, look for any remaining options
-  while getopts ":b" opt; do
-    case $opt in
-      b)
+      -b)
         BUILD_FLAG=true
+        shift # move past the argument
         ;;
-      \?)
-        echo "Invalid option: -$OPTARG" >&2
-        exit 1
+      -p)
+        POWERSHELL=true
+        shift # move past the argument
         ;;
-      :)
-        echo "Option -$OPTARG requires an argument." >&2
+      *)
+        echo "Unsupported environment or option: $1. Use 'dev' or 'test', with optional flags '-b' or '-p'."
         exit 1
         ;;
     esac
@@ -70,6 +61,7 @@ case $ENVIRONMENT in
       start_docker
     else
       echo "The .env file does not exist. Please create it before starting."
+      exit 1
     fi
     ;;
   test)
@@ -77,11 +69,20 @@ case $ENVIRONMENT in
       start_test
     else
       echo "The .env file does not exist. Please create it before starting."
+      exit 1
     fi
     ;;
   *)
     echo "Unsupported environment. Use 'dev' or 'test'."
+    exit 1
     ;;
 esac
 
 echo $ENVIRONMENT > ./.last_environment
+
+echo -e "\033[0;32mUse the application at http://localhost:8000\033[0m"
+
+if $POWERSHELL; then
+  echo "Press any key to continue..."
+  read -n 1 -s -r
+fi
