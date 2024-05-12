@@ -197,3 +197,10 @@ user_array = {}
 create_and_update_users()
 
 follow(user_array['user5'], user_array['user6'])
+follow(user_array['user4'], user_array['user3'])
+follow(user_array['user4'], user_array['user5'])
+follow(user_array['user4'], user_array['user6'])
+follow(user_array['user4'], user_array['user7'])
+follow(user_array['user4'], user_array['user8'])
+follow(user_array['user4'], user_array['user9'])
+follow(user_array['user4'], user_array['user10'])
