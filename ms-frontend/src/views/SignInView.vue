@@ -39,7 +39,7 @@ const signIn = function () {
   usernameError.value = false
   passwordError.value = false
   authStore.signIn(username.value, password.value).catch((error) => {
-    if (error.response?.status === 404) {
+    if (error.response?.status === 401 || error.response?.status === 404) {
       // Handle authentication failure (e.g., invalid username or password)
       usernameError.value = true
       passwordError.value = true
@@ -91,6 +91,7 @@ const signIn = function () {
                   :type="showPassword ? 'text' : 'password'"
                   v-model="password"
                   :invalid="passwordError"
+                  @keyup.enter="signIn"
                 />
                 <InputIcon
                   class="cursor-pointer rounded outline-none ring-primary ring-offset-1 focus-visible:ring-1"

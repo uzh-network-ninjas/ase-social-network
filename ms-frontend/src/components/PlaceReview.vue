@@ -94,11 +94,7 @@ const toggleLikeOrUnlike = async () => {
               v-if="userProfilePicture"
               class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full"
             >
-              <img
-                :src="userProfilePicture"
-                class="h-full w-full object-cover"
-                alt="of user"
-              />
+              <img :src="userProfilePicture" class="h-full w-full object-cover" alt="of user" />
             </div>
             <div
               v-else

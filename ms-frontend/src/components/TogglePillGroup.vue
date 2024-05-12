@@ -26,7 +26,7 @@ const onSelectOption = function (option: string) {
 </script>
 
 <template>
-  <div class="align-start flex flex-wrap gap-2" role="listbox">
+  <div class="align-start flex flex-wrap gap-2">
     <TogglePill
       v-for="option in options"
       :labelKey="option"
