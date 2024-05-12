@@ -13,7 +13,10 @@ This project implements a microservice-powered architecture
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
-- Ensure **Docker** and **docker-compose** are installed. Terminal to execute local .sh scripts (On Windows, Cygwin compatible termina, on Linux and MacOS you don't need anythin)
+- Ensure **Docker** and **docker-compose** are installed
+- you should have terminal to execute local .sh scripts (On Windows, Cygwin compatible terminal, on Linux and MacOS you don't need anything)
+  - Be aware that if you want to run the script to setup the repository you SHOULD be in a POSIX terminal, otherwise you won't see possible error messages from error scripts.
+  - This issue can occur on windows, when starting the script from init terminal, however bash takes over the execution
 - Prepare the environment variables:
   ```bash
   cp .env.example .env
@@ -30,6 +33,16 @@ This project implements a microservice-powered architecture
 - If you encounter issues or if dependencies in the microservices have changed you can force a rebuild with:
   ```bash
   ./init.sh -b
+  ```
+
+- if you want to see logs from the bash script and you are using powershell, you need to add flag `--ps` to the script, like this:
+  ```bash
+  ./init.sh -p
+  ```
+
+- In case of initialization of desired environment you can use `<test/dev>` as an option to the script, like this:
+  ```bash
+  ./init.sh <test/dev>
   ```
 
 ### Local Development without initialization script
